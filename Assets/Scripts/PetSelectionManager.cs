@@ -22,7 +22,7 @@ public class PetSelectionManager : MonoBehaviour
 
     private void Start()
     {
-        if (pets.Length > 0 && currentPet == null)
+        if (pets.Length > 0)
         {
             currentPet = pets[0];
         }
