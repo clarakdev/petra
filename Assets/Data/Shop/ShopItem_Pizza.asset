@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: c3e9473f8f5d34228beb66d3ce2f32ae, type: 2}
   Name: Pizza
-  Description: 
-  Cost: 35
+  Description: "Cheesy, savory slices that pets can\u2019t resist eating"
+  Cost: 3500
