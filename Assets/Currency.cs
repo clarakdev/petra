@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class playerCurrency : MonoBehaviour
+public class PlayerCurrency : MonoBehaviour
 {
     public int currency = 0; //current player balance
 
-    public void earnCurrency(int amount){
+    public void EarnCurrency(int amount){
         if (amount > 0){
             currency = currency + amount; //add to currency
         }
     }
 
-    public bool spendCurrency(int amount){
+    public bool SpendCurrency(int amount){
         if (amount <= currency){
             currency = currency - amount;
             return true; //make purchase 
