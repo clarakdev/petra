@@ -7,9 +7,17 @@ public class PetFollower : MonoBehaviour
     Rigidbody2D rb;
     Transform target;
     Vector2 moveDirection;
+    SpriteRenderer spriteRenderer;
+
+    [Header("Directional Sprites")]
+    [SerializeField] private Sprite frontSprite;
+    [SerializeField] private Sprite backSprite;
+    [SerializeField] private Sprite leftSprite;
+    [SerializeField] private Sprite rightSprite;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -30,6 +38,7 @@ public class PetFollower : MonoBehaviour
             if (distance > followDistance)
             {
                 moveDirection = offset.normalized;
+                UpdateSpriteDirection(moveDirection);
             }
             else
             {
@@ -43,6 +52,26 @@ public class PetFollower : MonoBehaviour
         if (target)
         {
             rb.linearVelocity = moveDirection * moveSpeed;
+        }
+    }
+
+    // Change sprite based on movement direction
+    private void UpdateSpriteDirection(Vector2 direction)
+    {
+        // Check if horizontal movement is greater than vertical movement
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            if (direction.x < 0)
+                spriteRenderer.sprite = leftSprite;
+            else if (direction.x > 0)
+                spriteRenderer.sprite = rightSprite;
+        }
+        else
+        {
+            if (direction.y > 0)
+                spriteRenderer.sprite = backSprite;
+            else if (direction.y < 0)
+                spriteRenderer.sprite = frontSprite;
         }
     }
 }
