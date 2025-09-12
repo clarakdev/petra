@@ -18,7 +18,8 @@ public class PetSpawner : MonoBehaviour
             uiCanvas = FindObjectOfType<Canvas>();
         }
 
-        if (uiCanvas == null) {
+        if (uiCanvas == null)
+        {
             return;
         }
 

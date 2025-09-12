@@ -27,7 +27,7 @@ public class PetSelectionUI : MonoBehaviour
             });
 
             Image petImage = option.transform.Find("PetCard_1").GetComponent<Image>();
-            petImage.sprite = p.icon;
+            petImage.sprite = p.cardImage;
         }
     }
 
