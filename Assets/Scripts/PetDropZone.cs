@@ -12,8 +12,13 @@ public class PetDropZone : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData e)
     {
-        if (!manager || !manager.CanFeed()) return;
-        var dragged = e.pointerDrag ? e.pointerDrag.GetComponent<DraggableFood>() : null;
-        if (dragged) manager.Feed(dragged);
+        var dragged = e.pointerDrag;
+        if (!dragged || !manager) return;
+
+        var food = dragged.GetComponent<DraggableFood>();
+        if (!food) return;
+
+        if (!manager.CanFeedNow()) return;
+        manager.Feed(food);
     }
 }
