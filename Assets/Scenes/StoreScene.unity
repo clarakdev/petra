@@ -601,8 +601,9 @@ GameObject:
   - component: {fileID: 1336198047}
   - component: {fileID: 1336198046}
   - component: {fileID: 1336198045}
+  - component: {fileID: 1336198048}
   m_Layer: 5
-  m_Name: OpenShop
+  m_Name: OpenShopButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -722,8 +723,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1336198043}
   m_CullTransparentMesh: 1
-<<<<<<< Updated upstream
-=======
 --- !u!114 &1336198048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -736,7 +735,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
->>>>>>> Stashed changes
 --- !u!1 &1340349816
 GameObject:
   m_ObjectHideFlags: 0

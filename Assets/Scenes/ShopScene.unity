@@ -1515,6 +1515,7 @@ GameObject:
   - component: {fileID: 829866594}
   - component: {fileID: 829866593}
   - component: {fileID: 829866592}
+  - component: {fileID: 829866595}
   m_Layer: 5
   m_Name: Exit
   m_TagString: Untagged
@@ -1636,8 +1637,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829866590}
   m_CullTransparentMesh: 1
-<<<<<<< Updated upstream
-=======
 --- !u!114 &829866595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1650,7 +1649,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
->>>>>>> Stashed changes
 --- !u!1 &861972044
 GameObject:
   m_ObjectHideFlags: 0
