@@ -56,7 +56,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         // Instantiate player at spawnPosition
         GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
         playerObj.name = "Player";
-        Debug.Log("[NetworkManager] Player spawned at: " + playerObj.transform.position);
 
         // Instantiate PetSpawner for this player
         GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");

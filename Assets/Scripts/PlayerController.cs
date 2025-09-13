@@ -1,7 +1,8 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun
 {
     [SerializeField] private float moveSpeed = 5f;
     private Rigidbody2D rb;
@@ -25,11 +26,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!photonView.IsMine) return; // Only process input for local player
         rb.linearVelocity = moveInput * moveSpeed;
     }
 
     public void Move(InputAction.CallbackContext context)
     {
+        if (!photonView.IsMine) return; // Only process input for local player
+
         moveInput = context.ReadValue<Vector2>();
 
         // Change sprite based on movement direction
