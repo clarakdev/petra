@@ -465,8 +465,9 @@ GameObject:
   - component: {fileID: 1014822652}
   - component: {fileID: 1014822651}
   - component: {fileID: 1014822653}
+  - component: {fileID: 1014822654}
   m_Layer: 5
-  m_Name: ProgressBar
+  m_Name: CleanProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -546,10 +547,23 @@ MonoBehaviour:
   fill: {fileID: 870898662}
   label: {fileID: 1664483484}
   max: 100
-  value: 30
+  value: 40
   padding: 6
   fillColorNormal: {r: 0.69, g: 0.53, b: 1, a: 1}
   fillColorFull: {r: 0.69, g: 0.53, b: 1, a: 1}
+  labelDecimals: 1
+--- !u!114 &1014822654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014822649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be3cccaffac4847c294f9f2f958bf4c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
 --- !u!1 &1114671592
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,6 +921,7 @@ GameObject:
   - component: {fileID: 1377795978}
   - component: {fileID: 1377795977}
   - component: {fileID: 1377795976}
+  - component: {fileID: 1377795980}
   m_Layer: 5
   m_Name: PetCleanCanvas
   m_TagString: Untagged
@@ -1001,6 +1016,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1377795980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377795975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65324cb9bbec417d8a7ae68f0c4ad2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetStatsBootstrap
 --- !u!1 &1489678232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,7 +1117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9386f3fa984654ad5a193f3ca4ef984f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CleanDropZone
-  manager: {fileID: 0}
+  manager: {fileID: 1492708543}
 --- !u!114 &1489678237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1105,15 +1132,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PetEmotionFX
   petImage: {fileID: 1489678234}
   canvas: {fileID: 1377795978}
+  hearts: 10
+  heartSizeRange: {x: 48, y: 72}
+  heartColor: {r: 1, g: 0.5, b: 0.7, a: 0.95}
+  heartRise: {x: 30, y: 130}
+  heartDur: {x: 0.6, y: 1.1}
+  playBounce: 1
+  bounceScale: 1.1
+  bounceUp: 0.22
+  bounceDown: 0.22
   happySprite: {fileID: 0}
   revertToDefault: 1
   happySeconds: 1.2
-  useColorPulse: 1
-  pulseColor: {r: 1, g: 0.9, b: 0.7, a: 1}
-  useGlow: 1
-  glowColor: {r: 1, g: 0.95, b: 0.4, a: 0}
-  sparkles: 7
-  sparkleColor: {r: 1, g: 0.85, b: 0.6, a: 0.9}
 --- !u!1 &1492708541
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,10 +1193,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CleanUIManager
   canvas: {fileID: 1377795978}
-  panelProgress: {fileID: 1014822653}
+  cleanBar: {fileID: 1014822653}
   petRect: {fileID: 1489678233}
   petFX: {fileID: 1489678237}
-  onlyCelebrateWhenFull: 1
+  cleanDecayPerMinute: 2
+  fullPauseMinutes: 20
 --- !u!1 &1513651880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1509,7 +1540,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 30%
+  m_text: 40%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

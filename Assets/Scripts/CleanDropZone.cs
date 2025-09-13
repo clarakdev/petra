@@ -12,8 +12,13 @@ public class CleanDropZone : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData e)
     {
-        if (!manager || manager.IsFull()) return;
-        var item = e.pointerDrag ? e.pointerDrag.GetComponent<DraggableCleanItem>() : null;
-        if (item) manager.Clean(item);
+        var dragged = e.pointerDrag;
+        if (!dragged || !manager) return;
+
+        var item = dragged.GetComponent<DraggableCleanItem>();
+        if (!item) return;
+
+        if (!manager.CanCleanNow()) return;
+        manager.Clean(item);
     }
 }

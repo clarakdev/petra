@@ -912,6 +912,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074831399}
   m_CullTransparentMesh: 1
+--- !u!1 &1135727760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1135727762}
+  - component: {fileID: 1135727761}
+  m_Layer: 0
+  m_Name: PetStats
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1135727761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135727760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2dc93d3504840cd92938a6b930304e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetStats
+  hunger: 60
+  cleanliness: 60
+  hungerDecayPerMinute: 0.5
+  cleanlinessDecayPerMinute: 0.3
+  foodsBeforeCooldown: 3
+  feedCooldownMinutes: 20
+  hungerDecayPauseMinutes: 20
+--- !u!4 &1135727762
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135727760}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 986.3505, y: 570.4831, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1166101905
 GameObject:
   m_ObjectHideFlags: 0
@@ -1642,6 +1693,7 @@ GameObject:
   - component: {fileID: 1660121682}
   - component: {fileID: 1660121681}
   - component: {fileID: 1660121680}
+  - component: {fileID: 1660121684}
   m_Layer: 5
   m_Name: PetCareCanvas
   m_TagString: Untagged
@@ -1735,6 +1787,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1660121684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1660121679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65324cb9bbec417d8a7ae68f0c4ad2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetStatsBootstrap
 --- !u!1 &1706495700
 GameObject:
   m_ObjectHideFlags: 0
@@ -2073,3 +2137,4 @@ SceneRoots:
   - {fileID: 1192491092}
   - {fileID: 1660121683}
   - {fileID: 2020711638}
+  - {fileID: 1135727762}

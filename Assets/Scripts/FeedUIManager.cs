@@ -4,50 +4,105 @@ using UnityEngine.UI;
 
 public class FeedUIManager : MonoBehaviour
 {
+    [Header("UI Refs")]
     public Canvas canvas;
-    public PanelProgressBar panelProgress;
+    public PanelProgressBar hungerBar;
     public RectTransform petRect;
 
-    public bool CanFeed() => panelProgress && !panelProgress.IsFull;
+    [Header("FX (optional)")]
+    public PetEmotionFX petFX;
+
+    [Header("Tuning")]
+    public float hungerDecayPerMinute = 0.5f;   // raise to 6.0 while testing
+    public float fullPauseMinutes = 20f;        // stay full this long once 100% is reached
+
+    float _current;               // 0..100
+    bool  _isConsuming = false;   // blocks a second feed while animating
+    bool  _animating = false;     // blocks Update while AnimateTo runs
+    float _decayResumeTime = -1f;
+
+    void Awake()
+    {
+        _current = hungerBar ? hungerBar.value : 0f;
+        if (hungerBar) hungerBar.SetValue(_current);
+    }
+
+    void Update()
+    {
+        if (_animating || hungerBar == null) return;
+
+        bool decayPaused = IsFull() && Time.unscaledTime < _decayResumeTime;
+        if (!decayPaused && hungerDecayPerMinute > 0f && _current > 0f)
+        {
+            float perSecond = hungerDecayPerMinute / 60f;
+            _current = Mathf.Max(0f, _current - perSecond * Time.unscaledDeltaTime);
+            hungerBar.SetValue(_current);
+        }
+    }
+
+    public bool IsFull() => _current >= 99.999f;
+
+    // 👉 Now also blocks while consuming the previous item
+    public bool CanFeedNow() => !_isConsuming && !IsFull();
 
     public void Feed(DraggableFood food)
     {
-        if (!CanFeed()) return;
+        if (!food || !canvas || !hungerBar) return;
+        if (!CanFeedNow()) return;
         StartCoroutine(EatRoutine(food));
     }
 
     IEnumerator EatRoutine(DraggableFood food)
     {
+        _isConsuming = true;
+
         var foodRT = food.GetComponent<RectTransform>();
 
+        // ghost that flies to the pet
         var ghost = new GameObject("FoodGhost", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
-        var ghostRT = ghost.GetComponent<RectTransform>();
-        var ghostImg = ghost.GetComponent<Image>();
-        ghostRT.SetParent(canvas.transform, false);
-        ghostRT.position = foodRT.position;
-        ghostRT.sizeDelta = foodRT.sizeDelta;
-        ghostImg.sprite = food.image.sprite;
-        ghostImg.preserveAspect = true;
+        var gRT  = ghost.GetComponent<RectTransform>();
+        var gImg = ghost.GetComponent<Image>();
+        gRT.SetParent(canvas.transform, false);
+        gRT.position = foodRT.position;
+        gRT.sizeDelta = foodRT.sizeDelta;
+        gImg.sprite = food.image.sprite;
+        gImg.preserveAspect = true;
 
         float t = 0f, dur = 0.35f;
-        Vector3 a = ghostRT.position;
+        Vector3 a = gRT.position;
         Vector3 b = petRect.position + new Vector3(0, petRect.rect.height * 0.1f, 0);
         while (t < dur)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             float k = t / dur;
-            ghostRT.position = Vector3.Lerp(a, b, k);
-            ghostRT.localScale = Vector3.one * (1f - 0.2f * k);
+            gRT.position   = Vector3.Lerp(a, b, k);
+            gRT.localScale = Vector3.one * (1f - 0.2f * k);
             yield return null;
         }
 
-        yield return StartCoroutine(BiteBurst(ghostImg, ghostRT));
-
+        yield return StartCoroutine(BiteBurst(gImg, gRT));
         Destroy(ghost);
         food.gameObject.SetActive(false);
 
-        float target = Mathf.Min(panelProgress.max, panelProgress.value + food.nutrition);
-        yield return StartCoroutine(panelProgress.AnimateTo(target, 0.3f));
+        // increase fullness
+        _current = Mathf.Min(100f, _current + food.nutrition);
+
+        // animate to the new value
+        _animating = true;
+        yield return StartCoroutine(hungerBar.AnimateTo(_current, 0.25f));
+        _animating = false;
+
+        // reached full → start pause window & hard block feeding until below 100
+        if (IsFull())
+        {
+            _current = 100f;
+            hungerBar.SetValue(_current);
+            _decayResumeTime = Time.unscaledTime + fullPauseMinutes * 60f;
+        }
+
+        if (petFX) petFX.PlayHappy();
+
+        _isConsuming = false;
     }
 
     IEnumerator BiteBurst(Image srcImg, RectTransform at)
@@ -66,7 +121,7 @@ public class FeedUIManager : MonoBehaviour
             img.preserveAspect = true;
             StartCoroutine(FallAndFade(rt, cg));
         }
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSecondsRealtime(0.25f);
     }
 
     IEnumerator FallAndFade(RectTransform rt, CanvasGroup cg)
@@ -75,11 +130,11 @@ public class FeedUIManager : MonoBehaviour
         Vector3 a = rt.position, b = a + new Vector3(Random.Range(-20f, 20f), -60f, 0);
         while (t < dur)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             float k = t / dur;
-            rt.position = Vector3.Lerp(a, b, k);
+            rt.position   = Vector3.Lerp(a, b, k);
             rt.localScale = Vector3.one * (1f - 0.7f * k);
-            cg.alpha = 1f - k;
+            cg.alpha      = 1f - k;
             yield return null;
         }
         Destroy(rt.gameObject);
