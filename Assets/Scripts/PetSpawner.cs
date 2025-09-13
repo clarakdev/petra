@@ -13,18 +13,10 @@ public class PetSpawner : MonoBehaviour
             return;
         }
 
-        if (uiCanvas == null)
-        {
-            uiCanvas = FindObjectOfType<Canvas>();
-        }
+        // Find the player and spawn the pet next to them
+        var player = GameObject.Find("Player");
+        Vector3 spawnPosition = player != null ? player.transform.position + new Vector3(1, 0, 0) : Vector3.zero;
 
-        if (uiCanvas == null) {
-            return;
-        }
-
-        var go = Instantiate(pet.prefab, uiCanvas.transform);
-        var rt = go.GetComponent<RectTransform>();
-        rt.anchoredPosition = Vector2.zero;   // center of canvas
-        rt.localScale = Vector3.one;
+        Instantiate(pet.prefab, spawnPosition, Quaternion.identity);
     }
 }

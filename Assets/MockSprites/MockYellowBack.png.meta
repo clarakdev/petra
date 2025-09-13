@@ -1,19 +1,16 @@
 fileFormatVersion: 2
-guid: 50add926bc85f5b429f9b8a3e7b864ca
+guid: 4216423026b86fb4fa8e336fce8c467b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 724010043286554838
-    second: MockFox_0
+      213: 8395874122669443333
+    second: MockYellowBack_0
   - first:
-      213: -708795423565690749
-    second: MockFox_1
+      213: 6704774594164620614
+    second: MockYellowBack_1
   - first:
-      213: -4523616038035882213
-    second: MockFox_2
-  - first:
-      213: 5545819659924416554
-    second: MockFox_3
+      213: -7752138727454409910
+    second: MockYellowBack_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,9 +52,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -84,7 +81,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -105,30 +102,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MockFox_0
+      name: MockYellowBack_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 0
-        width: 439
-        height: 1020
+        x: 0
+        y: 8
+        width: 1024
+        height: 1504
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,20 +121,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d809e36c433c0a00800000000000000
-      internalID: 724010043286554838
+      spriteID: 5094b940803248470800000000000000
+      internalID: 8395874122669443333
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MockFox_1
+      name: MockYellowBack_1
       rect:
         serializedVersion: 2
-        x: 391
-        y: 544
-        width: 67
-        height: 140
+        x: 142
+        y: 747
+        width: 99
+        height: 157
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,20 +143,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 388c1ff415ad926f0800000000000000
-      internalID: -708795423565690749
+      spriteID: 64dfe3058f42c0d50800000000000000
+      internalID: 6704774594164620614
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MockFox_2
+      name: MockYellowBack_2
       rect:
         serializedVersion: 2
-        x: 447
-        y: 267
-        width: 69
-        height: 130
+        x: 789
+        y: 775
+        width: 83
+        height: 125
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,30 +165,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b1f7c983e23e831c0800000000000000
-      internalID: -4523616038035882213
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MockFox_3
-      rect:
-        serializedVersion: 2
-        x: 451
-        y: 0
-        width: 1075
-        height: 1024
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a282c220995b6fc40800000000000000
-      internalID: 5545819659924416554
+      spriteID: a4bf78466eeda6490800000000000000
+      internalID: -7752138727454409910
       vertices: []
       indices: 
       edges: []
@@ -213,7 +175,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -223,10 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MockFox_0: 724010043286554838
-      MockFox_1: -708795423565690749
-      MockFox_2: -4523616038035882213
-      MockFox_3: 5545819659924416554
+      MockYellowBack_0: 8395874122669443333
+      MockYellowBack_1: 6704774594164620614
+      MockYellowBack_2: -7752138727454409910
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

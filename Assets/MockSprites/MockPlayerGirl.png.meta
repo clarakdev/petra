@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: 50add926bc85f5b429f9b8a3e7b864ca
+guid: 0850db7cf878b34428cd448b018369f3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 724010043286554838
-    second: MockFox_0
-  - first:
-      213: -708795423565690749
-    second: MockFox_1
-  - first:
-      213: -4523616038035882213
-    second: MockFox_2
-  - first:
-      213: 5545819659924416554
-    second: MockFox_3
+      213: -1872895787026713789
+    second: MockPlayerGirl_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,9 +46,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -84,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -105,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MockFox_0
+      name: MockPlayerGirl_0
       rect:
         serializedVersion: 2
-        x: 3
+        x: 0
         y: 0
-        width: 439
-        height: 1020
+        width: 1015
+        height: 1019
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,74 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d809e36c433c0a00800000000000000
-      internalID: 724010043286554838
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MockFox_1
-      rect:
-        serializedVersion: 2
-        x: 391
-        y: 544
-        width: 67
-        height: 140
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 388c1ff415ad926f0800000000000000
-      internalID: -708795423565690749
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MockFox_2
-      rect:
-        serializedVersion: 2
-        x: 447
-        y: 267
-        width: 69
-        height: 130
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b1f7c983e23e831c0800000000000000
-      internalID: -4523616038035882213
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MockFox_3
-      rect:
-        serializedVersion: 2
-        x: 451
-        y: 0
-        width: 1075
-        height: 1024
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a282c220995b6fc40800000000000000
-      internalID: 5545819659924416554
+      spriteID: 34372f864332206e0800000000000000
+      internalID: -1872895787026713789
       vertices: []
       indices: 
       edges: []
@@ -213,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -223,10 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MockFox_0: 724010043286554838
-      MockFox_1: -708795423565690749
-      MockFox_2: -4523616038035882213
-      MockFox_3: 5545819659924416554
+      MockPlayerGirl_0: -1872895787026713789
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

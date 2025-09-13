@@ -601,8 +601,9 @@ GameObject:
   - component: {fileID: 1336198047}
   - component: {fileID: 1336198046}
   - component: {fileID: 1336198045}
+  - component: {fileID: 1336198048}
   m_Layer: 5
-  m_Name: OpenShop
+  m_Name: OpenShopButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -722,6 +723,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1336198043}
   m_CullTransparentMesh: 1
+--- !u!114 &1336198048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336198043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a13179c613c3e408fab218d66271ba53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+  sceneName: ShopScene
 --- !u!1 &1340349816
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,7 +749,7 @@ GameObject:
   - component: {fileID: 1340349818}
   - component: {fileID: 1340349817}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: StoreCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
