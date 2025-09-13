@@ -7,6 +7,8 @@ public class PetSpawner : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("[PetSpawner] Spawned at: " + transform.position);
+
         var pet = PetSelectionManager.instance?.currentPet;
         if (pet == null || pet.prefab == null)
         {

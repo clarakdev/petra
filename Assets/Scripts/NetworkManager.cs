@@ -50,15 +50,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        // Instantiate player prefab when joined room
-        GameObject playerObj = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
+        // Desired spawn position
+        Vector3 spawnPosition = new Vector3(0f, -4.02f, 0f);
+
+        // Instantiate player at spawnPosition
+        GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
+        playerObj.name = "Player";
+        Debug.Log("[NetworkManager] Player spawned at: " + playerObj.transform.position);
 
         // Instantiate PetSpawner for this player
         GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");
         if (petSpawnerPrefab != null && playerObj != null)
         {
             GameObject petSpawnerObj = Instantiate(petSpawnerPrefab, playerObj.transform.position, Quaternion.identity);
-            petSpawnerObj.transform.SetParent(playerObj.transform); // Optional
+            petSpawnerObj.transform.SetParent(playerObj.transform);
         }
     }
 

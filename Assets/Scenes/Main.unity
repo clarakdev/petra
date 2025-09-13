@@ -1539,6 +1539,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -974607405697330880, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 416247240478394418, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
       propertyPath: m_Constraints
       value: 4
@@ -1643,6 +1647,10 @@ PrefabInstance:
     - target: {fileID: 2439335696005224915, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
       propertyPath: m_Name
       value: PetSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 3235327774858553051, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: sceneViewId
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
