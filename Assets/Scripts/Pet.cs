@@ -4,7 +4,7 @@ using System;
 [Serializable]
 public class Pet
 {
-    public GameObject prefab;
     public string name;
-    public Sprite icon;
+    public Sprite cardImage; // For UI selection
+    public GameObject prefab; // For main scene
 }

@@ -535,22 +535,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   pets:
-  - prefab: {fileID: 4177776412742011131, guid: 576632af0efb51941ab7478359c59496, type: 3}
-    name: Dragon
-    icon: {fileID: 1899302990910953150, guid: d20572c9c4293f746a130eb5fc66e409, type: 3}
-  - prefab: {fileID: 9024819564311239698, guid: 8a7f86a95aff9f247917998c92d4d415, type: 3}
-    name: Axolotl
-    icon: {fileID: -6253924305455870780, guid: 7fa28d274f235ec4cbf5f673a5be10b6, type: 3}
-  - prefab: {fileID: 3766272249804264060, guid: 4ca74bc9afa448649bc3b70c1fc9a6a6, type: 3}
-    name: Rabbit
-    icon: {fileID: 9066517640561864882, guid: ee4764d8ac53f1e4e9a73522a430fd5c, type: 3}
-  - prefab: {fileID: 7948415312554843833, guid: c63722e568021d54a8b89838b71f319c, type: 3}
-    name: Fox
-    icon: {fileID: 5545819659924416554, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
+  - name: Dragon
+    cardImage: {fileID: 1899302990910953150, guid: d20572c9c4293f746a130eb5fc66e409, type: 3}
+    prefab: {fileID: 23185813275973405, guid: fdcd5b7c747424a43acdbce57f539880, type: 3}
+  - name: Green
+    cardImage: {fileID: -6253924305455870780, guid: 7fa28d274f235ec4cbf5f673a5be10b6, type: 3}
+    prefab: {fileID: 2251700885241834489, guid: 96e0f953bf095a34db49087695efbfbf, type: 3}
+  - name: Yellow
+    cardImage: {fileID: 9066517640561864882, guid: ee4764d8ac53f1e4e9a73522a430fd5c, type: 3}
+    prefab: {fileID: 3958605840276955232, guid: 23cd55168e3fb6b48a53fd628d5fb359, type: 3}
+  - name: Fox
+    cardImage: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
+    prefab: {fileID: 1267907977136730660, guid: 2f2d7cde0a3200a4582cdfb13b322d6c, type: 3}
   currentPet:
-    prefab: {fileID: 0}
     name: 
-    icon: {fileID: 0}
+    cardImage: {fileID: 0}
+    prefab: {fileID: 0}
 --- !u!4 &717873941
 Transform:
   m_ObjectHideFlags: 0
