@@ -545,7 +545,7 @@ MonoBehaviour:
     cardImage: {fileID: 9066517640561864882, guid: ee4764d8ac53f1e4e9a73522a430fd5c, type: 3}
     prefab: {fileID: 3958605840276955232, guid: 23cd55168e3fb6b48a53fd628d5fb359, type: 3}
   - name: Fox
-    cardImage: {fileID: 5545819659924416554, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
+    cardImage: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
     prefab: {fileID: 1267907977136730660, guid: 2f2d7cde0a3200a4582cdfb13b322d6c, type: 3}
   currentPet:
     name: 
