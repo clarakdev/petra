@@ -84,16 +84,35 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        // Example: synchronize position and velocity
         if (stream.IsWriting)
         {
             stream.SendNext(rb.position);
             stream.SendNext(rb.linearVelocity);
+            stream.SendNext(spriteRenderer.sprite.name); // Send sprite direction by name
         }
         else
         {
             rb.position = (Vector2)stream.ReceiveNext();
             rb.linearVelocity = (Vector2)stream.ReceiveNext();
+            string spriteName = (string)stream.ReceiveNext();
+
+            // Set sprite based on name
+            if (spriteName == leftSprite.name)
+            {
+                spriteRenderer.sprite = leftSprite;
+            }
+            else if (spriteName == rightSprite.name)
+            {
+                spriteRenderer.sprite = rightSprite;
+            }
+            else if (spriteName == backSprite.name)
+            {
+                spriteRenderer.sprite = backSprite;
+            }
+            else
+            {
+                spriteRenderer.sprite = frontSprite;
+            }
         }
     }
 }
