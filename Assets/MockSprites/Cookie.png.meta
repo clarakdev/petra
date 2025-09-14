@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 8570c189a28e22145ac611fc417acd64
+guid: ecfc905a2597f014695bcc25207a2010
 AssetOrigin:
   serializedVersion: 1
   productId: 113523
   packageName: Free Pixel Food
   packageVersion: 1.0
-  assetPath: Assets/MockSprites/MelonWater.png
+  assetPath: Assets/FreePixelFood/Sprite/Food/Cookie.png
   uploadId: 238973
 TextureImporter:
   internalIDToNameTable: []

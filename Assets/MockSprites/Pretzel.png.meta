@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 8570c189a28e22145ac611fc417acd64
+guid: 5f4933d084b413e42a40a4d18ccb14bd
 AssetOrigin:
   serializedVersion: 1
   productId: 113523
   packageName: Free Pixel Food
   packageVersion: 1.0
-  assetPath: Assets/MockSprites/MelonWater.png
+  assetPath: Assets/FreePixelFood/Sprite/Food/Pretzel.png
   uploadId: 238973
 TextureImporter:
   internalIDToNameTable: []

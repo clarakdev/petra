@@ -1,12 +1,13 @@
 fileFormatVersion: 2
-guid: 8570c189a28e22145ac611fc417acd64
+guid: 269cf6447493b8c42941e5f49a44aff8
 AssetOrigin:
   serializedVersion: 1
-  productId: 113523
-  packageName: Free Pixel Food
+  productId: 312684
+  packageName: "RPG Essentials \u2013 Icon Free Pack (25 items)"
   packageVersion: 1.0
-  assetPath: Assets/MockSprites/MelonWater.png
-  uploadId: 238973
+  assetPath: Assets/Pegasus Studios/Free General RPG Icons/Resources/Icons/Consumables/health
+    potion.png
+  uploadId: 737142
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -37,7 +38,7 @@ TextureImporter:
   generateCubemap: 6
   cubemapConvolution: 0
   seamlessCubemap: 0
-  textureFormat: -3
+  textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
@@ -55,7 +56,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -70,9 +71,9 @@ TextureImporter:
   compressionQualitySet: 0
   textureFormatSet: 0
   ignorePngGamma: 0
-  applyGammaDecoding: 1
+  applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
@@ -92,7 +93,20 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0

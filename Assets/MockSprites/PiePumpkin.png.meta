@@ -5,7 +5,7 @@ AssetOrigin:
   productId: 113523
   packageName: Free Pixel Food
   packageVersion: 1.0
-  assetPath: Assets/FreePixelFood/Sprite/Food/PiePumpkin.png
+  assetPath: Assets/MockSprites/PiePumpkin.png
   uploadId: 238973
 TextureImporter:
   internalIDToNameTable: []

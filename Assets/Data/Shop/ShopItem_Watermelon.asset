@@ -16,3 +16,4 @@ MonoBehaviour:
   Name: Watermelon
   Description: Juicy and refreshing, perfect for hot days
   Cost: 3500
+  Icon: {fileID: 21300000, guid: 8570c189a28e22145ac611fc417acd64, type: 3}
