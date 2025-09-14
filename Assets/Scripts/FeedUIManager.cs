@@ -8,11 +8,35 @@ public class FeedUIManager : MonoBehaviour
     public PanelProgressBar panelProgress;
     public RectTransform petRect;
 
-    public bool CanFeed() => panelProgress && !panelProgress.IsFull;
+    public bool CanFeed() => panelProgress != null && !panelProgress.IsFull;
+
+    void Start()
+    {
+        // Auto-bind petRect & sprite if not wired in the Inspector
+        if (petRect == null)
+        {
+            var petImage = FindFirstObjectByType<PetFeedingImage>();
+            if (petImage != null)
+            {
+                petRect = petImage.GetComponent<RectTransform>();
+
+                var mgr = PetSelectionManager.instance;
+                if (mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
+                    petImage.SetPet(mgr.currentPet.cardImage);
+            }
+        }
+        else
+        {
+            var petImage = petRect.GetComponent<PetFeedingImage>();
+            var mgr = PetSelectionManager.instance;
+            if (petImage != null && mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
+                petImage.SetPet(mgr.currentPet.cardImage);
+        }
+    }
 
     public void Feed(DraggableFood food)
     {
-        if (!CanFeed()) return;
+        if (!CanFeed() || food == null) return;
         StartCoroutine(EatRoutine(food));
     }
 
@@ -42,7 +66,6 @@ public class FeedUIManager : MonoBehaviour
         }
 
         yield return StartCoroutine(BiteBurst(ghostImg, ghostRT));
-
         Destroy(ghost);
         food.gameObject.SetActive(false);
 
