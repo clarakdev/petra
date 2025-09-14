@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class FeedUIManager : MonoBehaviour
 {
     public Canvas canvas;
+<<<<<<< Updated upstream
     public PanelProgressBar panelProgress;
     public RectTransform petRect;
 
@@ -13,6 +14,32 @@ public class FeedUIManager : MonoBehaviour
     void Start()
     {
         // Auto-bind petRect & sprite if not wired in the Inspector
+=======
+    public PanelProgressBar hungerBar;
+    public RectTransform petRect;     
+
+    [Header("FX (optional)")]
+    public PetEmotionFX petFX;
+
+    [Header("Tuning")]
+    public float hungerDecayPerMinute = 0.5f;  
+    public float fullPauseMinutes     = 20f;   
+
+    float _current;               
+    bool  _isConsuming = false;   
+    bool  _animating   = false;   
+    float _decayResumeTime = -1f;
+
+    void Awake()
+    {
+        if (canvas == null) canvas = GetComponentInParent<Canvas>();
+        _current = hungerBar ? hungerBar.value : 0f;
+        if (hungerBar) hungerBar.SetValue(_current);
+    }
+
+    void Start()
+    {
+>>>>>>> Stashed changes
         if (petRect == null)
         {
             var petImage = FindFirstObjectByType<PetFeedingImage>();

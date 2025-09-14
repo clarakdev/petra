@@ -168,8 +168,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FeedUIManager
   canvas: {fileID: 1766164395}
-  panelProgress: {fileID: 375030277}
+  hungerBar: {fileID: 375030277}
   petRect: {fileID: 1112481295}
+  petFX: {fileID: 0}
+  hungerDecayPerMinute: 2
+  fullPauseMinutes: 20
 --- !u!1 &375030274
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,6 +184,7 @@ GameObject:
   - component: {fileID: 375030275}
   - component: {fileID: 375030276}
   - component: {fileID: 375030277}
+  - component: {fileID: 375030278}
   m_Layer: 5
   m_Name: ProgressBarPanel
   m_TagString: Untagged
@@ -279,6 +283,19 @@ MonoBehaviour:
   padding: 6
   fillColorNormal: {r: 0.67058825, g: 0.46666667, b: 0.85882354, a: 1}
   fillColorFull: {r: 0.6696033, g: 0.46569067, b: 0.8584906, a: 1}
+  labelDecimals: 1
+--- !u!114 &375030278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375030274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be3cccaffac4847c294f9f2f958bf4c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
 --- !u!1 &479336125
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,6 +327,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 375030275}
+  - {fileID: 1293150678}
   m_Father: {fileID: 1766164396}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -964,7 +982,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &1044760175
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -985,6 +1003,7 @@ GameObject:
   - component: {fileID: 1112481297}
   - component: {fileID: 1112481296}
   - component: {fileID: 1112481298}
+  - component: {fileID: 1112481299}
   m_Layer: 5
   m_Name: PetImage
   m_TagString: Untagged
@@ -1062,6 +1081,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PetDropZone
   manager: {fileID: 198775486}
+--- !u!114 &1112481299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112481294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa4fd785178c34000ba83a1e34d4be31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetImage
+  petImage: {fileID: 0}
+  defaultPet: {fileID: 0}
 --- !u!1 &1293150677
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,6 +1107,7 @@ GameObject:
   - component: {fileID: 1293150681}
   - component: {fileID: 1293150680}
   - component: {fileID: 1293150679}
+  - component: {fileID: 1293150682}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -1094,7 +1128,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 717244001}
-  m_Father: {fileID: 1766164396}
+  m_Father: {fileID: 479336126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1144,7 +1178,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1293150680}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1293150682}
+        m_TargetAssemblyTypeName: SceneSwapper, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: PetCareScene
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1293150680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1183,6 +1229,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293150677}
   m_CullTransparentMesh: 1
+--- !u!114 &1293150682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293150677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
 --- !u!1 &1403758878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1435,6 +1493,7 @@ GameObject:
   - component: {fileID: 1766164395}
   - component: {fileID: 1766164394}
   - component: {fileID: 1766164393}
+  - component: {fileID: 1766164397}
   m_Layer: 5
   m_Name: FeedCanvas
   m_TagString: Untagged
@@ -1518,7 +1577,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 479336126}
-  - {fileID: 1293150678}
   - {fileID: 2012595782}
   - {fileID: 1042488102}
   - {fileID: 198775485}
@@ -1529,6 +1587,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1766164397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766164392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65324cb9bbec417d8a7ae68f0c4ad2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetStatsBootstrap
 --- !u!1 &2012595781
 GameObject:
   m_ObjectHideFlags: 0
@@ -1564,7 +1634,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 900, y: 520}
+  m_AnchoredPosition: {x: 850, y: 520}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2012595783
