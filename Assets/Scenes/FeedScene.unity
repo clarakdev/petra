@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FeedUIManager
   canvas: {fileID: 1766164395}
-  panelProgress: {fileID: 375030277}
+  hungerBar: {fileID: 375030277}
   petRect: {fileID: 1112481295}
   petFX: {fileID: 0}
   hungerDecayPerMinute: 2
@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 375030275}
   - component: {fileID: 375030276}
   - component: {fileID: 375030277}
+  - component: {fileID: 375030278}
   m_Layer: 5
   m_Name: ProgressBarPanel
   m_TagString: Untagged
@@ -981,7 +982,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!222 &1044760175
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1093,6 +1094,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PetFeedingImage
   petImage: {fileID: 1112481296}
+  m_Script: {fileID: 11500000, guid: aa4fd785178c34000ba83a1e34d4be31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetImage
+  petImage: {fileID: 0}
   defaultPet: {fileID: 0}
 --- !u!1 &1293150677
 GameObject:
@@ -1492,6 +1497,7 @@ GameObject:
   - component: {fileID: 1766164395}
   - component: {fileID: 1766164394}
   - component: {fileID: 1766164393}
+  - component: {fileID: 1766164397}
   m_Layer: 5
   m_Name: FeedCanvas
   m_TagString: Untagged
@@ -1585,6 +1591,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1766164397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766164392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65324cb9bbec417d8a7ae68f0c4ad2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetStatsBootstrap
 --- !u!1 &2012595781
 GameObject:
   m_ObjectHideFlags: 0

@@ -468,8 +468,6 @@ GameObject:
   - component: {fileID: 1014822654}
   m_Layer: 5
   m_Name: CleanProgressBar
-  m_Layer: 5
-  m_Name: ProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -566,10 +564,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be3cccaffac4847c294f9f2f958bf4c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
-  value: 30
-  padding: 6
-  fillColorNormal: {r: 0.69, g: 0.53, b: 1, a: 1}
-  fillColorFull: {r: 0.69, g: 0.53, b: 1, a: 1}
 --- !u!1 &1114671592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,7 +1091,6 @@ MonoBehaviour:
   m_Sprite: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
-  m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1166,7 +1159,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PetImage
   petImage: {fileID: 0}
   defaultPet: {fileID: 0}
-  manager: {fileID: 0}
 --- !u!1 &1492708541
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,8 +1213,6 @@ MonoBehaviour:
   petFX: {fileID: 1489678237}
   cleanDecayPerMinute: 2
   fullPauseMinutes: 20
-  panelProgress: {fileID: 1014822653}
-  petRect: {fileID: 1489678233}
 --- !u!1 &1513651880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1449,16 +1439,12 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: SceneSwapper, Assembly-CSharp
         m_MethodName: LoadScene
         m_Mode: 5
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: PetCareScene
-          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1598534977
@@ -1511,10 +1497,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
-  m_Script: {fileID: 11500000, guid: a13179c613c3e408fab218d66271ba53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
-  sceneName: PetCareScene
 --- !u!1 &1664483482
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,7 +1555,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: 40%
-  m_text: 30%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
