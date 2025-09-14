@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class PetFollower : MonoBehaviour
+public class PetFollower : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] public float moveSpeed = 5f;
     public float followDistance = 1.5f; // Minimum distance to maintain from the player
@@ -27,31 +28,37 @@ public class PetFollower : MonoBehaviour
     }
 
     // Update is called once per frame
+
     void Update()
     {
-        if (target)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
-            Vector3 offset = target.position - transform.position;
-            float distance = offset.magnitude;
+            if (target)
+            {
+                Vector3 offset = target.position - transform.position;
+                float distance = offset.magnitude;
 
-            // Only move if farther than followDistance
-            if (distance > followDistance)
-            {
-                moveDirection = offset.normalized;
-                UpdateSpriteDirection(moveDirection);
-            }
-            else
-            {
-                moveDirection = Vector2.zero; // Stop moving when close enough
+                if (distance > followDistance)
+                {
+                    moveDirection = offset.normalized;
+                    UpdateSpriteDirection(moveDirection);
+                }
+                else
+                {
+                    moveDirection = Vector2.zero;
+                }
             }
         }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        if (target)
+        if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
-            rb.linearVelocity = moveDirection * moveSpeed;
+            if (target)
+            {
+                rb.linearVelocity = moveDirection * moveSpeed;
+            }
         }
     }
 
@@ -72,6 +79,21 @@ public class PetFollower : MonoBehaviour
                 spriteRenderer.sprite = backSprite;
             else if (direction.y < 0)
                 spriteRenderer.sprite = frontSprite;
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        // Example: synchronize position and velocity
+        if (stream.IsWriting)
+        {
+            stream.SendNext(rb.position);
+            stream.SendNext(rb.linearVelocity);
+        }
+        else
+        {
+            rb.position = (Vector2)stream.ReceiveNext();
+            rb.linearVelocity = (Vector2)stream.ReceiveNext();
         }
     }
 }
