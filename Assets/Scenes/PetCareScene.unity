@@ -1469,6 +1469,7 @@ GameObject:
   - component: {fileID: 1566027410}
   - component: {fileID: 1566027412}
   - component: {fileID: 1566027411}
+  - component: {fileID: 1566027413}
   m_Layer: 5
   m_Name: PetImage
   m_TagString: Untagged
@@ -1533,6 +1534,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1566027409}
   m_CullTransparentMesh: 1
+--- !u!114 &1566027413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566027409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa4fd785178c34000ba83a1e34d4be31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetImage
+  petImage: {fileID: 0}
+  defaultPet: {fileID: 0}
 --- !u!1 &1568050159
 GameObject:
   m_ObjectHideFlags: 0
@@ -1546,6 +1561,7 @@ GameObject:
   - component: {fileID: 1568050162}
   - component: {fileID: 1568050161}
   - component: {fileID: 1568050164}
+  - component: {fileID: 1568050165}
   m_Layer: 5
   m_Name: CleanButton
   m_TagString: Untagged
@@ -1617,16 +1633,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1568050164}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
+      - m_Target: {fileID: 1568050165}
+        m_TargetAssemblyTypeName: SceneSwapper, Assembly-CSharp
         m_MethodName: LoadScene
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: CleanScene
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1568050162
@@ -1680,6 +1696,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
   sceneName: CleanScene
+--- !u!114 &1568050165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1568050159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
 --- !u!1 &1660121679
 GameObject:
   m_ObjectHideFlags: 0

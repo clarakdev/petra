@@ -7,24 +7,49 @@ public class FeedUIManager : MonoBehaviour
     [Header("UI Refs")]
     public Canvas canvas;
     public PanelProgressBar hungerBar;
-    public RectTransform petRect;
+    public RectTransform petRect;      // auto-bound in Start if left empty
 
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
 
     [Header("Tuning")]
-    public float hungerDecayPerMinute = 0.5f;   // raise to 6.0 while testing
-    public float fullPauseMinutes = 20f;        // stay full this long once 100% is reached
+    public float hungerDecayPerMinute = 0.5f;  // try 6.0 while testing
+    public float fullPauseMinutes     = 20f;   // pause decay after hitting 100%
 
     float _current;               // 0..100
     bool  _isConsuming = false;   // blocks a second feed while animating
-    bool  _animating = false;     // blocks Update while AnimateTo runs
+    bool  _animating   = false;   // blocks Update while AnimateTo runs
     float _decayResumeTime = -1f;
 
     void Awake()
     {
+        if (canvas == null) canvas = GetComponentInParent<Canvas>();
         _current = hungerBar ? hungerBar.value : 0f;
         if (hungerBar) hungerBar.SetValue(_current);
+    }
+
+    void Start()
+    {
+        // Auto-bind the pet image/rect and make sure the selected pet sprite is shown.
+        if (petRect == null)
+        {
+            var petImg = FindFirstObjectByType<PetImage>();
+            if (petImg != null)
+            {
+                petRect = petImg.RectTransform;
+
+                var mgr = PetSelectionManager.instance;
+                if (mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
+                    petImg.SetPet(mgr.currentPet.cardImage);
+            }
+        }
+        else
+        {
+            var petImg = petRect.GetComponent<PetImage>();
+            var mgr = PetSelectionManager.instance;
+            if (petImg != null && mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
+                petImg.SetPet(mgr.currentPet.cardImage);
+        }
     }
 
     void Update()
@@ -42,12 +67,12 @@ public class FeedUIManager : MonoBehaviour
 
     public bool IsFull() => _current >= 99.999f;
 
-    // 👉 Now also blocks while consuming the previous item
+    // Also blocks while the last item is being consumed
     public bool CanFeedNow() => !_isConsuming && !IsFull();
 
     public void Feed(DraggableFood food)
     {
-        if (!food || !canvas || !hungerBar) return;
+        if (!food || !canvas || !hungerBar || petRect == null) return;
         if (!CanFeedNow()) return;
         StartCoroutine(EatRoutine(food));
     }
@@ -57,15 +82,17 @@ public class FeedUIManager : MonoBehaviour
         _isConsuming = true;
 
         var foodRT = food.GetComponent<RectTransform>();
+        if (foodRT == null) { _isConsuming = false; yield break; }
 
         // ghost that flies to the pet
         var ghost = new GameObject("FoodGhost", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
         var gRT  = ghost.GetComponent<RectTransform>();
         var gImg = ghost.GetComponent<Image>();
         gRT.SetParent(canvas.transform, false);
-        gRT.position = foodRT.position;
+        gRT.SetAsLastSibling();
+        gRT.position  = foodRT.position;
         gRT.sizeDelta = foodRT.sizeDelta;
-        gImg.sprite = food.image.sprite;
+        gImg.sprite = (food.image != null) ? food.image.sprite : null;
         gImg.preserveAspect = true;
 
         float t = 0f, dur = 0.35f;
@@ -92,7 +119,7 @@ public class FeedUIManager : MonoBehaviour
         yield return StartCoroutine(hungerBar.AnimateTo(_current, 0.25f));
         _animating = false;
 
-        // reached full → start pause window & hard block feeding until below 100
+        // reached full → start pause window & block further feeding until below 100
         if (IsFull())
         {
             _current = 100f;
@@ -107,7 +134,7 @@ public class FeedUIManager : MonoBehaviour
 
     IEnumerator BiteBurst(Image srcImg, RectTransform at)
     {
-        int n = 5;
+        const int n = 5;
         for (int i = 0; i < n; i++)
         {
             var bit = new GameObject("bite", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
@@ -115,9 +142,10 @@ public class FeedUIManager : MonoBehaviour
             var img = bit.GetComponent<Image>();
             var cg = bit.GetComponent<CanvasGroup>();
             rt.SetParent(canvas.transform, false);
-            rt.position = at.position + (Vector3)Random.insideUnitCircle * 10f;
+            rt.SetAsLastSibling();
+            rt.position  = at.position + (Vector3)Random.insideUnitCircle * 10f;
             rt.sizeDelta = at.sizeDelta * 0.2f;
-            img.sprite = srcImg.sprite;
+            img.sprite   = srcImg ? srcImg.sprite : null;
             img.preserveAspect = true;
             StartCoroutine(FallAndFade(rt, cg));
         }
@@ -134,7 +162,7 @@ public class FeedUIManager : MonoBehaviour
             float k = t / dur;
             rt.position   = Vector3.Lerp(a, b, k);
             rt.localScale = Vector3.one * (1f - 0.7f * k);
-            cg.alpha      = 1f - k;
+            if (cg) cg.alpha = 1f - k;
             yield return null;
         }
         Destroy(rt.gameObject);

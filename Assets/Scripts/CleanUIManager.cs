@@ -25,17 +25,18 @@ public class CleanUIManager : MonoBehaviour
     {
         _current = cleanBar ? cleanBar.value : 0f;
         if (cleanBar) cleanBar.SetValue(_current);
+        if (!canvas) canvas = GetComponentInParent<Canvas>();
     }
 
-    // NEW: pick up the selected pet sprite and auto-bind petRect if needed
+    // pick up the selected pet sprite and auto-bind petRect if needed
     void Start()
     {
         if (petRect == null)
         {
-            var petImage = FindFirstObjectByType<PetFeedingImage>(); // works in Clean scene too
+            var petImage = FindFirstObjectByType<PetImage>(); // <— renamed
             if (petImage != null)
             {
-                petRect = petImage.GetComponent<RectTransform>();
+                petRect = petImage.RectTransform;
 
                 var mgr = PetSelectionManager.instance;
                 if (mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
@@ -44,7 +45,7 @@ public class CleanUIManager : MonoBehaviour
         }
         else
         {
-            var petImage = petRect.GetComponent<PetFeedingImage>();
+            var petImage = petRect.GetComponent<PetImage>(); // <— renamed
             var mgr = PetSelectionManager.instance;
             if (petImage != null && mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
                 petImage.SetPet(mgr.currentPet.cardImage);
@@ -69,7 +70,7 @@ public class CleanUIManager : MonoBehaviour
 
     public void Clean(DraggableCleanItem item)
     {
-        if (!item || !canvas || !cleanBar) return;
+        if (!item || !canvas || !cleanBar || petRect == null) return;
         if (!CanCleanNow()) return;
         StartCoroutine(CleanRoutine(item));
     }

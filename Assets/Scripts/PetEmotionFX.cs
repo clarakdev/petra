@@ -11,23 +11,22 @@ public class PetEmotionFX : MonoBehaviour
 
     [Header("Hearts (no glow)")]
     public int hearts = 10;
-    public Vector2 heartSizeRange = new Vector2(48f, 72f);     
+    public Vector2 heartSizeRange = new Vector2(48f, 72f);
     public Color heartColor = new Color(1f, 0.5f, 0.7f, 0.95f);
-    public Vector2 heartRise = new Vector2(30f, 130f);        
-    public Vector2 heartDur  = new Vector2(0.6f, 1.1f);        
+    public Vector2 heartRise = new Vector2(30f, 130f);
+    public Vector2 heartDur  = new Vector2(0.6f, 1.1f);
 
     [Header("Bounce")]
     public bool playBounce = true;
-    public float bounceScale = 1.10f;     
+    public float bounceScale = 1.10f;
     public float bounceUp = 0.22f;
     public float bounceDown = 0.22f;
 
     [Header("Optional Happy Pose")]
-    public Sprite happySprite;            
+    public Sprite happySprite;            // leave null if you don’t have one
     public bool revertToDefault = true;
     public float happySeconds = 1.0f;
 
-    Sprite _defaultSprite;
     RectTransform _rt;
 
     void Awake()
@@ -35,10 +34,8 @@ public class PetEmotionFX : MonoBehaviour
         if (!petImage) petImage = GetComponent<Image>();
         if (!canvas)   canvas   = GetComponentInParent<Canvas>();
         _rt = GetComponent<RectTransform>();
-        if (petImage) _defaultSprite = petImage.sprite;
     }
 
-    /// <summary>Call this to play the happy effect (bounce + big hearts).</summary>
     public void PlayHappy()
     {
         StopAllCoroutines();
@@ -47,6 +44,9 @@ public class PetEmotionFX : MonoBehaviour
 
     IEnumerator HappyRoutine()
     {
+        // Capture the sprite *now* so we can revert to whatever is currently shown.
+        Sprite revertSprite = petImage ? petImage.sprite : null;
+
         if (happySprite && petImage) petImage.sprite = happySprite;
 
         if (playBounce) StartCoroutine(Bounce());
@@ -54,8 +54,8 @@ public class PetEmotionFX : MonoBehaviour
 
         yield return new WaitForSeconds(happySeconds * 0.5f);
 
-        if (revertToDefault && _defaultSprite && petImage)
-            petImage.sprite = _defaultSprite;
+        if (revertToDefault && petImage)
+            petImage.sprite = revertSprite;
     }
 
     IEnumerator Bounce()
@@ -100,7 +100,7 @@ public class PetEmotionFX : MonoBehaviour
 
             tmp.text = "♥";
             tmp.alignment = TextAlignmentOptions.Center;
-            tmp.fontSize = Random.Range(heartSizeRange.x, heartSizeRange.y); // BIG hearts
+            tmp.fontSize = Random.Range(heartSizeRange.x, heartSizeRange.y);
             tmp.color = heartColor;
             tmp.raycastTarget = false;
 
@@ -135,4 +135,3 @@ public class PetEmotionFX : MonoBehaviour
         Destroy(rt.gameObject);
     }
 }
-

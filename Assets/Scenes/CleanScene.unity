@@ -1041,6 +1041,7 @@ GameObject:
   - component: {fileID: 1489678234}
   - component: {fileID: 1489678236}
   - component: {fileID: 1489678237}
+  - component: {fileID: 1489678238}
   m_Layer: 5
   m_Name: PetImage
   m_TagString: Untagged
@@ -1089,7 +1090,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -1144,6 +1145,20 @@ MonoBehaviour:
   happySprite: {fileID: 0}
   revertToDefault: 1
   happySeconds: 1.2
+--- !u!114 &1489678238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489678232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa4fd785178c34000ba83a1e34d4be31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetImage
+  petImage: {fileID: 0}
+  defaultPet: {fileID: 0}
 --- !u!1 &1492708541
 GameObject:
   m_ObjectHideFlags: 0
