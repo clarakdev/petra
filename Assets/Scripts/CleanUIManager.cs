@@ -27,6 +27,30 @@ public class CleanUIManager : MonoBehaviour
         if (cleanBar) cleanBar.SetValue(_current);
     }
 
+    // NEW: pick up the selected pet sprite and auto-bind petRect if needed
+    void Start()
+    {
+        if (petRect == null)
+        {
+            var petImage = FindFirstObjectByType<PetFeedingImage>(); // works in Clean scene too
+            if (petImage != null)
+            {
+                petRect = petImage.GetComponent<RectTransform>();
+
+                var mgr = PetSelectionManager.instance;
+                if (mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
+                    petImage.SetPet(mgr.currentPet.cardImage);
+            }
+        }
+        else
+        {
+            var petImage = petRect.GetComponent<PetFeedingImage>();
+            var mgr = PetSelectionManager.instance;
+            if (petImage != null && mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
+                petImage.SetPet(mgr.currentPet.cardImage);
+        }
+    }
+
     void Update()
     {
         if (_animating || cleanBar == null) return;
@@ -104,16 +128,16 @@ public class CleanUIManager : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             var bubble = new GameObject("bubble", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
-            var rt = bubble.GetComponent<RectTransform>();
+            var rt  = bubble.GetComponent<RectTransform>();
             var img = bubble.GetComponent<Image>();
-            var cg = bubble.GetComponent<CanvasGroup>();
+            var cg  = bubble.GetComponent<CanvasGroup>();
 
             rt.SetParent(canvas.transform, false);
-            rt.position = center + (Vector3)Random.insideUnitCircle * 10f;
+            rt.position  = center + (Vector3)Random.insideUnitCircle * 10f;
             rt.sizeDelta = size * Random.Range(0.7f, 1.2f);
-            img.sprite = Resources.GetBuiltinResource<Sprite>("UISprite.psd");
-            img.type = Image.Type.Sliced;
-            img.color = new Color(1f, 1f, 1f, 0.75f);
+            img.sprite   = Resources.GetBuiltinResource<Sprite>("UISprite.psd");
+            img.type     = Image.Type.Sliced;
+            img.color    = new Color(1f, 1f, 1f, 0.75f);
             StartCoroutine(RiseFade(rt, cg));
         }
         yield return new WaitForSecondsRealtime(0.25f);
