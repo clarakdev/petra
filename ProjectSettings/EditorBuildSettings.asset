@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FeedScene.unity
     guid: 61a6226780cde43aaa94fe0ef8b47b4c
+  - enabled: 1
+    path: Assets/Scenes/SocialRoom.unity
+    guid: 501db4243f3c1504fb0298e42b3f4ad9
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
