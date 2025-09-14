@@ -886,6 +886,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5463675559725604506, guid: cc32481b289147f408e96244ff8ba100, type: 3}
+      propertyPath: maxPlayers
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5542058838776603689, guid: cc32481b289147f408e96244ff8ba100, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1084.3597
