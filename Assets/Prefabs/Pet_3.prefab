@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1232028115594826984}
   - component: {fileID: 5467655365976528139}
   - component: {fileID: 8850139766647586076}
+  - component: {fileID: 2511489391176337227}
   m_Layer: 0
   m_Name: Pet_3
   m_TagString: Untagged
@@ -137,3 +138,15 @@ MonoBehaviour:
   backSprite: {fileID: 8395874122669443333, guid: 4216423026b86fb4fa8e336fce8c467b, type: 3}
   leftSprite: {fileID: 3208829287240848166, guid: ab7c13b326c52be4793fa0dba8f51e1f, type: 3}
   rightSprite: {fileID: -3029960566648045645, guid: 0b8127d932b08af41931fa84406b144c, type: 3}
+--- !u!114 &2511489391176337227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3958605840276955232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e3629cdf7e240828d1ecb8ec8742fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetMarker

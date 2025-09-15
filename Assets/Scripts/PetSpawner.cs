@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class PetSpawner : MonoBehaviour
 {
     [SerializeField] private Canvas uiCanvas;

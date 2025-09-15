@@ -1,77 +1,47 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(SpriteRenderer))]
 public class PetFollower : MonoBehaviour
 {
     [SerializeField] public float moveSpeed = 5f;
-    public float followDistance = 1.5f; // Minimum distance to maintain from the player
-    Rigidbody2D rb;
-    Transform target;
-    Vector2 moveDirection;
-    SpriteRenderer spriteRenderer;
+    public float followDistance = 1.5f;
+    Rigidbody2D rb; Transform target; Vector2 moveDir; SpriteRenderer sr;
 
     [Header("Directional Sprites")]
-    [SerializeField] private Sprite frontSprite;
-    [SerializeField] private Sprite backSprite;
-    [SerializeField] private Sprite leftSprite;
-    [SerializeField] private Sprite rightSprite;
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+    [SerializeField] private Sprite frontSprite, backSprite, leftSprite, rightSprite;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        target = GameObject.Find("Player").transform;
-    }
+    void Awake(){ rb = GetComponent<Rigidbody2D>(); sr = GetComponent<SpriteRenderer>(); }
+    void Start(){ TryBindTarget(); }
 
-    // Update is called once per frame
     void Update()
     {
-        if (target)
-        {
-            Vector3 offset = target.position - transform.position;
-            float distance = offset.magnitude;
+        if (!target) TryBindTarget();
+        if (!target) return;
 
-            // Only move if farther than followDistance
-            if (distance > followDistance)
-            {
-                moveDirection = offset.normalized;
-                UpdateSpriteDirection(moveDirection);
-            }
-            else
-            {
-                moveDirection = Vector2.zero; // Stop moving when close enough
-            }
-        }
+        Vector3 off = target.position - transform.position;
+        float d = off.magnitude;
+        if (d > followDistance){ moveDir = ((Vector2)off).normalized; UpdateFacing(moveDir); }
+        else moveDir = Vector2.zero;
     }
 
-    private void FixedUpdate()
+    void FixedUpdate(){ if (target) rb.linearVelocity = moveDir * moveSpeed; }
+
+    void UpdateFacing(Vector2 dir)
     {
-        if (target)
-        {
-            rb.linearVelocity = moveDirection * moveSpeed;
-        }
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y)) sr.sprite = (dir.x < 0) ? leftSprite : rightSprite;
+        else sr.sprite = (dir.y > 0) ? backSprite : frontSprite;
     }
 
-    // Change sprite based on movement direction
-    private void UpdateSpriteDirection(Vector2 direction)
+    public void SetTarget(Transform t){ target = t; }
+
+    public void TryBindTarget()
     {
-        // Check if horizontal movement is greater than vertical movement
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-        {
-            if (direction.x < 0)
-                spriteRenderer.sprite = leftSprite;
-            else if (direction.x > 0)
-                spriteRenderer.sprite = rightSprite;
-        }
-        else
-        {
-            if (direction.y > 0)
-                spriteRenderer.sprite = backSprite;
-            else if (direction.y < 0)
-                spriteRenderer.sprite = frontSprite;
-        }
+        if (target) return;
+        var tagged = GameObject.FindWithTag("Player"); if (tagged){ target = tagged.transform; return; }
+        var pc = Object.FindObjectOfType<PlayerController>(); if (pc){ target = pc.transform; return; }
+        var byName = GameObject.Find("Player"); if (byName) target = byName.transform;
     }
+
+    void OnDisable(){ if (rb) rb.linearVelocity = Vector2.zero; }
+    void OnDrawGizmosSelected(){ Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(transform.position, followDistance); }
 }
