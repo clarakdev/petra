@@ -29,8 +29,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SocialRoom.unity
     guid: 501db4243f3c1504fb0298e42b3f4ad9
-    path: Assets/Scenes/Main.unity
-    guid: e07a5b6fb07d45e479972d5fac1892d3
   - enabled: 1
     path: Assets/Scenes/StoreScene.unity
     guid: 7af4a087748844c27baab2cdd4c484d2
