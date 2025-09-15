@@ -14,8 +14,12 @@ public class ShopNavigator : MonoBehaviour
     [SerializeField] private TMP_Text infoTMP;  // drag child "Text (TMP)" here
     [SerializeField] private Text     infoUGUI; // legacy Text
 
+<<<<<<< Updated upstream
     [SerializeField] private string openShopSceneName = "StoreScene";
     [SerializeField] private string shopSceneName = "ShopScene";
+=======
+    [Header("Optional")]
+>>>>>>> Stashed changes
     [SerializeField] private bool dontDestroyOnLoad = true;
     void Awake()
     {
@@ -24,8 +28,11 @@ public class ShopNavigator : MonoBehaviour
         if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
     }
 
+<<<<<<< Updated upstream
     public void GoToShop() => LoadByName(shopSceneName);
     public void GoToOpenShop() => LoadByName(openShopSceneName);
+=======
+>>>>>>> Stashed changes
     private static ShopNavigator _instance;
     private const string CameFromShopKey = "CameFromShop";
     private static bool cameFromShop; // in-memory (works when navigator persists)
@@ -41,6 +48,41 @@ public class ShopNavigator : MonoBehaviour
     }
 
     private void Start()
+<<<<<<< Updated upstream
+=======
+    {
+        if (SceneManager.GetActiveScene().name != storeSceneName) return;
+
+        // Fallback to PlayerPrefs (works even if navigator didn't persist)
+        if (PlayerPrefs.GetInt(CameFromShopKey, 0) == 1)
+        {
+            cameFromShop = true;
+            PlayerPrefs.SetInt(CameFromShopKey, 0);
+            PlayerPrefs.Save();
+        }
+
+        string msg = cameFromShop ? "Thank you! Come again soon." : "Welcome! What would you like to buy?";
+        if      (infoTMP  != null) infoTMP.text  = msg;
+        else if (infoUGUI != null) infoUGUI.text = msg;
+
+        cameFromShop = false; // reset in-memory flag
+    }
+
+    public void OpenShop()
+    {
+        LoadByName(shopSceneName);
+    }
+
+    public void ReturnToStore()
+    {
+        cameFromShop = true; // in-memory
+        PlayerPrefs.SetInt(CameFromShopKey, 1); // persistent fallback
+        PlayerPrefs.Save();
+        LoadByName(storeSceneName);
+    }
+
+    private static void LoadByName(string sceneName)
+>>>>>>> Stashed changes
     {
         if (SceneManager.GetActiveScene().name != storeSceneName) return;
 
