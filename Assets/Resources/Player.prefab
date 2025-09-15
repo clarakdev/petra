@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 416247240478394418}
   - component: {fileID: 7478861960228725581}
   - component: {fileID: 5520640840320967201}
-  - component: {fileID: 6658127631800771121}
   - component: {fileID: -974607405697330880}
   m_Layer: 0
   m_Name: Player
@@ -257,7 +256,6 @@ MonoBehaviour:
   backSprite: {fileID: 2924904497570240377, guid: ab6b7b10f31da2b4d8b5f2d96732f36d, type: 3}
   leftSprite: {fileID: -1400324742880364754, guid: bb735f0065aeb054892a27246f48e7d0, type: 3}
   rightSprite: {fileID: -9159370002540710823, guid: ca09e8963724f0d4e97d3b1d7607ce10, type: 3}
---- !u!114 &6658127631800771121
 --- !u!114 &-974607405697330880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,9 +265,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6250568013566111799}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 444d10acef9dd4b4d8e2afcef510eaf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMarker
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView

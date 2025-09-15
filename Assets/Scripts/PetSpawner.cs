@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class PetSpawner : MonoBehaviour
@@ -6,6 +7,8 @@ public class PetSpawner : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("[PetSpawner] Spawned at: " + transform.position);
+
         var pet = PetSelectionManager.instance?.currentPet;
         if (pet == null || pet.prefab == null)
         {
@@ -16,6 +19,13 @@ public class PetSpawner : MonoBehaviour
         var player = GameObject.Find("Player");
         Vector3 spawnPosition = player != null ? player.transform.position + new Vector3(1, 0, 0) : Vector3.zero;
 
-        Instantiate(pet.prefab, spawnPosition, Quaternion.identity);
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        {
+             PhotonNetwork.Instantiate(pet.prefab.name, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(pet.prefab, spawnPosition, Quaternion.identity);
+        }
     }
 }

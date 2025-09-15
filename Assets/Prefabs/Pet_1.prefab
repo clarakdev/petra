@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 91464096724232252}
   - component: {fileID: 4863467730511914638}
   - component: {fileID: 1148007522823026263}
+  - component: {fileID: -8782270526228079643}
   m_Layer: 0
   m_Name: Pet_1
   m_TagString: Untagged
@@ -139,6 +140,7 @@ MonoBehaviour:
   leftSprite: {fileID: -2142331283361619701, guid: 71b1b1a19e2c4dd45b58916ed09ef1e1, type: 3}
   rightSprite: {fileID: 4567418850133360861, guid: 4a36e67214c721a468daa3afc91db861, type: 3}
 --- !u!114 &1148007522823026263
+--- !u!114 &-8782270526228079643
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,3 +152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e3629cdf7e240828d1ecb8ec8742fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PetMarker
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 4863467730511914638}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

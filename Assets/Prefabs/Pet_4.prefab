@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1376067660540162605}
   - component: {fileID: 5420963582603829759}
   - component: {fileID: 8784540992600792600}
+  - component: {fileID: 1018655543487528024}
   m_Layer: 0
   m_Name: Pet_4
   m_TagString: Untagged
@@ -82,12 +83,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 5545819659924416554, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.24, y: 15.23}
+  m_Size: {x: 15.36, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -134,11 +135,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   moveSpeed: 5
   followDistance: 1.5
-  frontSprite: {fileID: 5545819659924416554, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
+  frontSprite: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
   backSprite: {fileID: 261468464033517914, guid: c3b3a5ea1f9c6da4baebdc3ff4d733b6, type: 3}
   leftSprite: {fileID: -1242625463022451973, guid: 1e6dde3891e47024fbe9e305a285abc5, type: 3}
   rightSprite: {fileID: -473124449870224509, guid: fa8bbc4f3b5c029418614cb2dfa2ff50, type: 3}
 --- !u!114 &8784540992600792600
+--- !u!114 &1018655543487528024
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,3 +152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e3629cdf7e240828d1ecb8ec8742fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PetMarker
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 5420963582603829759}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
