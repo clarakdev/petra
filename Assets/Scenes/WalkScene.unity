@@ -312,7 +312,11 @@ MonoBehaviour:
   xpAmount: 5
   toastDuration: 2
   toastFontSize: 26
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
   toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
   approachSeconds: 0.2
@@ -331,16 +335,34 @@ MonoBehaviour:
   hoverArrowOffset: {x: 0, y: 60}
   hoverBobAmplitude: 10
   hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
   triangleSprite: {fileID: 0}
   trianglesCount: 10
   trianglesDuration: 1
   trianglesRiseRange: {x: 45, y: 80}
   trianglesDriftX: {x: -30, y: 30}
   trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
   trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &418916710
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,7 +458,11 @@ MonoBehaviour:
   xpAmount: 5
   toastDuration: 2
   toastFontSize: 26
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
   toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
   approachSeconds: 0.2
@@ -455,16 +481,34 @@ MonoBehaviour:
   hoverArrowOffset: {x: 0, y: 60}
   hoverBobAmplitude: 10
   hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
   triangleSprite: {fileID: 0}
   trianglesCount: 10
   trianglesDuration: 1
   trianglesRiseRange: {x: 45, y: 80}
   trianglesDriftX: {x: -30, y: 30}
   trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
   trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &863332666
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,15 +608,28 @@ MonoBehaviour:
   arrowOffset: {x: 0, y: 60}
   arrowBobAmplitude: 10
   arrowBobSpeed: 2.2
-  arrowColor: {r: 1, g: 1, b: 1, a: 0.95}
+  arrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
   disableRaycastAfterOpen: 1
   showXPToast: 1
   xpAmount: 40
   toastDuration: 3
   toastFontSize: 30
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
   toastOffset: {x: 0, y: 90}
   toastRise: {x: 0, y: 40}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  arrowImg: {fileID: 0}
+  opened: 0
 --- !u!1 &976086547
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,6 +912,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -974607405697330880, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1061.8066
@@ -902,6 +963,10 @@ PrefabInstance:
     - target: {fileID: 6250568013566111799, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
       propertyPath: m_TagString
       value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 7043385708214960962, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: sceneViewId
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1003,7 +1068,11 @@ MonoBehaviour:
   xpAmount: 5
   toastDuration: 2
   toastFontSize: 26
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
   toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
   approachSeconds: 0.2
@@ -1022,16 +1091,34 @@ MonoBehaviour:
   hoverArrowOffset: {x: 0, y: 60}
   hoverBobAmplitude: 10
   hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
   triangleSprite: {fileID: 0}
   trianglesCount: 10
   trianglesDuration: 1
   trianglesRiseRange: {x: 45, y: 80}
   trianglesDriftX: {x: -30, y: 30}
   trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
   trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &1263174991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1748,7 +1835,11 @@ MonoBehaviour:
   xpAmount: 5
   toastDuration: 2
   toastFontSize: 26
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
   toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
   approachSeconds: 0.2
@@ -1767,16 +1858,34 @@ MonoBehaviour:
   hoverArrowOffset: {x: 0, y: 60}
   hoverBobAmplitude: 10
   hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
   triangleSprite: {fileID: 0}
   trianglesCount: 10
   trianglesDuration: 1
   trianglesRiseRange: {x: 45, y: 80}
   trianglesDriftX: {x: -30, y: 30}
   trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
   trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &2028305466
 GameObject:
   m_ObjectHideFlags: 0

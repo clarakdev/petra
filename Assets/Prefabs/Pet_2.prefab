@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 6896669196653926004}
   - component: {fileID: 8629127193080312927}
   - component: {fileID: 8742212851196621101}
-  - component: {fileID: 2908241259578713764}
-  - component: {fileID: -4880094785855879599}
+  - component: {fileID: 7474118326580581460}
   m_Layer: 0
   m_Name: Pet_2
   m_TagString: Untagged
@@ -139,8 +138,7 @@ MonoBehaviour:
   backSprite: {fileID: 1119806239328424810, guid: b70bb9e9ce2182e418c89bd3c621e02e, type: 3}
   leftSprite: {fileID: -6708086779422465720, guid: 41fe693029a5af5438bec75e8d92f30b, type: 3}
   rightSprite: {fileID: -5243262107310747399, guid: a73435aad252cc44cb5a14ac7bc13f24, type: 3}
---- !u!114 &2908241259578713764
---- !u!114 &-4880094785855879599
+--- !u!114 &7474118326580581460
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,9 +147,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2251700885241834489}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1e3629cdf7e240828d1ecb8ec8742fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PetMarker
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
