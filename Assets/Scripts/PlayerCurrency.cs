@@ -2,20 +2,28 @@ using UnityEngine;
 
 public class PlayerCurrency : MonoBehaviour
 {
-    public int currency = 0; //current player balance
+    public int currency;//variable
 
-    public void EarnCurrency(int amount){
-        if (amount > 0){
-            currency = currency + amount; //add to currency
+    private void Awake()
+    {
+        currency = 1000;//force default value
+    }
+
+    public void EarnCurrency(int amount)
+    {
+        if (amount > 0)
+        {
+            currency += amount;
         }
     }
 
-    public bool SpendCurrency(int amount){
-        if (amount <= currency){
-            currency = currency - amount;
-            return true; //make purchase 
+    public bool SpendCurrency(int amount)
+    {
+        if (amount <= currency)
+        {
+            currency -= amount;
+            return true;
         }
-
-        return false; //not enough currency to purchase 
+        return false;
     }
 }
