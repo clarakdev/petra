@@ -1,29 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPurchaser
+public class Purchaser : MonoBehaviour
 {
-    float GetCurrentFunds();
-    bool SpendFunds(int amount);
-}
+    [SerializeField] private PlayerCurrency playerCurrency;
 
-public class Purchaser : MonoBehaviour, IPurchaser
-{
-    [SerializeField] int CurrentFunds;
-
-    public float GetCurrentFunds()
+    public int GetCurrentCurrency()
     {
-        return CurrentFunds;
+        return playerCurrency ? playerCurrency.currency : 0;
     }
 
-    public bool SpendFunds(int amount)
+    public bool SpendCurrency(int amount)
     {
-        if (CurrentFunds >= amount)
-        {
-            CurrentFunds -= amount;
-            return true;
-        }
-        return false;
+        if (!playerCurrency) return false;
+        return playerCurrency.SpendCurrency(amount);
+    }
+
+    public void EarnCurrency(int amount)
+    {
+        if (!playerCurrency) return;
+        playerCurrency.EarnCurrency(amount);
     }
 }

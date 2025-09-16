@@ -17,3 +17,6 @@ MonoBehaviour:
   Description: A round, chocolate treat
   Cost: 2500
   Icon: {fileID: 21300000, guid: ecfc905a2597f014695bcc25207a2010, type: 3}
+  Name: Honeyglow Biscuit
+  Description: A round, sweet monster treat
+  Cost: 25

@@ -22,7 +22,7 @@ public class ShopUI : MonoBehaviour
     [SerializeField] Purchaser PurchaserRef;
     [SerializeField] string ExitSceneName = "StoreScene";
 
-    IPurchaser CurrentPurchaser;
+    Purchaser CurrentPurchaser;
     ShopItemCategory SelectedCategory;
     ShopItem SelectedItem;
 
@@ -32,11 +32,9 @@ public class ShopUI : MonoBehaviour
 
     void Start()
     {
-        // BEGIN TESTING CODE
         CurrentPurchaser = PurchaserRef != null
             ? PurchaserRef
             : UnityEngine.Object.FindFirstObjectByType<Purchaser>();
-        // END TESTING CODE
 
         RefreshShopUI();
     }
@@ -57,7 +55,7 @@ public class ShopUI : MonoBehaviour
         if (AvailableFunds != null)
         {
             if (CurrentPurchaser != null)
-                AvailableFunds.text = $"{(CurrentPurchaser.GetCurrentFunds() / 100f):0.00}";
+                AvailableFunds.text = $"{CurrentPurchaser.GetCurrentCurrency()}";
             else
                 AvailableFunds.text = string.Empty;
         }
@@ -65,7 +63,7 @@ public class ShopUI : MonoBehaviour
         if (PurchaseButton != null)
         {
             if (CurrentPurchaser != null && SelectedItem != null &&
-                CurrentPurchaser.GetCurrentFunds() >= SelectedItem.Cost)
+                CurrentPurchaser.GetCurrentCurrency() >= SelectedItem.Cost)
                 PurchaseButton.interactable = true;
             else
                 PurchaseButton.interactable = false;
@@ -78,7 +76,7 @@ public class ShopUI : MonoBehaviour
                 var item = kvp.Key;
                 var itemUI = kvp.Value;
                 if (CurrentPurchaser != null)
-                    itemUI.SetCanAfford(item.Cost <= CurrentPurchaser.GetCurrentFunds());
+                    itemUI.SetCanAfford(item.Cost <= CurrentPurchaser.GetCurrentCurrency());
                 else
                     itemUI.SetCanAfford(false);
             }
@@ -178,7 +176,7 @@ public class ShopUI : MonoBehaviour
     {
         if (CurrentPurchaser == null || SelectedItem == null) return;
 
-        if (CurrentPurchaser.SpendFunds(SelectedItem.Cost))
+        if (CurrentPurchaser.SpendCurrency(SelectedItem.Cost))
             RefreshShopUI_Common();
     }
 

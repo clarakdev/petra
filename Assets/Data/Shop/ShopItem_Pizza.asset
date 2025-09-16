@@ -17,3 +17,6 @@ MonoBehaviour:
   Description: A snack a pet can resit
   Cost: 3500
   Icon: {fileID: 21300000, guid: 5f4933d084b413e42a40a4d18ccb14bd, type: 3}
+  Name: Moltenspire slice
+  Description: "Cheesy, savory slices that pets can\u2019t resist eating"
+  Cost: 35

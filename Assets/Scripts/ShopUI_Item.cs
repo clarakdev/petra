@@ -45,6 +45,7 @@ public class ShopUI_Item : MonoBehaviour, IPointerClickHandler
         // If BackgroundPanel not set, use the root Image as the highlight target
         if (!BackgroundPanel) BackgroundPanel = GetComponent<Image>();
     }
+    public void Bind(ShopItem item) => Bind(item, null);
 
     // ---------------------- Bind API ----------------------
 
@@ -61,6 +62,11 @@ public class ShopUI_Item : MonoBehaviour, IPointerClickHandler
         if (ItemName)    ItemName.text    = Item.Name;
         if (Description) Description.text = Item.Description;
         if (Price)       Price.text       = $"${(Item.Cost / 100f):0.00}";
+        if (ItemName)     ItemName.text = Item.Name;
+        if (Description)  Description.text = Item.Description;
+
+        // Prices are in COINS (no cents)
+        if (Price)        Price.text = $"${Item.Cost}";
 
         // If no explicit icon passed, use the data’s icon (add 'public Sprite Icon;' to ShopItem)
         if (icon == null && Item != null) icon = Item.Icon;
@@ -74,6 +80,8 @@ public class ShopUI_Item : MonoBehaviour, IPointerClickHandler
     public void SetIsSelected(bool selected)
     {
         if (BackgroundPanel) BackgroundPanel.color = selected ? SelectedColour : DefaultColour;
+        if (BackgroundPanel)
+            BackgroundPanel.color = selected ? SelectedColour : DefaultColour;
     }
 
     public void SetCanAfford(bool canAfford)
@@ -100,4 +108,8 @@ public class ShopUI_Item : MonoBehaviour, IPointerClickHandler
     {
         OnSelectedFn?.Invoke(Item);
     }
+        Price.color     = canAfford ? Color.white : Color.red;
+    }
+
+    public void OnClicked() => OnSelectedFn?.Invoke(Item);
 }
