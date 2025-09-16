@@ -2,15 +2,17 @@ using UnityEngine;
 
 public class PetBattle : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public Sprite battleSpritePlayerSide; // Player's pet, seen from behind
+    public Sprite battleSpriteEnemySide;  // Opponent's pet, seen from the front
+
+    public int maxHealth;
+    public int currentHealth;
+
+    public void SetFacing(bool isPlayerSide)
     {
-        
+        var spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = isPlayerSide ? battleSpritePlayerSide : battleSpriteEnemySide;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Add battle logic here (e.g., TakeDamage, Attack, etc.)
 }
