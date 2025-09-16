@@ -302,45 +302,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 105039262}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUI
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
+  playerPixelRange: 120
+  requirePetNear: 0
+  petPixelRange: 120
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
-  showXPToast: 1
   xpAmount: 5
-  toastDuration: 2
+  OnAwardXP:
+    m_PersistentCalls:
+      m_Calls: []
+  uiCanvas: {fileID: 0}
+  showToast: 1
+  toastDuration: 1.1
   toastFontSize: 26
   toastColor: {r: 1, g: 1, b: 1, a: 1}
-  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
-  approachSeconds: 0.2
-  sniffSeconds: 0.5
-  playerOffset: {x: -0.2, y: 0}
-  petOffset: {x: 0.5, y: 0}
-  heartSprite: {fileID: 0}
-  heartCount: 5
-  heartDuration: 0.7
-  heartRise: 1.2
-  heartSpread: {x: 0.4, y: 0.6}
-  heartSortingOrder: 1000
-  showHoverArrow: 1
-  arrowSprite: {fileID: 0}
-  hoverArrowSize: {x: 34, y: 34}
-  hoverArrowOffset: {x: 0, y: 60}
-  hoverBobAmplitude: 10
-  hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
-  triangleSprite: {fileID: 0}
-  trianglesCount: 10
-  trianglesDuration: 1
-  trianglesRiseRange: {x: 45, y: 80}
-  trianglesDriftX: {x: -30, y: 30}
-  trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
-  trianglesScaleRange: {x: 0.6, y: 1}
 --- !u!1001 &369732979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -491,45 +471,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 418916710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmell
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
+  playerPixelRange: 120
+  requirePetNear: 0
+  petPixelRange: 120
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
-  showXPToast: 1
   xpAmount: 5
-  toastDuration: 2
+  OnAwardXP:
+    m_PersistentCalls:
+      m_Calls: []
+  uiCanvas: {fileID: 0}
+  showToast: 1
+  toastDuration: 1.1
   toastFontSize: 26
   toastColor: {r: 1, g: 1, b: 1, a: 1}
-  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
-  approachSeconds: 0.2
-  sniffSeconds: 0.5
-  playerOffset: {x: -0.2, y: 0}
-  petOffset: {x: 0.5, y: 0}
-  heartSprite: {fileID: 0}
-  heartCount: 5
-  heartDuration: 0.7
-  heartRise: 1.2
-  heartSpread: {x: 0.4, y: 0.6}
-  heartSortingOrder: 1000
-  showHoverArrow: 1
-  arrowSprite: {fileID: 0}
-  hoverArrowSize: {x: 34, y: 34}
-  hoverArrowOffset: {x: 0, y: 60}
-  hoverBobAmplitude: 10
-  hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
-  triangleSprite: {fileID: 0}
-  trianglesCount: 10
-  trianglesDuration: 1
-  trianglesRiseRange: {x: 45, y: 80}
-  trianglesDriftX: {x: -30, y: 30}
-  trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
-  trianglesScaleRange: {x: 0.6, y: 1}
 --- !u!1001 &825607753
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1058,45 +1018,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237496753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUI
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
+  playerPixelRange: 120
+  requirePetNear: 0
+  petPixelRange: 120
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
-  showXPToast: 1
   xpAmount: 5
-  toastDuration: 2
+  OnAwardXP:
+    m_PersistentCalls:
+      m_Calls: []
+  uiCanvas: {fileID: 0}
+  showToast: 1
+  toastDuration: 1.1
   toastFontSize: 26
   toastColor: {r: 1, g: 1, b: 1, a: 1}
-  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
-  approachSeconds: 0.2
-  sniffSeconds: 0.5
-  playerOffset: {x: -0.2, y: 0}
-  petOffset: {x: 0.5, y: 0}
-  heartSprite: {fileID: 0}
-  heartCount: 5
-  heartDuration: 0.7
-  heartRise: 1.2
-  heartSpread: {x: 0.4, y: 0.6}
-  heartSortingOrder: 1000
-  showHoverArrow: 1
-  arrowSprite: {fileID: 0}
-  hoverArrowSize: {x: 34, y: 34}
-  hoverArrowOffset: {x: 0, y: 60}
-  hoverBobAmplitude: 10
-  hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
-  triangleSprite: {fileID: 0}
-  trianglesCount: 10
-  trianglesDuration: 1
-  trianglesRiseRange: {x: 45, y: 80}
-  trianglesDriftX: {x: -30, y: 30}
-  trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
-  trianglesScaleRange: {x: 0.6, y: 1}
 --- !u!1 &1263174991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1803,45 +1743,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1988562309}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
+  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUI
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
+  playerPixelRange: 120
+  requirePetNear: 0
+  petPixelRange: 120
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
-  showXPToast: 1
   xpAmount: 5
-  toastDuration: 2
+  OnAwardXP:
+    m_PersistentCalls:
+      m_Calls: []
+  uiCanvas: {fileID: 0}
+  showToast: 1
+  toastDuration: 1.1
   toastFontSize: 26
   toastColor: {r: 1, g: 1, b: 1, a: 1}
-  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
-  approachSeconds: 0.2
-  sniffSeconds: 0.5
-  playerOffset: {x: -0.2, y: 0}
-  petOffset: {x: 0.5, y: 0}
-  heartSprite: {fileID: 0}
-  heartCount: 5
-  heartDuration: 0.7
-  heartRise: 1.2
-  heartSpread: {x: 0.4, y: 0.6}
-  heartSortingOrder: 1000
-  showHoverArrow: 1
-  arrowSprite: {fileID: 0}
-  hoverArrowSize: {x: 34, y: 34}
-  hoverArrowOffset: {x: 0, y: 60}
-  hoverBobAmplitude: 10
-  hoverBobSpeed: 2.2
-  hoverArrowColor: {r: 1, g: 1, b: 1, a: 0.95}
-  triangleSprite: {fileID: 0}
-  trianglesCount: 10
-  trianglesDuration: 1
-  trianglesRiseRange: {x: 45, y: 80}
-  trianglesDriftX: {x: -30, y: 30}
-  trianglesSpinDegPerSec: {x: -180, y: 180}
-  trianglesColorA: {r: 1, g: 1, b: 1, a: 1}
-  trianglesColorB: {r: 1, g: 1, b: 1, a: 0.8}
-  trianglesScaleRange: {x: 0.6, y: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
