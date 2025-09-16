@@ -50,19 +50,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        // Desired spawn position
-        Vector3 spawnPosition = new Vector3(0f, -4.02f, 0f);
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-        // Instantiate player at spawnPosition
-        GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
-        playerObj.name = "Player";
-
-        // Instantiate PetSpawner for this player
-        GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");
-        if (petSpawnerPrefab != null && playerObj != null)
+        // Only spawn player and pet follower in non-battlefield scenes
+        if (sceneName != "Battlefield")
         {
-            GameObject petSpawnerObj = Instantiate(petSpawnerPrefab, playerObj.transform.position, Quaternion.identity);
-            petSpawnerObj.transform.SetParent(playerObj.transform);
+            // Desired spawn position
+            Vector3 spawnPosition = new Vector3(0f, -4.02f, 0f);
+
+            // Instantiate player at spawnPosition
+            GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
+            playerObj.name = "Player";
+
+            // Instantiate PetSpawner for this player
+            GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");
+            if (petSpawnerPrefab != null && playerObj != null)
+            {
+                GameObject petSpawnerObj = Instantiate(petSpawnerPrefab, playerObj.transform.position, Quaternion.identity);
+                petSpawnerObj.transform.SetParent(playerObj.transform);
+            }
         }
     }
 
