@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class PetBattle : MonoBehaviour
+public class PetBattle : MonoBehaviourPun
 {
     public Sprite battleSpritePlayerSide; // Player's pet, seen from behind
     public Sprite battleSpriteEnemySide;  // Opponent's pet, seen from the front
@@ -13,6 +14,4 @@ public class PetBattle : MonoBehaviour
         var spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = isPlayerSide ? battleSpritePlayerSide : battleSpriteEnemySide;
     }
-
-    // Add battle logic here (e.g., TakeDamage, Attack, etc.)
 }
