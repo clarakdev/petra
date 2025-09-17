@@ -4,11 +4,16 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 [RequireComponent(typeof(RectTransform))]
-public class ChestOpenUI : MonoBehaviour
+public class ChestOpenUI : MonoBehaviour, IPointerClickHandler
 {
     // ---------- Progress ----------
     [Header("Progress")]
     [Range(0,100f)] public float progressPercent = 40f; // +40%
+
+    // ---------- Click to Open ----------
+    [Header("Click to Open")]
+    [Tooltip("If true, clicking the chest opens it and grants XP.")]
+    public bool openOnClick = true;
 
     // ---------- Visuals: Single Image mode ----------
     [Header("Single Image Mode")]
@@ -61,7 +66,7 @@ public class ChestOpenUI : MonoBehaviour
     public bool showXPToast = true;
     [Range(0, 100000)] public int xpAmount = 40;
     public float toastDuration = 1.3f;
-    public int   toastFontSize = 28;
+    public int   toastFontSize = 35;
     public Color toastColor = new Color(1f, 1f, 1f, 1f);
     public Vector2 toastOffset = new Vector2(0f, 90f);
     public Vector2 toastRise   = new Vector2(0f, 40f);
@@ -115,6 +120,9 @@ public class ChestOpenUI : MonoBehaviour
             pet = pf ? pf.transform : GameObject.Find("Pet")?.transform;
         }
 
+        // ensure clicks hit us when openOnClick is true
+        if (openOnClick && chestImage) chestImage.raycastTarget = true;
+
         SetClosedVisual();
     }
 
@@ -160,6 +168,13 @@ public class ChestOpenUI : MonoBehaviour
         }
     }
 
+    // CLICK support
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!openOnClick) return;
+        OpenChest();
+    }
+
     // ---- Main open entry (also used by optional arrow click) ----
     void OpenChest()
     {
@@ -167,12 +182,31 @@ public class ChestOpenUI : MonoBehaviour
         opened = true;
 
         if (arrowImg) Destroy(arrowImg.gameObject);
-
         SetOpenVisual();
 
-        // Progress
-        if (progressBar)
+        // Award progress to WALK (global → manager → fallback to bar)
+        bool awarded = false;
+
+        var needs = PetNeedsManager.Instance;
+        if (needs != null && !needs.IsWalkFull())
         {
+            needs.AddWalkPercent(progressPercent); // respects 100% lockout
+            awarded = true;
+        }
+
+        if (!awarded)
+        {
+            var walkMgr = FindOne<WalkUIManager>();
+            if (walkMgr != null)
+            {
+                walkMgr.AddXPPercent(progressPercent);      // manager handles lockout
+                awarded = true;
+            }
+        }
+
+        if (!awarded && progressBar != null)
+        {
+            // last-resort: push raw UI bar (no lockout logic here)
             float add = progressBar.max * (progressPercent / 100f);
             progressBar.SetValue(Mathf.Min(progressBar.value + add, progressBar.max));
         }

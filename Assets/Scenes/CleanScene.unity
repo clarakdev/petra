@@ -547,7 +547,7 @@ MonoBehaviour:
   fill: {fileID: 870898662}
   label: {fileID: 1664483484}
   max: 100
-  value: 40
+  value: 100
   padding: 6
   fillColorNormal: {r: 0.69, g: 0.53, b: 1, a: 1}
   fillColorFull: {r: 0.69, g: 0.53, b: 1, a: 1}
@@ -561,9 +561,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1014822649}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be3cccaffac4847c294f9f2f958bf4c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 653aa90c7240844bca07099c49bd24fb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
+  m_EditorClassIdentifier: Assembly-CSharp::PetNeedBarBinder
+  need: 1
+  bar: {fileID: 1014822653}
 --- !u!1 &1114671592
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,7 +925,7 @@ GameObject:
   - component: {fileID: 1377795976}
   - component: {fileID: 1377795980}
   m_Layer: 5
-  m_Name: PetCleanCanvas
+  m_Name: CleanCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1210,9 +1212,9 @@ MonoBehaviour:
   canvas: {fileID: 1377795978}
   cleanBar: {fileID: 1014822653}
   petRect: {fileID: 1489678233}
-  petFX: {fileID: 1489678237}
-  cleanDecayPerMinute: 2
+  cleanDecayPerMinute: 1
   fullPauseMinutes: 20
+  petFX: {fileID: 1489678237}
 --- !u!1 &1513651880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,7 +1556,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 40%
+  m_text: 100%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

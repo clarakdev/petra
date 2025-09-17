@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 198775485}
   - component: {fileID: 198775486}
   m_Layer: 5
-  m_Name: PetCareController
+  m_Name: FeedController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,9 +170,9 @@ MonoBehaviour:
   canvas: {fileID: 1766164395}
   hungerBar: {fileID: 375030277}
   petRect: {fileID: 1112481295}
-  petFX: {fileID: 0}
-  hungerDecayPerMinute: 2
+  hungerDecayPerMinute: 1
   fullPauseMinutes: 20
+  petFX: {fileID: 0}
 --- !u!1 &375030274
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 375030277}
   - component: {fileID: 375030278}
   m_Layer: 5
-  m_Name: ProgressBarPanel
+  m_Name: FeedProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -279,7 +279,7 @@ MonoBehaviour:
   fill: {fileID: 1044760173}
   label: {fileID: 1578111024}
   max: 100
-  value: 60
+  value: 100
   padding: 6
   fillColorNormal: {r: 0.67058825, g: 0.46666667, b: 0.85882354, a: 1}
   fillColorFull: {r: 0.6696033, g: 0.46569067, b: 0.8584906, a: 1}
@@ -293,9 +293,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 375030274}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be3cccaffac4847c294f9f2f958bf4c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 653aa90c7240844bca07099c49bd24fb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
+  m_EditorClassIdentifier: Assembly-CSharp::PetNeedBarBinder
+  need: 2
+  bar: {fileID: 375030277}
 --- !u!1 &479336125
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,6 +628,7 @@ GameObject:
   - component: {fileID: 932406738}
   - component: {fileID: 932406737}
   - component: {fileID: 932406736}
+  - component: {fileID: 932406739}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -707,6 +710,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &932406739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932406735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &970450714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1402,7 +1449,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 60%
+  m_text: 100%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

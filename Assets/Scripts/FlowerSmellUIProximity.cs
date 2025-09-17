@@ -1,55 +1,46 @@
+// FlowerSmellUIProximity.cs
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 
-/// Attach to a UI Image (RectTransform on a Canvas). Grants XP when the
-/// player comes within N screen pixels of the flower image (optionally pet too),
-/// shows a toast, and bursts hearts from the flower.
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(Image))]
 public class FlowerSmellUIProximity : MonoBehaviour
 {
-    [Header("Who must be close (screen pixels)")]
-    public float playerPixelRange = 140f;        // try 140–220 on high-DPI
-    public bool  requirePetNear   = false;
-    public float petPixelRange    = 140f;
+    public float playerPixelRange = 140f;
+    public bool requirePetNear = false;
+    public float petPixelRange = 140f;
 
-    [Header("References (optional – auto if empty)")]
-    public Transform player;                     // drag your Player (Transform)
-    public Transform pet;                        // drag your Pet (optional)
-    public Canvas uiCanvas;                      // HUD canvas for toasts/hearts
+    public Transform player;
+    public Transform pet;
+    public Canvas uiCanvas;
 
-    [Header("Progress")]
     [Range(0,100f)] public float progressPercent = 5f;
-    public PanelProgressBar progressBar;         // drag your WalkProgressBar
-    public string progressBarName = "WalkProgressBar"; // fallback by name
+    public PanelProgressBar progressBar;
+    public string progressBarName = "WalkProgressBar";
 
-    [Header("XP")]
     public int xpAmount = 5;
-    public UnityEvent<int> OnAwardXP;            // hook your XP system
+    public UnityEvent<int> OnAwardXP;
 
-    [Header("Toast (optional)")]
-    public bool  showToast = true;
+    [Header("XP Toast (match Chest UI)")]
+    public bool showToast = true;
     public float toastDuration = 1.1f;
-    public int   toastFontSize = 26;
+    public int toastFontSize = 28;              // <- same as Chest UI
     public Color toastColor = Color.white;
     public Vector2 toastRise = new Vector2(0, 36);
 
-    [Header("Hearts (UI burst from flower)")]
-    public Sprite heartSprite;                   // assign a heart sprite (UI)
-    public int    heartCount = 8;
+    public Sprite heartSprite;
+    public int heartCount = 8;
     public Vector2 heartSizeRange = new Vector2(28, 46);
-    public float  heartDuration = 0.8f;
-    public Vector2 heartRise    = new Vector2(60f, 110f);
-    public Vector2 heartDriftX  = new Vector2(-35f, 35f);
-    public Color  heartColor    = new Color(1f, 0.5f, 0.7f, 1f);
+    public float heartDuration = 0.8f;
+    public Vector2 heartRise = new Vector2(60f, 110f);
+    public Vector2 heartDriftX = new Vector2(-35f, 35f);
+    public Color heartColor = new Color(1f, 0.5f, 0.7f, 1f);
 
-    [Header("Behaviour")]
-    public bool  oneShot = true;                 // grant once, then disable
-    public float cooldownSeconds = 0f;           // >0 enables repeat after cooldown
+    public bool oneShot = true;
+    public float cooldownSeconds = 0f;
 
-    // ------------- internals -------------
     RectTransform _rt;
     Canvas _rootCanvas;
     Camera _cam;
@@ -68,9 +59,8 @@ public class FlowerSmellUIProximity : MonoBehaviour
             if (go) progressBar = go.GetComponent<PanelProgressBar>();
         }
         if (!progressBar) progressBar = FindObjectOfType<PanelProgressBar>();
-        if (!uiCanvas)    uiCanvas    = FindObjectOfType<Canvas>();
+        if (!uiCanvas) uiCanvas = FindObjectOfType<Canvas>();
 
-        // Auto-find player/pet if not wired
         if (!player)
         {
             var pc = FindObjectOfType<PlayerController>();
@@ -87,16 +77,13 @@ public class FlowerSmellUIProximity : MonoBehaviour
     {
         if (_cam == null) _cam = Camera.main;
         if (_cam == null || player == null) return;
-
         if (oneShot && _consumed) return;
         if (Time.unscaledTime < _cooldownUntil) return;
 
-        // Flower center in screen space
         Vector2 flowerScreen = RectTransformUtility.WorldToScreenPoint(
             _rootCanvas && _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _cam,
             _rt.position);
 
-        // Player distance
         Vector2 playerScreen = _cam.WorldToScreenPoint(player.position);
         bool playerNear = Vector2.Distance(flowerScreen, playerScreen) <= playerPixelRange;
 
@@ -113,8 +100,6 @@ public class FlowerSmellUIProximity : MonoBehaviour
             Grant();
             if (oneShot) _consumed = true;
             if (cooldownSeconds > 0f) _cooldownUntil = Time.unscaledTime + cooldownSeconds;
-
-            // Disable re-clicks so a round manager can detect “consumed”
             var img = GetComponent<Image>();
             if (img) img.raycastTarget = false;
         }
@@ -122,29 +107,24 @@ public class FlowerSmellUIProximity : MonoBehaviour
 
     void Grant()
     {
-        // Progress
         if (progressBar)
         {
             float add = progressBar.max * (progressPercent / 100f);
             progressBar.SetValue(Mathf.Min(progressBar.value + add, progressBar.max));
         }
 
-        // XP
         OnAwardXP?.Invoke(xpAmount);
 
-        // Hearts burst from the flower (UI)
         if (uiCanvas) StartCoroutine(HeartsBurstUI());
-
-        // Toast
         if (showToast && uiCanvas) ShowToast($"You collected {xpAmount} XP!");
+
+        var mgr = FindObjectOfType<WalkUIManager>();
+        if (mgr) mgr.TriggerPetHappy();
     }
 
-    // ---- Hearts (UI) ----
     System.Collections.IEnumerator HeartsBurstUI()
     {
         if (!uiCanvas) yield break;
-
-        // Convert flower world pos to canvas-anchored pos
         var anchored = GetFlowerAnchoredInCanvas();
 
         for (int i = 0; i < heartCount; i++)
@@ -159,7 +139,6 @@ public class FlowerSmellUIProximity : MonoBehaviour
             rt.localScale = Vector3.one;
 
             Graphic g;
-
             if (heartSprite)
             {
                 var img = go.AddComponent<Image>();
@@ -180,13 +159,11 @@ public class FlowerSmellUIProximity : MonoBehaviour
                 g = tmp;
             }
 
-            // Animate rise + drift + fade
             float dur = heartDuration;
             float rise = Random.Range(heartRise.x, heartRise.y);
             float drift = Random.Range(heartDriftX.x, heartDriftX.y);
             StartCoroutine(HeartRiseFade(rt, g, dur, new Vector2(drift, rise)));
         }
-
         yield return null;
     }
 
@@ -194,9 +171,8 @@ public class FlowerSmellUIProximity : MonoBehaviour
     {
         float t = 0f;
         Vector2 start = rt.anchoredPosition;
-        Vector2 end   = start + move;
+        Vector2 end = start + move;
         Color c0 = g.color;
-
         while (t < dur)
         {
             t += Time.unscaledDeltaTime;
@@ -209,25 +185,33 @@ public class FlowerSmellUIProximity : MonoBehaviour
         if (rt) Destroy(rt.gameObject);
     }
 
-    // ---- Toast ----
     void ShowToast(string msg)
     {
-        var go  = new GameObject("XPToast", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+        var go = new GameObject("XPToast", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
         go.transform.SetParent(uiCanvas.transform, false);
 
-        var rt  = go.GetComponent<RectTransform>();
+        var rt = go.GetComponent<RectTransform>();
         var tmp = go.GetComponent<TextMeshProUGUI>();
-        tmp.text = msg; tmp.fontSize = toastFontSize; tmp.color = toastColor;
-        tmp.alignment = TextAlignmentOptions.Center; tmp.raycastTarget = false;
-        rt.sizeDelta = new Vector2(320, 72);
 
+        tmp.text = msg;
+        tmp.fontSize = toastFontSize;           // <- 28 (matches chest)
+        tmp.color = toastColor;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.raycastTarget = false;
+
+        // match chest’s general footprint so bigger font isn’t clipped
+        rt.sizeDelta = new Vector2(360, 80);
         rt.anchoredPosition = GetFlowerAnchoredInCanvas() + new Vector2(0, 80);
+
         StartCoroutine(RiseFadeTMP(rt, tmp, toastDuration, toastRise));
     }
 
     System.Collections.IEnumerator RiseFadeTMP(RectTransform rt, TextMeshProUGUI tmp, float dur, Vector2 rise)
     {
-        float t = 0f; Vector2 start = rt.anchoredPosition; Vector2 end = start + rise; var c0 = tmp.color;
+        float t = 0f;
+        Vector2 start = rt.anchoredPosition;
+        Vector2 end = start + rise;
+        Color c0 = tmp.color;
         while (t < dur)
         {
             t += Time.unscaledDeltaTime;
@@ -239,7 +223,6 @@ public class FlowerSmellUIProximity : MonoBehaviour
         if (rt) Destroy(rt.gameObject);
     }
 
-    // ---- Helpers ----
     Vector2 GetFlowerAnchoredInCanvas()
     {
         var cam = (_rootCanvas && _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : _cam;
