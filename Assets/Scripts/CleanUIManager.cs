@@ -16,6 +16,14 @@ public class CleanUIManager : MonoBehaviour
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
 
+    [Header("Popup at 50%")]
+    [Tooltip("If true, this script ensures a toast when Clean crosses down to 50%. " +
+             "It will only subscribe if GlobalNotifier is missing OR its autoSubscribe is OFF.")]
+    public bool ensure50Popup = true;
+    public string clean50Message = "Time to clean your pet!";
+
+    bool _subscribed50;
+
     void Awake()
     {
         if (!canvas) canvas = GetComponentInParent<Canvas>();
@@ -26,6 +34,7 @@ public class CleanUIManager : MonoBehaviour
             mgr.InitializeCleanIfUnset(cleanBar.value);
     }
 
+    void OnEnable()  { TrySubscribe50(); }
     void Start()
     {
         if (petRect == null)
@@ -48,6 +57,41 @@ public class CleanUIManager : MonoBehaviour
                 petImage.SetPet(sel.currentPet.cardImage);
         }
     }
+    void OnDisable() { Unsubscribe50(); }
+    void OnDestroy() { Unsubscribe50(); }
+
+    // ---- 50% popup wiring (without duplicates) ----
+    void TrySubscribe50()
+    {
+        if (_subscribed50 || !ensure50Popup) return;
+
+        var needs = PetNeedsManager.Instance;
+        if (needs == null) return;
+
+        // If GlobalNotifier is present and already auto-subscribing, don't also subscribe here
+        var notifier = GlobalNotifier.Instance;
+        if (notifier != null && notifier.autoSubscribe) return;
+
+        needs.OnCleanHit50.AddListener(OnCleanHit50);
+        _subscribed50 = true;
+    }
+
+    void Unsubscribe50()
+    {
+        if (!_subscribed50) return;
+        var needs = PetNeedsManager.Instance;
+        if (needs != null) needs.OnCleanHit50.RemoveListener(OnCleanHit50);
+        _subscribed50 = false;
+    }
+
+    void OnCleanHit50()
+    {
+        GlobalNotifier.Instance?.ShowToast(
+            clean50Message,
+            GlobalNotifier.Instance ? GlobalNotifier.Instance.toastHoldSeconds : 3f
+        );
+    }
+    // -----------------------------------------------
 
     public bool CanCleanNow()
     {

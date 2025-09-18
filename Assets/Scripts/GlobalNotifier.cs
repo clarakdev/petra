@@ -33,6 +33,10 @@ public class GlobalNotifier : MonoBehaviour
     bool _subscribed;
     UnityAction _onWalk50, _onClean50, _onFeed50;
 
+    // one-time “already low” guard so we don’t spam on each scene load
+    bool _initialChecked;
+    bool _initialWalkShown, _initialCleanShown, _initialFeedShown;
+
     void Awake()
     {
         if (Instance && Instance != this) { Destroy(gameObject); return; }
@@ -41,10 +45,20 @@ public class GlobalNotifier : MonoBehaviour
 
         BuildCanvas();
         TrySubscribe();
+        MaybeShowInitialIfAlreadyLow();
     }
 
-    void Start()  => TrySubscribe();             // if PetNeedsManager comes later
-    void Update() { if (!_subscribed) TrySubscribe(); }
+    void Start()
+    {
+        TrySubscribe();
+        MaybeShowInitialIfAlreadyLow();
+    }
+
+    void Update()
+    {
+        if (!_subscribed) TrySubscribe();
+    }
+
     void OnDestroy() => Unsubscribe();
 
     void TrySubscribe()
@@ -105,21 +119,16 @@ public class GlobalNotifier : MonoBehaviour
         _root.sizeDelta = new Vector2(1080, 200);
     }
 
-    // ---------- Public API ----------
+    // ---------- Public API (also handy for Inspector wiring) ----------
 
-    // One-arg wrapper so it shows up in UnityEvent dropdowns
     public void SendMessageToast(string msg) => ShowToast(msg, toastHoldSeconds);
-
-    // Optional no-arg wrappers (easy to bind in Inspector)
     public void NotifyWalk50()  => ShowToast("Time to walk your pet!",  toastHoldSeconds);
     public void NotifyClean50() => ShowToast("Time to clean your pet!", toastHoldSeconds);
     public void NotifyFeed50()  => ShowToast("Time to feed your pet!",  toastHoldSeconds);
 
-    // Quick right-click test on the component header
     [ContextMenu("Test Toast")]
     void _TestToast() => ShowToast("Test toast – notifier works!", toastHoldSeconds);
 
-    // Core toast methods
     public void ShowToast(string msg, float holdSeconds) => StartCoroutine(ToastPhased(msg, holdSeconds));
 
     IEnumerator ToastPhased(string msg, float holdSeconds)
@@ -187,5 +196,20 @@ public class GlobalNotifier : MonoBehaviour
         }
 
         if (bg) Destroy(bg.gameObject);
+    }
+
+    // ---------- One-time check so you get a toast if you enter while already low ----------
+    void MaybeShowInitialIfAlreadyLow()
+    {
+        if (_initialChecked) return;
+        var needs = PetNeedsManager.Instance;
+        if (needs == null) return;
+
+        // We only show once per session if already ≤50 on load.
+        if (!_initialWalkShown  && needs.walk  <= 50f) { _initialWalkShown  = true; ShowToast("Time to walk your pet!",  toastHoldSeconds); }
+        if (!_initialCleanShown && needs.clean <= 50f) { _initialCleanShown = true; ShowToast("Time to clean your pet!", toastHoldSeconds); }
+        if (!_initialFeedShown  && needs.feed  <= 50f) { _initialFeedShown  = true; ShowToast("Time to feed your pet!",  toastHoldSeconds); }
+
+        _initialChecked = true;
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WalkUIManager : MonoBehaviour
 {
@@ -21,11 +22,18 @@ public class WalkUIManager : MonoBehaviour
     public float     jumpDownDuration = 0.22f;
     public float     secondJumpDelay = 0.08f;
 
+    [Header("50% pop settings")]
+    [Tooltip("If true, this script will show a toast when WALK crosses down to 50%.\n" +
+             "If GlobalNotifier already auto-subscribes to PetNeedsManager, we auto-skip to avoid double pops.")]
+    public bool enableLocalWalk50Pop = true;
+
     bool _happyPlaying;
+    UnityAction _onWalk50;   // subscription handle so we can cleanly unsubscribe
+    bool _listening;
 
     void Awake()
     {
-        // Try find pet if not wired
+        // Find pet if not wired
         if (!pet)
         {
             var follower = FindObjectOfType<PetFollower>();
@@ -39,17 +47,58 @@ public class WalkUIManager : MonoBehaviour
             mgr.InitializeWalkIfUnset(walkBar.value);
     }
 
+    void OnEnable()  { TrySubscribeWalk50(); }
+    void OnDisable() { UnsubscribeWalk50();  }
+    void OnDestroy() { UnsubscribeWalk50();  }
+
+    void TrySubscribeWalk50()
+    {
+        if (!enableLocalWalk50Pop || _listening) return;
+
+        var needs = PetNeedsManager.Instance;
+        if (needs == null) return;
+
+        // If a GlobalNotifier exists AND it is already auto-subscribing to 50% events,
+        // skip local subscription to avoid duplicate toasts.
+        var notifier = GlobalNotifier.Instance;
+        if (notifier != null && notifier.autoSubscribe) return;
+
+        if (_onWalk50 == null)
+        {
+            _onWalk50 = () =>
+            {
+                var gn = GlobalNotifier.Instance;
+                if (gn != null) gn.ShowToast("Time to walk your pet!", gn.toastHoldSeconds);
+                else Debug.Log("[WalkUIManager] Time to walk your pet! (50%)");
+            };
+        }
+
+        needs.OnWalkHit50.AddListener(_onWalk50);
+        _listening = true;
+    }
+
+    void UnsubscribeWalk50()
+    {
+        if (!_listening) return;
+
+        var needs = PetNeedsManager.Instance;
+        if (needs != null && _onWalk50 != null)
+            needs.OnWalkHit50.RemoveListener(_onWalk50);
+
+        _listening = false;
+    }
+
     /// Call this from flower/chest/etc. amount = percent points (e.g., 5 = +5%)
     public void AddXPPercent(float amount)
     {
         var mgr = PetNeedsManager.Instance;
         if (mgr != null)
         {
-            if (mgr.IsWalkFull()) return;           // respect 100% lockout
+            if (mgr.IsWalkFull()) return;  // respect 100% lockout (20-min pause handled by manager)
             mgr.AddWalkPercent(amount);
             TriggerPetHappy();
         }
-        else if (walkBar) // fallback if global not present
+        else if (walkBar) // fallback if no global manager is present
         {
             float next = Mathf.Min(100f, walkBar.value + amount);
             walkBar.SetValue(next);
@@ -112,4 +161,11 @@ public class WalkUIManager : MonoBehaviour
 
         pet.position = basePos;
     }
+
+    // Handy right-click tests in Inspector
+    [ContextMenu("Test: +10% Walk XP")]
+    void _TestAdd10() => AddXPPercent(10f);
+
+    [ContextMenu("Test: Trigger Happy")]
+    void _TestHappy() => TriggerPetHappy();
 }

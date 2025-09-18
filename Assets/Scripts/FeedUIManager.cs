@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class FeedUIManager : MonoBehaviour
 {
@@ -16,6 +17,14 @@ public class FeedUIManager : MonoBehaviour
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
 
+    [Header("Popup at 50%")]
+    [Tooltip("If true, this script ensures a toast when Feed crosses down to 50%. " +
+             "It will only subscribe if GlobalNotifier is missing OR its autoSubscribe is OFF.")]
+    public bool ensure50Popup = true;
+    public string feed50Message = "Time to feed your pet!";
+
+    bool _subscribed50;
+
     void Awake()
     {
         if (!canvas) canvas = GetComponentInParent<Canvas>();
@@ -26,6 +35,7 @@ public class FeedUIManager : MonoBehaviour
             mgr.InitializeFeedIfUnset(hungerBar.value);
     }
 
+    void OnEnable()  { TrySubscribe50(); }
     void Start()
     {
         // Auto-bind the pet image/rect and show selected pet sprite
@@ -49,6 +59,38 @@ public class FeedUIManager : MonoBehaviour
                 petImg.SetPet(sel.currentPet.cardImage);
         }
     }
+    void OnDisable() { Unsubscribe50(); }
+    void OnDestroy() { Unsubscribe50(); }
+
+    // --- Ensure popup at 50% (without double-subscribing) ---
+    void TrySubscribe50()
+    {
+        if (_subscribed50 || !ensure50Popup) return;
+
+        var needs = PetNeedsManager.Instance;
+        if (needs == null) return;
+
+        // If GlobalNotifier is present and already auto-subscribing, do nothing (avoid double toasts)
+        var notifier = GlobalNotifier.Instance;
+        if (notifier != null && notifier.autoSubscribe) return;
+
+        needs.OnFeedHit50.AddListener(OnFeedHit50);
+        _subscribed50 = true;
+    }
+
+    void Unsubscribe50()
+    {
+        if (!_subscribed50) return;
+        var needs = PetNeedsManager.Instance;
+        if (needs != null) needs.OnFeedHit50.RemoveListener(OnFeedHit50);
+        _subscribed50 = false;
+    }
+
+    void OnFeedHit50()
+    {
+        GlobalNotifier.Instance?.ShowToast(feed50Message, GlobalNotifier.Instance ? GlobalNotifier.Instance.toastHoldSeconds : 3f);
+    }
+    // --------------------------------------------------------
 
     public bool CanFeedNow()
     {

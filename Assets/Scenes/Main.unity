@@ -1591,9 +1591,9 @@ MonoBehaviour:
   walk: 100
   clean: 100
   feed: 100
-  walkDrainPerMinute: 0.8
-  cleanDrainPerMinute: 0.3
-  feedDrainPerMinute: 0.6
+  walkDrainPerMinute: 0.6
+  cleanDrainPerMinute: 0.8
+  feedDrainPerMinute: 1
   walkFullPauseMinutes: 20
   cleanFullPauseMinutes: 20
   feedFullPauseMinutes: 20
