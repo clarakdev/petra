@@ -458,7 +458,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1593769264671816708, guid: 6c19dcc9fd25fa1409fc74d65c06802e, type: 3}
       propertyPath: m_Name
-      value: GameSystems
+      value: PlayerCurrency
       objectReference: {fileID: 0}
     - target: {fileID: 2420015881306221995, guid: 6c19dcc9fd25fa1409fc74d65c06802e, type: 3}
       propertyPath: m_LocalPosition.x
