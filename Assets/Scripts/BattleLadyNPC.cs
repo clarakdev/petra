@@ -4,6 +4,17 @@ using UnityEngine.InputSystem;
 public class BattleLadyNPC : MonoBehaviour
 {
     private bool playerNearby = false;
+    private RandomBattleQueueManager queueManager;
+
+    private void Start()
+    {
+        // Find the RandomBattleQueueManager in the scene (or assign via inspector)
+        queueManager = FindObjectOfType<RandomBattleQueueManager>();
+        if (queueManager == null)
+        {
+            Debug.LogError("BattleLadyNPC: No RandomBattleQueueManager found in the scene.");
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -32,6 +43,16 @@ public class BattleLadyNPC : MonoBehaviour
             if (hit != null && hit.gameObject == this.gameObject)
             {
                 Debug.Log("Battle Lady NPC: Clicked!");
+
+                if (queueManager != null)
+                {
+                    Debug.Log("Calling JoinRandomBattleQueue()");
+                    queueManager.JoinRandomBattleQueue();
+                }
+                else
+                {
+                    Debug.LogError("queueManager is null!");
+                }
             }
         }
     }
