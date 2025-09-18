@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ShopItem_Bow
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: 76acb3bb9b1034441abe83b6f7f5c762, type: 2}
-  Name: Bow
-  Description: A cute little bow to make your pet look extra stylish
+  Name: Hat
+  Description: A cute little hat to make your pet look extra stylish
   Cost: 75
+  Icon: {fileID: -1836120431684336037, guid: 4ce51132392c846f089ad5e67c4f03d6, type: 3}

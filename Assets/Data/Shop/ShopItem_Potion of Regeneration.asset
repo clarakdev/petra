@@ -16,3 +16,4 @@ MonoBehaviour:
   Name: 'Potion '
   Description: Heal 30 damage
   Cost: 125
+  Icon: {fileID: 1334158145294549958, guid: 17dbd53c4395f49359b229297f417247, type: 3}

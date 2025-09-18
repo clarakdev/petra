@@ -16,3 +16,4 @@ MonoBehaviour:
   Name: Super Potion
   Description: Heal 50 damage
   Cost: 150
+  Icon: {fileID: -4828955206877436067, guid: 092fb8654134d40d7bddaba77dd969e4, type: 3}

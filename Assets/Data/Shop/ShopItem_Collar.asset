@@ -16,3 +16,4 @@ MonoBehaviour:
   Name: Hyper Potion
   Description: Heal 80 damage
   Cost: 200
+  Icon: {fileID: -4078751032234228209, guid: d815bc96091974bc998f424a9c9f3161, type: 3}
