@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ShopItem_Apple
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 0}
-  Name: Apple
+  Name: Bloodmoon Fruit
   Description: A crunchy, healthy snack your pet will enjoy
-  Cost: 1500
+  Cost: 15

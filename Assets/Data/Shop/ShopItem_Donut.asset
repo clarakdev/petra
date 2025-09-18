@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ShopItem_Donut
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: c3e9473f8f5d34228beb66d3ce2f32ae, type: 2}
-  Name: Donut
-  Description: A round, sugary delight
-  Cost: 2500
+  Name: Honeyglow Biscuit
+  Description: A round, sweet monster treat
+  Cost: 25

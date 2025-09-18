@@ -17,5 +17,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SocialRoom.unity
     guid: 501db4243f3c1504fb0298e42b3f4ad9
-  m_configObjects: {}
+
+
+  - enabled: 1
+    path: Assets/Scenes/CleanScene.unity
+    guid: 2e8c2a43355ea40938407161e000c3d7
+  - enabled: 1
+    path: Assets/Scenes/WalkScene.unity
+    guid: c7b5a8119dec24882855d3efee2dfa8f
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+
   m_UseUCBPForAssetBundles: 0
