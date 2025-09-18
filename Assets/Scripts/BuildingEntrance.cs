@@ -1,20 +1,26 @@
 using UnityEngine;
+using UnityEngine.InputSystem; // ✅ New Input System
 
 public class BuildingEntrance : MonoBehaviour
 {
-    public string targetScene;
+    [Header("Scene Settings")]
+    public string targetScene;   // name of the scene to load
     private SceneSwapper sceneSwapper;
-    private bool isPlayerNearby = false;
+
+    [Header("Visuals")]
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
 
     [Header("UI Prompt")]
-    public GameObject interactPrompt; // assign a TMP text in inspector
+    public GameObject interactPrompt; // assign TMP Text or UI object in inspector
+
+    private bool isPlayerNearby = false;
 
     void Start()
     {
         sceneSwapper = FindObjectOfType<SceneSwapper>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
         if (spriteRenderer != null)
             originalColor = spriteRenderer.color;
 
@@ -24,9 +30,13 @@ public class BuildingEntrance : MonoBehaviour
 
     void Update()
     {
-        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
+        // ✅ Use New Input System
+        if (isPlayerNearby && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
-            sceneSwapper.LoadScene(targetScene);
+            if (sceneSwapper != null && !string.IsNullOrEmpty(targetScene))
+                sceneSwapper.LoadScene(targetScene);
+            else
+                Debug.LogWarning("SceneSwapper or TargetScene not set on BuildingEntrance.");
         }
     }
 
@@ -36,13 +46,10 @@ public class BuildingEntrance : MonoBehaviour
         {
             isPlayerNearby = true;
 
-            // Glow
+            // Glow effect
             if (spriteRenderer != null)
-                //light blue glow
-                spriteRenderer.color = new Color(0.8f, 0.9f, 1f); 
+                spriteRenderer.color = new Color(0.8f, 0.9f, 1f); // light blue glow
 
-
-            //Show "Press E" prompt
             if (interactPrompt != null)
                 interactPrompt.SetActive(true);
         }
@@ -54,11 +61,9 @@ public class BuildingEntrance : MonoBehaviour
         {
             isPlayerNearby = false;
 
-            // Reset glow
             if (spriteRenderer != null)
                 spriteRenderer.color = originalColor;
 
-            // Hide "Press E" prompt
             if (interactPrompt != null)
                 interactPrompt.SetActive(false);
         }
