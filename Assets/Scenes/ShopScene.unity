@@ -280,7 +280,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 805629637}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999746
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -459,7 +459,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1593769264671816708, guid: 6c19dcc9fd25fa1409fc74d65c06802e, type: 3}
       propertyPath: m_Name
-      value: GameSystems
+      value: PlayerCurrency
       objectReference: {fileID: 0}
     - target: {fileID: 2420015881306221995, guid: 6c19dcc9fd25fa1409fc74d65c06802e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1800,7 +1800,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 829860059}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999746
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
