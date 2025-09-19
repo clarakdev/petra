@@ -1,31 +1,24 @@
 using System.Collections;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class GlobalNotifier : MonoBehaviour
 {
     public static GlobalNotifier Instance { get; private set; }
 
     [Header("Behavior")]
-    [Tooltip("If true, auto-subscribes to PetNeedsManager 50% events in code. " +
-             "If you wire events in the Inspector instead, turn this OFF to avoid double toasts.")]
     public bool autoSubscribe = true;
 
     [Header("Toast Settings")]
-    [Tooltip("How long the toast stays fully visible (not counting fade in/out).")]
-    public float toastHoldSeconds = 4.0f;
-    [Tooltip("Fade-in time for the toast.")]
-    public float fadeInSeconds = 0.15f;
-    [Tooltip("Fade-out time for the toast.")]
-    public float fadeOutSeconds = 0.35f;
-    [Tooltip("Toast panel size (px).")]
-    public Vector2 toastSize = new Vector2(720, 90);
-    [Tooltip("How far the toast rises during fade-in (px).")]
-    public Vector2 toastRise = new Vector2(0, 70);
-    [Tooltip("Toast font size.")]
-    public int toastFontSize = 30;
+    public float   toastHoldSeconds = 4.0f;
+    public float   fadeInSeconds    = 0.15f;
+    public float   fadeOutSeconds   = 0.35f;
+    public Vector2 toastSize        = new Vector2(720, 90);
+    public Vector2 toastRise        = new Vector2(0, 70);
+    public int     toastFontSize    = 30;
 
     Canvas _canvas;
     RectTransform _root;
@@ -33,8 +26,6 @@ public class GlobalNotifier : MonoBehaviour
     bool _subscribed;
     UnityAction _onWalk50, _onClean50, _onFeed50;
 
-    // one-time “already low” guard so we don’t spam on each scene load
-    bool _initialChecked;
     bool _initialWalkShown, _initialCleanShown, _initialFeedShown;
 
     void Awake()
@@ -45,13 +36,21 @@ public class GlobalNotifier : MonoBehaviour
 
         BuildCanvas();
         TrySubscribe();
-        MaybeShowInitialIfAlreadyLow();
+        MaybeShowInitialIfExactly50();
+
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+        Unsubscribe();
     }
 
     void Start()
     {
         TrySubscribe();
-        MaybeShowInitialIfAlreadyLow();
+        MaybeShowInitialIfExactly50();
     }
 
     void Update()
@@ -59,7 +58,18 @@ public class GlobalNotifier : MonoBehaviour
         if (!_subscribed) TrySubscribe();
     }
 
-    void OnDestroy() => Unsubscribe();
+    void OnSceneChanged(Scene oldScene, Scene newScene)
+    {
+        _initialWalkShown  = false;
+        _initialCleanShown = false;
+        _initialFeedShown  = false;
+
+        if (_canvas == null) BuildCanvas();
+        _canvas.sortingOrder = 5000;
+
+        TrySubscribe();
+        MaybeShowInitialIfExactly50();
+    }
 
     void TrySubscribe()
     {
@@ -68,7 +78,6 @@ public class GlobalNotifier : MonoBehaviour
         var needs = PetNeedsManager.Instance;
         if (needs == null) return;
 
-        // 🔔 Fire when each stat crosses downward to ≤ 50%
         _onWalk50  = () => ShowToast("Time to walk your pet!",  toastHoldSeconds);
         _onClean50 = () => ShowToast("Time to clean your pet!", toastHoldSeconds);
         _onFeed50  = () => ShowToast("Time to feed your pet!",  toastHoldSeconds);
@@ -119,8 +128,6 @@ public class GlobalNotifier : MonoBehaviour
         _root.sizeDelta = new Vector2(1080, 200);
     }
 
-    // ---------- Public API (also handy for Inspector wiring) ----------
-
     public void SendMessageToast(string msg) => ShowToast(msg, toastHoldSeconds);
     public void NotifyWalk50()  => ShowToast("Time to walk your pet!",  toastHoldSeconds);
     public void NotifyClean50() => ShowToast("Time to clean your pet!", toastHoldSeconds);
@@ -133,14 +140,13 @@ public class GlobalNotifier : MonoBehaviour
 
     IEnumerator ToastPhased(string msg, float holdSeconds)
     {
-        // Create UI
         var bg = new GameObject("ToastBG", typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
         bg.SetParent(_root, false);
         bg.sizeDelta = toastSize;
         bg.anchoredPosition = Vector2.zero;
 
         var bgImg = bg.GetComponent<Image>();
-        bgImg.color = new Color(0, 0, 0, 0f); // start invisible
+        bgImg.color = new Color(0, 0, 0, 0f);
         bgImg.raycastTarget = false;
 
         var text = new GameObject("ToastText", typeof(RectTransform), typeof(TextMeshProUGUI))
@@ -153,14 +159,13 @@ public class GlobalNotifier : MonoBehaviour
         text.text = msg;
         text.alignment = TextAlignmentOptions.Center;
         text.fontSize = toastFontSize;
-        text.color = new Color(1, 1, 1, 0f); // start invisible
+        text.color = new Color(1, 1, 1, 0f);
         text.raycastTarget = false;
 
         float fin  = Mathf.Max(0.01f, fadeInSeconds);
         float hold = Mathf.Max(0f,    holdSeconds);
         float fout = Mathf.Max(0.01f, fadeOutSeconds);
 
-        // Fade In + Rise
         {
             float t = 0f;
             Vector2 start = Vector2.zero;
@@ -179,10 +184,8 @@ public class GlobalNotifier : MonoBehaviour
             text.color  = Color.white;
         }
 
-        // Hold
         if (hold > 0f) yield return new WaitForSecondsRealtime(hold);
 
-        // Fade Out (stay at end position)
         {
             float t = 0f;
             while (t < fout)
@@ -198,18 +201,13 @@ public class GlobalNotifier : MonoBehaviour
         if (bg) Destroy(bg.gameObject);
     }
 
-    // ---------- One-time check so you get a toast if you enter while already low ----------
-    void MaybeShowInitialIfAlreadyLow()
+    void MaybeShowInitialIfExactly50()
     {
-        if (_initialChecked) return;
         var needs = PetNeedsManager.Instance;
         if (needs == null) return;
 
-        // We only show once per session if already ≤50 on load.
-        if (!_initialWalkShown  && needs.walk  <= 50f) { _initialWalkShown  = true; ShowToast("Time to walk your pet!",  toastHoldSeconds); }
-        if (!_initialCleanShown && needs.clean <= 50f) { _initialCleanShown = true; ShowToast("Time to clean your pet!", toastHoldSeconds); }
-        if (!_initialFeedShown  && needs.feed  <= 50f) { _initialFeedShown  = true; ShowToast("Time to feed your pet!",  toastHoldSeconds); }
-
-        _initialChecked = true;
+        if (!_initialWalkShown  && Mathf.RoundToInt(needs.walk)  == 50) { _initialWalkShown  = true; ShowToast("Time to walk your pet!",  toastHoldSeconds); }
+        if (!_initialCleanShown && Mathf.RoundToInt(needs.clean) == 50) { _initialCleanShown = true; ShowToast("Time to clean your pet!", toastHoldSeconds); }
+        if (!_initialFeedShown  && Mathf.RoundToInt(needs.feed)  == 50) { _initialFeedShown  = true; ShowToast("Time to feed your pet!",  toastHoldSeconds); }
     }
 }

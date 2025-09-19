@@ -1,25 +1,20 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 
 public class FeedUIManager : MonoBehaviour
 {
     [Header("UI Refs")]
     public Canvas canvas;
-    public PanelProgressBar hungerBar;    // only seeds global once
+    public PanelProgressBar hungerBar;    // seeds global once
     public RectTransform petRect;
-
-    [Header("Drain (local scene – leave 0)")]
-    public float hungerDecayPerMinute = 0f; // not used; global owns decay
-    public float fullPauseMinutes     = 20f; // legacy; global handles 100% pause
 
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
 
-    [Header("Popup at 50%")]
-    [Tooltip("If true, this script ensures a toast when Feed crosses down to 50%. " +
-             "It will only subscribe if GlobalNotifier is missing OR its autoSubscribe is OFF.")]
+    [Header("Popup at exactly 50%")]
+    [Tooltip("Listens to PetNeedsManager.OnFeedHit50 (fires only when feed becomes exactly 50).\n" +
+             "If GlobalNotifier is auto-subscribing, we do NOT also subscribe here.")]
     public bool ensure50Popup = true;
     public string feed50Message = "Time to feed your pet!";
 
@@ -29,7 +24,6 @@ public class FeedUIManager : MonoBehaviour
     {
         if (!canvas) canvas = GetComponentInParent<Canvas>();
 
-        // Seed global once from the bar (safe no-op if already persisted/seeded)
         var mgr = PetNeedsManager.Instance;
         if (mgr != null && hungerBar != null)
             mgr.InitializeFeedIfUnset(hungerBar.value);
@@ -38,16 +32,15 @@ public class FeedUIManager : MonoBehaviour
     void OnEnable()  { TrySubscribe50(); }
     void Start()
     {
-        // Auto-bind the pet image/rect and show selected pet sprite
+        // Auto-bind pet rect & sprite
         if (petRect == null)
         {
             var petImg = FindFirstObjectByType<PetImage>();
             if (petImg != null)
             {
                 petRect = petImg.RectTransform;
-
                 var sel = PetSelectionManager.instance;
-                if (petImg != null && sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
+                if (sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
                     petImg.SetPet(sel.currentPet.cardImage);
             }
         }
@@ -62,7 +55,7 @@ public class FeedUIManager : MonoBehaviour
     void OnDisable() { Unsubscribe50(); }
     void OnDestroy() { Unsubscribe50(); }
 
-    // --- Ensure popup at 50% (without double-subscribing) ---
+    // Subscribe only if GlobalNotifier isn't already doing it
     void TrySubscribe50()
     {
         if (_subscribed50 || !ensure50Popup) return;
@@ -70,7 +63,6 @@ public class FeedUIManager : MonoBehaviour
         var needs = PetNeedsManager.Instance;
         if (needs == null) return;
 
-        // If GlobalNotifier is present and already auto-subscribing, do nothing (avoid double toasts)
         var notifier = GlobalNotifier.Instance;
         if (notifier != null && notifier.autoSubscribe) return;
 
@@ -88,14 +80,13 @@ public class FeedUIManager : MonoBehaviour
 
     void OnFeedHit50()
     {
-        GlobalNotifier.Instance?.ShowToast(feed50Message, GlobalNotifier.Instance ? GlobalNotifier.Instance.toastHoldSeconds : 3f);
+        var gn = GlobalNotifier.Instance;
+        if (gn != null) gn.ShowToast(feed50Message, gn.toastHoldSeconds);
     }
-    // --------------------------------------------------------
 
     public bool CanFeedNow()
     {
         var mgr = PetNeedsManager.Instance;
-        // If global exists and is full, cannot feed. If global missing, allow (fallback path)
         return !(mgr != null && mgr.IsFeedFull());
     }
 
@@ -139,7 +130,6 @@ public class FeedUIManager : MonoBehaviour
         Destroy(ghost);
         food.gameObject.SetActive(false);
 
-        // Global-first award (percent points)
         var mgr = PetNeedsManager.Instance;
         if (mgr != null)
         {

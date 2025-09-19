@@ -6,22 +6,18 @@ public class PetNeedsManager : MonoBehaviour
 {
     public static PetNeedsManager Instance { get; private set; }
 
-    [Header("Starting values (0..100)")]
     [Range(0,100)] public float walk  = 100f;
     [Range(0,100)] public float clean = 100f;
     [Range(0,100)] public float feed  = 100f;
 
-    [Header("Decay per minute")]
-    public float walkDrainPerMinute  = 1.5f;
-    public float cleanDrainPerMinute = 0.3f;
-    public float feedDrainPerMinute  = 0.6f;
+    public float walkDrainPerMinute  = 0.6f;
+    public float cleanDrainPerMinute = 0.8f;
+    public float feedDrainPerMinute  = 1.5f;
 
-    [Header("Pause at 100% (minutes)")]
     public float walkFullPauseMinutes  = 20f;
     public float cleanFullPauseMinutes = 20f;
     public float feedFullPauseMinutes  = 20f;
 
-    // ---- Events (per-need) ----
     [Serializable] public class FloatEvent : UnityEvent<float> {}
     public FloatEvent OnWalkChanged  = new FloatEvent();
     public FloatEvent OnCleanChanged = new FloatEvent();
@@ -31,7 +27,6 @@ public class PetNeedsManager : MonoBehaviour
     public UnityEvent OnCleanHit50 = new UnityEvent();
     public UnityEvent OnFeedHit50  = new UnityEvent();
 
-    // ---- persistence & timers ----
     DateTime _lastTickUtc;
     DateTime _walkPauseUntilUtc  = DateTime.MinValue;
     DateTime _cleanPauseUntilUtc = DateTime.MinValue;
@@ -44,7 +39,6 @@ public class PetNeedsManager : MonoBehaviour
     const string KEY_WALK  = "petneeds_walk";
     const string KEY_CLEAN = "petneeds_clean";
     const string KEY_FEED  = "petneeds_feed";
-    const double HYSTERESIS_UP = 55.0; // must rise above this to re-arm 50% notification
 
     void Awake()
     {
@@ -52,7 +46,6 @@ public class PetNeedsManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Load persisted values (if present)
         _hasWalkPersist  = PlayerPrefs.HasKey(KEY_WALK);
         _hasCleanPersist = PlayerPrefs.HasKey(KEY_CLEAN);
         _hasFeedPersist  = PlayerPrefs.HasKey(KEY_FEED);
@@ -66,7 +59,11 @@ public class PetNeedsManager : MonoBehaviour
         else
             _lastTickUtc = DateTime.UtcNow;
 
-        Tick(false); // catch-up decay from last session
+        _walkNotified50  = Mathf.RoundToInt(walk)  <= 50;
+        _cleanNotified50 = Mathf.RoundToInt(clean) <= 50;
+        _feedNotified50  = Mathf.RoundToInt(feed)  <= 50;
+
+        Tick(false);
     }
 
     void OnApplicationPause(bool paused)
@@ -74,24 +71,22 @@ public class PetNeedsManager : MonoBehaviour
         if (paused) Persist();
         else { _lastTickUtc = DateTime.UtcNow; Tick(false); }
     }
+
     void OnApplicationQuit() => Persist();
     void Update() => Tick(true);
 
-    // ---- Public helpers (no-enum API) ----
     public bool IsWalkFull()  => walk  >= 99.999f;
     public bool IsCleanFull() => clean >= 99.999f;
     public bool IsFeedFull()  => feed  >= 99.999f;
 
-    // Seed once from scene bars (only if we *didn't* load a persisted value)
-    public bool InitializeWalkIfUnset (float v) { if (_hasWalkPersist)  return false;  walk  = Clamp01(v); OnWalkChanged.Invoke(walk);  PersistLight(); _hasWalkPersist  = true;  return true; }
-    public bool InitializeCleanIfUnset(float v) { if (_hasCleanPersist) return false;  clean = Clamp01(v); OnCleanChanged.Invoke(clean); PersistLight(); _hasCleanPersist = true;  return true; }
-    public bool InitializeFeedIfUnset (float v) { if (_hasFeedPersist)  return false;  feed  = Clamp01(v); OnFeedChanged.Invoke(feed);  PersistLight(); _hasFeedPersist  = true;  return true; }
+    public bool InitializeWalkIfUnset (float v) { if (_hasWalkPersist)  return false; walk  = Clamp01(v); OnWalkChanged.Invoke(walk);  PersistLight(); _hasWalkPersist  = true; return true; }
+    public bool InitializeCleanIfUnset(float v) { if (_hasCleanPersist) return false; clean = Clamp01(v); OnCleanChanged.Invoke(clean); PersistLight(); _hasCleanPersist = true; return true; }
+    public bool InitializeFeedIfUnset (float v) { if (_hasFeedPersist)  return false; feed  = Clamp01(v); OnFeedChanged.Invoke(feed);  PersistLight(); _hasFeedPersist  = true; return true; }
 
     public void AddWalkPercent (float percent) { AddPercent(ref walk,  percent, walkFullPauseMinutes,  OnWalkChanged,  ref _walkPauseUntilUtc,  ref _walkNotified50,  OnWalkHit50 ); }
     public void AddCleanPercent(float percent) { AddPercent(ref clean, percent, cleanFullPauseMinutes, OnCleanChanged, ref _cleanPauseUntilUtc, ref _cleanNotified50, OnCleanHit50); }
     public void AddFeedPercent (float percent) { AddPercent(ref feed,  percent, feedFullPauseMinutes,  OnFeedChanged,  ref _feedPauseUntilUtc,  ref _feedNotified50,  OnFeedHit50 ); }
 
-    // ---- Core ticking/decay ----
     void Tick(bool continuous)
     {
         var now = DateTime.UtcNow;
@@ -126,7 +121,6 @@ public class PetNeedsManager : MonoBehaviour
         float before = value;
         value = Mathf.Min(100f, value + percent);
 
-        // start 20-min lockout when we *reach* full
         if (before < 100f && value >= 100f)
             pauseUntil = DateTime.UtcNow.AddMinutes(pauseMinutes);
 
@@ -137,13 +131,22 @@ public class PetNeedsManager : MonoBehaviour
 
     void Check50(float before, float after, ref bool flagged, UnityEvent fire)
     {
-        if (!flagged && before > 50f && after <= 50f) { flagged = true; fire.Invoke(); }
-        if (flagged && after >= HYSTERESIS_UP) flagged = false; // re-arm once we rise sufficiently
+        int prev = Mathf.RoundToInt(before);
+        int curr = Mathf.RoundToInt(after);
+
+        if (!flagged && prev > 50 && curr == 50)
+        {
+            flagged = true;
+            fire.Invoke();
+        }
+        else if (flagged && prev <= 50 && curr > 50)
+        {
+            flagged = false;
+        }
     }
 
     static float Clamp01(float v) => Mathf.Clamp(v, 0f, 100f);
 
-    // ---- persistence ----
     void PersistLight()
     {
         PlayerPrefs.SetFloat(KEY_WALK,  walk);
@@ -151,5 +154,6 @@ public class PetNeedsManager : MonoBehaviour
         PlayerPrefs.SetFloat(KEY_FEED,  feed);
         PlayerPrefs.SetString(KEY_LAST, DateTime.UtcNow.ToString("o"));
     }
+
     void Persist() => PersistLight();
 }

@@ -1,19 +1,15 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class WalkUIManager : MonoBehaviour
 {
-    [Header("UI")]
-    public PanelProgressBar walkBar;  // only used to seed global once (if needed)
+    [Header("UI (optional)")]
+    public PanelProgressBar walkBar;  // seeds global once if needed
+    public Canvas canvas;             // only needed if you want confetti FX
 
-    // (Keep these visible so you can find them in the Inspector; leave at 0 so global owns decay)
-    [Header("Drain (local scene – leave 0)")]
-    public float walkDrainPerMinute = 0f;
-    public float extraDrainPerMinute = 0f;
-    public float fullPauseMinutes = 20f; // legacy; global handles 100% pause
-
-    [Header("Pet celebration (double jump only)")]
+    [Header("Pet celebration")]
     public Transform pet;
     public Animator  petAnimator;
     public string    happyTrigger = "Happy";
@@ -22,13 +18,19 @@ public class WalkUIManager : MonoBehaviour
     public float     jumpDownDuration = 0.22f;
     public float     secondJumpDelay = 0.08f;
 
-    [Header("50% pop settings")]
-    [Tooltip("If true, this script will show a toast when WALK crosses down to 50%.\n" +
-             "If GlobalNotifier already auto-subscribes to PetNeedsManager, we auto-skip to avoid double pops.")]
+    [Header("Exactly 50% popup")]
+    [Tooltip("Listens to PetNeedsManager.OnWalkHit50 (fires ONLY when walk becomes exactly 50).\n" +
+             "If GlobalNotifier is auto-subscribing, this script will not also subscribe.")]
     public bool enableLocalWalk50Pop = true;
 
+    [Header("Optional confetti FX at 50%")]
+    public bool   playConfettiAt50 = false;
+    public Sprite confettiSprite; // optional; falls back to 1x1 white if null
+    public Vector2 confettiSize = new Vector2(40, 40);
+    public int     confettiCount = 6;
+
     bool _happyPlaying;
-    UnityAction _onWalk50;   // subscription handle so we can cleanly unsubscribe
+    UnityAction _onWalk50;
     bool _listening;
 
     void Awake()
@@ -51,6 +53,8 @@ public class WalkUIManager : MonoBehaviour
     void OnDisable() { UnsubscribeWalk50();  }
     void OnDestroy() { UnsubscribeWalk50();  }
 
+    // Subscribe to the EXACT-50 event from PetNeedsManager.
+    // NOTE: PetNeedsManager must implement exact-50 logic (RoundToInt, prev>50 && curr==50).
     void TrySubscribeWalk50()
     {
         if (!enableLocalWalk50Pop || _listening) return;
@@ -58,8 +62,7 @@ public class WalkUIManager : MonoBehaviour
         var needs = PetNeedsManager.Instance;
         if (needs == null) return;
 
-        // If a GlobalNotifier exists AND it is already auto-subscribing to 50% events,
-        // skip local subscription to avoid duplicate toasts.
+        // If GlobalNotifier already subscribes globally, avoid double toasts
         var notifier = GlobalNotifier.Instance;
         if (notifier != null && notifier.autoSubscribe) return;
 
@@ -69,7 +72,8 @@ public class WalkUIManager : MonoBehaviour
             {
                 var gn = GlobalNotifier.Instance;
                 if (gn != null) gn.ShowToast("Time to walk your pet!", gn.toastHoldSeconds);
-                else Debug.Log("[WalkUIManager] Time to walk your pet! (50%)");
+                TriggerPetHappy();
+                if (playConfettiAt50) StartCoroutine(ConfettiBurst());
             };
         }
 
@@ -80,28 +84,27 @@ public class WalkUIManager : MonoBehaviour
     void UnsubscribeWalk50()
     {
         if (!_listening) return;
-
         var needs = PetNeedsManager.Instance;
         if (needs != null && _onWalk50 != null)
             needs.OnWalkHit50.RemoveListener(_onWalk50);
-
         _listening = false;
     }
 
-    /// Call this from flower/chest/etc. amount = percent points (e.g., 5 = +5%)
+    /// Call this from buttons / pickups; amount is percent points (e.g., 5 = +5%)
     public void AddXPPercent(float amount)
     {
         var mgr = PetNeedsManager.Instance;
         if (mgr != null)
         {
-            if (mgr.IsWalkFull()) return;  // respect 100% lockout (20-min pause handled by manager)
-            mgr.AddWalkPercent(amount);
-            TriggerPetHappy();
+            if (!mgr.IsWalkFull())
+            {
+                mgr.AddWalkPercent(amount); // PetNeedsManager handles exact-50 triggering
+                TriggerPetHappy();
+            }
         }
-        else if (walkBar) // fallback if no global manager is present
+        else if (walkBar)
         {
-            float next = Mathf.Min(100f, walkBar.value + amount);
-            walkBar.SetValue(next);
+            walkBar.SetValue(Mathf.Min(100f, walkBar.value + amount));
             TriggerPetHappy();
         }
     }
@@ -162,10 +165,58 @@ public class WalkUIManager : MonoBehaviour
         pet.position = basePos;
     }
 
-    // Handy right-click tests in Inspector
-    [ContextMenu("Test: +10% Walk XP")]
-    void _TestAdd10() => AddXPPercent(10f);
+    // ===== Optional confetti FX (spawns temporary UI under 'canvas' and destroys it) =====
+    IEnumerator ConfettiBurst()
+    {
+        if (canvas == null) yield break;
 
-    [ContextMenu("Test: Trigger Happy")]
-    void _TestHappy() => TriggerPetHappy();
+        var sprite = confettiSprite != null ? confettiSprite : DefaultWhiteSprite();
+        var center = (pet != null) ? pet.position : canvas.transform.position;
+
+        for (int i = 0; i < Mathf.Max(1, confettiCount); i++)
+        {
+            var bit = new GameObject("walk_confetti", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
+            var rt  = bit.GetComponent<RectTransform>();
+            var cg  = bit.GetComponent<CanvasGroup>();
+            var img = bit.GetComponent<Image>();
+
+            rt.SetParent(canvas.transform, false);
+            rt.SetAsLastSibling();
+            rt.position  = center + (Vector3)Random.insideUnitCircle * 10f;
+            rt.sizeDelta = confettiSize;
+            img.sprite   = sprite;
+            img.preserveAspect = true;
+
+            StartCoroutine(ConfettiRiseFade(rt, cg));
+        }
+
+        yield return new WaitForSecondsRealtime(0.3f);
+    }
+
+    IEnumerator ConfettiRiseFade(RectTransform rt, CanvasGroup cg)
+    {
+        float t = 0f, dur = 0.45f;
+        Vector3 a = rt.position, b = a + new Vector3(Random.Range(-20f, 20f), 70f, 0);
+        while (t < dur)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = t / dur;
+            rt.position   = Vector3.Lerp(a, b, k);
+            rt.localScale = Vector3.one * (1f + 0.2f * k);
+            if (cg) cg.alpha = 1f - k;
+            yield return null;
+        }
+        // clean up temporary UI
+        Destroy(rt.gameObject);
+    }
+
+    static Sprite DefaultWhiteSprite()
+    {
+        var tex = Texture2D.whiteTexture; // 1x1 white
+        return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
+    }
+
+    // Handy right-click tests
+    [ContextMenu("Test: +10% Walk XP")] void _TestAdd10() => AddXPPercent(10f);
+    [ContextMenu("Test: Happy")]        void _TestHappy()  => TriggerPetHappy();
 }

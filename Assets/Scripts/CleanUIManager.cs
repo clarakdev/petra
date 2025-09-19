@@ -6,19 +6,16 @@ public class CleanUIManager : MonoBehaviour
 {
     [Header("UI Refs")]
     public Canvas canvas;
-    public PanelProgressBar cleanBar;    // only seeds global once
+    public PanelProgressBar cleanBar;
     public RectTransform petRect;
-
-    [Header("Drain (local scene – leave 0)")]
-    public float cleanDecayPerMinute = 0f; // not used; global owns decay
-    public float fullPauseMinutes    = 20f; // legacy; global handles 100% pause
 
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
+    public Sprite bubbleSprite; // optional; fallback is a 1x1 white sprite created in code
 
-    [Header("Popup at 50%")]
-    [Tooltip("If true, this script ensures a toast when Clean crosses down to 50%. " +
-             "It will only subscribe if GlobalNotifier is missing OR its autoSubscribe is OFF.")]
+    [Header("Popup at exactly 50%")]
+    [Tooltip("If true, this script listens to PetNeedsManager.OnCleanHit50 (fires only when clean becomes exactly 50).\n" +
+             "If GlobalNotifier is auto-subscribing, we do NOT also subscribe here.")]
     public bool ensure50Popup = true;
     public string clean50Message = "Time to clean your pet!";
 
@@ -37,15 +34,15 @@ public class CleanUIManager : MonoBehaviour
     void OnEnable()  { TrySubscribe50(); }
     void Start()
     {
+        // Bind pet image if available
         if (petRect == null)
         {
             var petImage = FindFirstObjectByType<PetImage>();
             if (petImage != null)
             {
                 petRect = petImage.RectTransform;
-
                 var sel = PetSelectionManager.instance;
-                if (petImage != null && sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
+                if (sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
                     petImage.SetPet(sel.currentPet.cardImage);
             }
         }
@@ -60,7 +57,6 @@ public class CleanUIManager : MonoBehaviour
     void OnDisable() { Unsubscribe50(); }
     void OnDestroy() { Unsubscribe50(); }
 
-    // ---- 50% popup wiring (without duplicates) ----
     void TrySubscribe50()
     {
         if (_subscribed50 || !ensure50Popup) return;
@@ -68,7 +64,7 @@ public class CleanUIManager : MonoBehaviour
         var needs = PetNeedsManager.Instance;
         if (needs == null) return;
 
-        // If GlobalNotifier is present and already auto-subscribing, don't also subscribe here
+        // Avoid duplicate toasts if a global notifier is already handling subscriptions
         var notifier = GlobalNotifier.Instance;
         if (notifier != null && notifier.autoSubscribe) return;
 
@@ -86,17 +82,13 @@ public class CleanUIManager : MonoBehaviour
 
     void OnCleanHit50()
     {
-        GlobalNotifier.Instance?.ShowToast(
-            clean50Message,
-            GlobalNotifier.Instance ? GlobalNotifier.Instance.toastHoldSeconds : 3f
-        );
+        var gn = GlobalNotifier.Instance;
+        if (gn != null) gn.ShowToast(clean50Message, gn.toastHoldSeconds);
     }
-    // -----------------------------------------------
 
     public bool CanCleanNow()
     {
         var mgr = PetNeedsManager.Instance;
-        // If global exists and is full, cannot clean. If global missing, allow (fallback path)
         return !(mgr != null && mgr.IsCleanFull());
     }
 
@@ -104,7 +96,6 @@ public class CleanUIManager : MonoBehaviour
     {
         if (item == null || canvas == null || petRect == null) return;
         if (!CanCleanNow()) return;
-
         StartCoroutine(CleanRoutine(item));
     }
 
@@ -139,7 +130,6 @@ public class CleanUIManager : MonoBehaviour
         Destroy(ghost);
         item.gameObject.SetActive(false);
 
-        // Global-first award (percent points)
         var mgr = PetNeedsManager.Instance;
         if (mgr != null)
         {
@@ -157,6 +147,7 @@ public class CleanUIManager : MonoBehaviour
     IEnumerator FoamBurst(Vector3 center, Vector2 size)
     {
         int n = 6;
+        var sprite = bubbleSprite != null ? bubbleSprite : DefaultUISprite();
         for (int i = 0; i < n; i++)
         {
             var bubble = new GameObject("bubble", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
@@ -166,12 +157,18 @@ public class CleanUIManager : MonoBehaviour
             rt.SetParent(canvas.transform, false);
             rt.position  = center + (Vector3)Random.insideUnitCircle * 10f;
             rt.sizeDelta = size * Random.Range(0.7f, 1.2f);
-            img.sprite   = Resources.GetBuiltinResource<Sprite>("UISprite.psd");
+            img.sprite   = sprite;
             img.type     = Image.Type.Sliced;
             img.color    = new Color(1f,1f,1f,0.75f);
             StartCoroutine(RiseFade(rt, cg));
         }
         yield return new WaitForSecondsRealtime(0.25f);
+    }
+
+    static Sprite DefaultUISprite()
+    {
+        var tex = Texture2D.whiteTexture; // 1x1
+        return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
     }
 
     IEnumerator RiseFade(RectTransform rt, CanvasGroup cg)
