@@ -16,3 +16,4 @@ MonoBehaviour:
   Name: Moltenspire slice
   Description: "A cheesy, savory slice that pets can\u2019t resist eating"
   Cost: 35
+  Icon: {fileID: 6048862160296339182, guid: 9fcb9da8444204ec5be3c2ec5eddef85, type: 3}
