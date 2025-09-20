@@ -38,5 +38,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WalkScene.unity
     guid: c7b5a8119dec24882855d3efee2dfa8f
+  - enabled: 1
+    path: Assets/Scenes/InventoryScene.unity
+    guid: e351a93edfa1afe40acf7dcb5081b712
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
