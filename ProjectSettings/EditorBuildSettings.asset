@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/ShopScene.unity
     guid: e302d09238e70400c8e66ce27f760356
   - enabled: 1
+    path: Assets/Scenes/Options Menu.unity
+    guid: 1e90b5903626c5f4c98752a3d0d65be5
+  - enabled: 1
     path: Assets/Scenes/WalkScene.unity
     guid: c7b5a8119dec24882855d3efee2dfa8f
   m_configObjects: {}
