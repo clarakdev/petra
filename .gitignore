@@ -108,3 +108,5 @@ __MACOSX/
 Thumbs.db
 ehthumbs.db
 [Dd]esktop.ini
+# local recovery scenes
+Assets/_Recovery/*
