@@ -1,11 +1,15 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Linq;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviourPunCallbacks
 {
     public Vector2 playerSpawnPosition = new Vector2(-5, -3);
     public Vector2 enemySpawnPosition = new Vector2(5, 3);
+
+    private bool enemyPetSpawned = false;
 
     void Start()
     {
@@ -35,25 +39,46 @@ public class BattleManager : MonoBehaviourPunCallbacks
         if (playerPetBattle != null)
             playerPetBattle.SetFacing(true);
 
-        // Get enemy's selected pet index
+        // Try to spawn enemy's pet if the property is already set
         int enemyPetIndex = GetEnemyPetIndex();
-        Pet enemyPet = null;
+        if (enemyPetIndex >= 0)
+        {
+            TrySpawnEnemyPet(enemyPetIndex);
+        }
+    }
+
+    private void TrySpawnEnemyPet(int enemyPetIndex)
+    {
+        if (enemyPetSpawned) return;
+
         if (enemyPetIndex >= 0 && enemyPetIndex < PetSelectionManager.instance.pets.Length)
         {
-            enemyPet = PetSelectionManager.instance.pets[enemyPetIndex];
-        }
+            Pet enemyPet = PetSelectionManager.instance.pets[enemyPetIndex];
+            if (enemyPet != null && enemyPet.battlePrefab != null)
+            {
+                GameObject enemyPetObj = Instantiate(enemyPet.battlePrefab, enemySpawnPosition, Quaternion.identity);
+                var enemyPetBattle = enemyPetObj.GetComponent<PetBattle>();
+                if (enemyPetBattle != null)
+                    enemyPetBattle.SetFacing(false);
 
-        if (enemyPet == null || enemyPet.battlePrefab == null)
+                enemyPetSpawned = true;
+                Debug.Log("[BattleManager] Enemy pet spawned: " + enemyPet.name);
+            }
+            else
+            {
+                Debug.LogError("[BattleManager] Enemy pet or battle prefab not set.");
+            }
+        }
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        Debug.Log($"[BattleManager] OnPlayerPropertiesUpdate for {targetPlayer.NickName}: {string.Join(", ", changedProps.Keys.Cast<object>())}");
+        if (!targetPlayer.IsLocal && changedProps.ContainsKey("SelectedPetIndex") && !enemyPetSpawned)
         {
-            Debug.LogError("[BattleManager] Enemy pet or battle prefab not set.");
-            return;
+            int enemyPetIndex = (int)changedProps["SelectedPetIndex"];
+            TrySpawnEnemyPet(enemyPetIndex);
         }
-
-        // Spawn enemy's pet (enemy side)
-        GameObject enemyPetObj = Instantiate(enemyPet.battlePrefab, enemySpawnPosition, Quaternion.identity);
-        var enemyPetBattle = enemyPetObj.GetComponent<PetBattle>();
-        if (enemyPetBattle != null)
-            enemyPetBattle.SetFacing(false);
     }
 
     private int GetLocalPetIndex()

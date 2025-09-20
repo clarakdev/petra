@@ -202,4 +202,13 @@ public class RandomBattleQueueManager : MonoBehaviourPunCallbacks, IOnEventCallb
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
+
+    public override void OnJoinedRoom()
+    {
+        // Set the selected pet index as a Photon custom property
+        int selectedIndex = PetSelectionManager.SelectedPetIndex;
+        Hashtable props = new Hashtable { { "SelectedPetIndex", selectedIndex } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        Debug.Log("[RandomBattleQueueManager] Set SelectedPetIndex to " + selectedIndex);
+    }
 }
