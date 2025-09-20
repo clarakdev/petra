@@ -538,19 +538,24 @@ MonoBehaviour:
   - name: Dragon
     cardImage: {fileID: 1899302990910953150, guid: d20572c9c4293f746a130eb5fc66e409, type: 3}
     prefab: {fileID: 23185813275973405, guid: fdcd5b7c747424a43acdbce57f539880, type: 3}
+    battlePrefab: {fileID: 209527818348559992, guid: 9eb159140459d374b927be48782a4a92, type: 3}
   - name: Green
     cardImage: {fileID: -6253924305455870780, guid: 7fa28d274f235ec4cbf5f673a5be10b6, type: 3}
     prefab: {fileID: 2251700885241834489, guid: 96e0f953bf095a34db49087695efbfbf, type: 3}
+    battlePrefab: {fileID: 9184018972141536697, guid: 0ca1b40622df91247a7c2249b06dd8a7, type: 3}
   - name: Yellow
     cardImage: {fileID: 9066517640561864882, guid: ee4764d8ac53f1e4e9a73522a430fd5c, type: 3}
     prefab: {fileID: 3958605840276955232, guid: 23cd55168e3fb6b48a53fd628d5fb359, type: 3}
+    battlePrefab: {fileID: 3151247616614681907, guid: 1764d05e883cc5d4f80a2a40e2ce92b5, type: 3}
   - name: Fox
     cardImage: {fileID: 21300000, guid: 50add926bc85f5b429f9b8a3e7b864ca, type: 3}
     prefab: {fileID: 1267907977136730660, guid: 2f2d7cde0a3200a4582cdfb13b322d6c, type: 3}
+    battlePrefab: {fileID: 4245654182719970470, guid: 27ccd14436cd6904f9e28b4ed0af08aa, type: 3}
   currentPet:
     name: 
     cardImage: {fileID: 0}
     prefab: {fileID: 0}
+    battlePrefab: {fileID: 0}
 --- !u!4 &717873941
 Transform:
   m_ObjectHideFlags: 0
