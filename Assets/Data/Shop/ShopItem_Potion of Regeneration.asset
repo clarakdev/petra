@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d44ad30def65c48fcaa94a1486690a78, type: 3}
+  m_Name: ShopItem_Potion of Regeneration
+  m_EditorClassIdentifier: Assembly-CSharp::ShopItem
+  Category: {fileID: 11400000, guid: bfe1d683d52d04d98a5883812b74ca84, type: 2}
+  Name: 'Potion '
+  Description: Heal 30 damage
+  Cost: 125
+  Icon: {fileID: 1334158145294549958, guid: 17dbd53c4395f49359b229297f417247, type: 3}
