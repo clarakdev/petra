@@ -1974,6 +1974,7 @@ GameObject:
   - component: {fileID: 1409005227}
   - component: {fileID: 1409005226}
   - component: {fileID: 1409005225}
+  - component: {fileID: 1409005228}
   m_Layer: 5
   m_Name: InventoryButton
   m_TagString: Untagged
@@ -2044,7 +2045,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1409005226}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1409005228}
+        m_TargetAssemblyTypeName: SceneSwapper, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: InventoryScene
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1409005226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2083,6 +2096,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409005223}
   m_CullTransparentMesh: 1
+--- !u!114 &1409005228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409005223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
 --- !u!224 &1454861109 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
@@ -2372,6 +2397,7 @@ GameObject:
   - component: {fileID: 1804056860}
   - component: {fileID: 1804056859}
   - component: {fileID: 1804056858}
+  - component: {fileID: 1804056861}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -2442,7 +2468,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1804056859}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1804056861}
+        m_TargetAssemblyTypeName: SceneSwapper, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Options Menu
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1804056859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2481,6 +2519,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1804056856}
   m_CullTransparentMesh: 1
+--- !u!114 &1804056861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804056856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
 --- !u!1 &1993101645
 GameObject:
   m_ObjectHideFlags: 0
