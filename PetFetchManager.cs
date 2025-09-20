@@ -145,7 +145,13 @@ public class PetFetchManager : MonoBehaviour
     public void StartFetch(BallController newBall)
     {
         if (state != State.Idle) return;
-        if (playSatisfaction && playSatisfaction.IsFull()) return;
+        if (playSatisfaction && playSatisfaction.IsFull())
+        {
+            {
+            Debug.Log("[PetFetchManager] Pet is satisfied, won’t fetch anymore.");
+            return;
+            }
+        }
 
         ball = newBall;
         state = State.GoToBall;
