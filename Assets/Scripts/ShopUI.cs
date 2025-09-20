@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -22,7 +21,7 @@ public class ShopUI : MonoBehaviour
     [SerializeField] Purchaser PurchaserRef;
     [SerializeField] string ExitSceneName = "StoreScene";
 
-    IPurchaser CurrentPurchaser;
+    Purchaser CurrentPurchaser;
     ShopItemCategory SelectedCategory;
     ShopItem SelectedItem;
 
@@ -32,19 +31,11 @@ public class ShopUI : MonoBehaviour
 
     void Start()
     {
-        // BEGIN TESTING CODE
-        CurrentPurchaser = PurchaserRef != null
-            ? PurchaserRef
-            : UnityEngine.Object.FindFirstObjectByType<Purchaser>();
-        // END TESTING CODE
-
+        CurrentPurchaser = PurchaserRef ? PurchaserRef : FindFirstObjectByType<Purchaser>();
         RefreshShopUI();
     }
 
-    void Update()
-    {
-        RefreshShopUI_Common();
-    }
+    void Update() => RefreshShopUI_Common();
 
     void RefreshShopUI()
     {
@@ -54,40 +45,28 @@ public class ShopUI : MonoBehaviour
 
     void RefreshShopUI_Common()
     {
-        if (AvailableFunds != null)
-        {
-            if (CurrentPurchaser != null)
-                AvailableFunds.text = $"{(CurrentPurchaser.GetCurrentFunds() / 100f):0.00}";
-            else
-                AvailableFunds.text = string.Empty;
-        }
+        if (AvailableFunds)
+            AvailableFunds.text = CurrentPurchaser ? $"{CurrentPurchaser.GetCurrentCurrency()}" : "";
 
-        if (PurchaseButton != null)
-        {
-            if (CurrentPurchaser != null && SelectedItem != null &&
-                CurrentPurchaser.GetCurrentFunds() >= SelectedItem.Cost)
-                PurchaseButton.interactable = true;
-            else
-                PurchaseButton.interactable = false;
-        }
+        if (PurchaseButton)
+            PurchaseButton.interactable = (CurrentPurchaser && SelectedItem &&
+                                           CurrentPurchaser.GetCurrentCurrency() >= SelectedItem.Cost);
 
         if (ShopItemToUIMap != null)
         {
             foreach (var kvp in ShopItemToUIMap)
             {
-                var item = kvp.Key;
+                var item   = kvp.Key;
                 var itemUI = kvp.Value;
-                if (CurrentPurchaser != null)
-                    itemUI.SetCanAfford(item.Cost <= CurrentPurchaser.GetCurrentFunds());
-                else
-                    itemUI.SetCanAfford(false);
+                bool canAfford = CurrentPurchaser && (item.Cost <= CurrentPurchaser.GetCurrentCurrency());
+                itemUI.SetCanAfford(canAfford);
             }
         }
     }
 
     void RefreshShopUI_Categories()
     {
-        if (CategoryUIRoot == null || CategoryUIPrefab == null) return;
+        if (!CategoryUIRoot || !CategoryUIPrefab) return;
 
         for (int i = CategoryUIRoot.childCount - 1; i >= 0; i--)
             Destroy(CategoryUIRoot.GetChild(i).gameObject);
@@ -120,7 +99,7 @@ public class ShopUI : MonoBehaviour
 
     void RefreshShopUI_Items()
     {
-        if (ItemUIRoot == null || ItemUIPrefab == null) return;
+        if (!ItemUIRoot || !ItemUIPrefab) return;
 
         for (int i = ItemUIRoot.childCount - 1; i >= 0; i--)
             Destroy(ItemUIRoot.GetChild(i).gameObject);
@@ -148,13 +127,11 @@ public class ShopUI : MonoBehaviour
 
     void OnCategorySelected(ShopItemCategory newlySelectedCategory)
     {
-        if (SelectedCategory != null && newlySelectedCategory != null &&
-            SelectedCategory != newlySelectedCategory)
-        {
+        if (SelectedCategory && newlySelectedCategory && SelectedCategory != newlySelectedCategory)
             SelectedItem = null;
-        }
 
         SelectedCategory = newlySelectedCategory;
+
         foreach (var category in ShopCategories)
             ShopCategoryToUIMap[category].SetIsSelected(category == SelectedCategory);
 
@@ -164,21 +141,18 @@ public class ShopUI : MonoBehaviour
     void OnItemSelected(ShopItem newlySelectedItem)
     {
         SelectedItem = newlySelectedItem;
+
         foreach (var kvp in ShopItemToUIMap)
-        {
-            var item = kvp.Key;
-            var itemUI = kvp.Value;
-            itemUI.SetIsSelected(item == SelectedItem);
-        }
+            kvp.Value.SetIsSelected(kvp.Key == SelectedItem);
 
         RefreshShopUI_Common();
     }
 
     public void OnClickedPurchase()
     {
-        if (CurrentPurchaser == null || SelectedItem == null) return;
+        if (!CurrentPurchaser || !SelectedItem) return;
 
-        if (CurrentPurchaser.SpendFunds(SelectedItem.Cost))
+        if (CurrentPurchaser.SpendCurrency(SelectedItem.Cost))
             RefreshShopUI_Common();
     }
 

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3458138025724293291}
   - component: {fileID: 91464096724232252}
   - component: {fileID: 4863467730511914638}
-  - component: {fileID: -8782270526228079643}
+  - component: {fileID: 2248407611919878094}
   m_Layer: 0
   m_Name: Pet_1
   m_TagString: Untagged
@@ -138,7 +138,7 @@ MonoBehaviour:
   backSprite: {fileID: 1910510346092298567, guid: ce64c27679baa034e89ebbd154483585, type: 3}
   leftSprite: {fileID: -2142331283361619701, guid: 71b1b1a19e2c4dd45b58916ed09ef1e1, type: 3}
   rightSprite: {fileID: 4567418850133360861, guid: 4a36e67214c721a468daa3afc91db861, type: 3}
---- !u!114 &-8782270526228079643
+--- !u!114 &2248407611919878094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
