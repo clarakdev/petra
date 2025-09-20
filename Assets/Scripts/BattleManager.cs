@@ -9,9 +9,20 @@ public class BattleManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        // Get local player's selected pet index
+        // Try to get the local player's selected pet index
         int localPetIndex = GetLocalPetIndex();
-        Pet localPet = PetSelectionManager.instance.pets[localPetIndex];
+        Pet localPet = null;
+
+        if (localPetIndex >= 0 && localPetIndex < PetSelectionManager.instance.pets.Length)
+        {
+            localPet = PetSelectionManager.instance.pets[localPetIndex];
+        }
+        else
+        {
+            // Fallback to currentPet if index is not set
+            localPet = PetSelectionManager.instance.currentPet;
+        }
+
         if (localPet == null || localPet.battlePrefab == null)
         {
             Debug.LogError("[BattleManager] Local pet or battle prefab not set.");
@@ -26,7 +37,12 @@ public class BattleManager : MonoBehaviourPunCallbacks
 
         // Get enemy's selected pet index
         int enemyPetIndex = GetEnemyPetIndex();
-        Pet enemyPet = PetSelectionManager.instance.pets[enemyPetIndex];
+        Pet enemyPet = null;
+        if (enemyPetIndex >= 0 && enemyPetIndex < PetSelectionManager.instance.pets.Length)
+        {
+            enemyPet = PetSelectionManager.instance.pets[enemyPetIndex];
+        }
+
         if (enemyPet == null || enemyPet.battlePrefab == null)
         {
             Debug.LogError("[BattleManager] Enemy pet or battle prefab not set.");
@@ -42,30 +58,31 @@ public class BattleManager : MonoBehaviourPunCallbacks
 
     private int GetLocalPetIndex()
     {
-        // Get the local player's selected pet index from custom properties
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("SelectedPetIndex", out object indexObj) && indexObj is int index)
+        if (PhotonNetwork.InRoom && PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("SelectedPetIndex", out object indexObj) && indexObj is int index)
         {
             return index;
         }
-        // Fallback to 0 if not set
-        return 0;
+        // Return -1 if not set
+        return -1;
     }
 
     private int GetEnemyPetIndex()
     {
-        // Find the other player in the room
-        foreach (var kvp in PhotonNetwork.CurrentRoom.Players)
+        if (PhotonNetwork.InRoom)
         {
-            var player = kvp.Value;
-            if (!player.IsLocal)
+            foreach (var kvp in PhotonNetwork.CurrentRoom.Players)
             {
-                if (player.CustomProperties.TryGetValue("SelectedPetIndex", out object indexObj) && indexObj is int index)
+                var player = kvp.Value;
+                if (!player.IsLocal)
                 {
-                    return index;
+                    if (player.CustomProperties.TryGetValue("SelectedPetIndex", out object indexObj) && indexObj is int index)
+                    {
+                        return index;
+                    }
                 }
             }
         }
-        // Fallback to 0 if not found
-        return 0;
+        // Return -1 if not found
+        return -1;
     }
 }
