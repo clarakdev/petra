@@ -6,15 +6,15 @@ public class CleanUIManager : MonoBehaviour
 {
     [Header("UI Refs")]
     public Canvas canvas;
-    public PanelProgressBar cleanBar;
+    public PanelProgressBar cleanBar;    // seeds global once
     public RectTransform petRect;
 
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
-    public Sprite bubbleSprite; // optional; fallback is a 1x1 white sprite created in code
+    public Sprite bubbleSprite; // optional; fallback is 1x1 white created in code
 
     [Header("Popup at exactly 50%")]
-    [Tooltip("If true, this script listens to PetNeedsManager.OnCleanHit50 (fires only when clean becomes exactly 50).\n" +
+    [Tooltip("Listens to PetNeedsManager.OnCleanHit50 (fires only when Clean becomes exactly 50).\n" +
              "If GlobalNotifier is auto-subscribing, we do NOT also subscribe here.")]
     public bool ensure50Popup = true;
     public string clean50Message = "Time to clean your pet!";
@@ -32,6 +32,7 @@ public class CleanUIManager : MonoBehaviour
     }
 
     void OnEnable()  { TrySubscribe50(); }
+
     void Start()
     {
         // Bind pet image if available
@@ -41,6 +42,7 @@ public class CleanUIManager : MonoBehaviour
             if (petImage != null)
             {
                 petRect = petImage.RectTransform;
+
                 var sel = PetSelectionManager.instance;
                 if (sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
                     petImage.SetPet(sel.currentPet.cardImage);
@@ -54,9 +56,11 @@ public class CleanUIManager : MonoBehaviour
                 petImage.SetPet(sel.currentPet.cardImage);
         }
     }
+
     void OnDisable() { Unsubscribe50(); }
     void OnDestroy() { Unsubscribe50(); }
 
+    // ---- 50% popup wiring (without duplicates) ----
     void TrySubscribe50()
     {
         if (_subscribed50 || !ensure50Popup) return;
@@ -85,10 +89,12 @@ public class CleanUIManager : MonoBehaviour
         var gn = GlobalNotifier.Instance;
         if (gn != null) gn.ShowToast(clean50Message, gn.toastHoldSeconds);
     }
+    // -----------------------------------------------
 
     public bool CanCleanNow()
     {
         var mgr = PetNeedsManager.Instance;
+        // If global exists and is full, cannot clean. If global missing, allow (fallback path)
         return !(mgr != null && mgr.IsCleanFull());
     }
 
@@ -96,6 +102,7 @@ public class CleanUIManager : MonoBehaviour
     {
         if (item == null || canvas == null || petRect == null) return;
         if (!CanCleanNow()) return;
+
         StartCoroutine(CleanRoutine(item));
     }
 
@@ -130,6 +137,7 @@ public class CleanUIManager : MonoBehaviour
         Destroy(ghost);
         item.gameObject.SetActive(false);
 
+        // Global-first award (percent points)
         var mgr = PetNeedsManager.Instance;
         if (mgr != null)
         {

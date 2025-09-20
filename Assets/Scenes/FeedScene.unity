@@ -170,9 +170,9 @@ MonoBehaviour:
   canvas: {fileID: 1766164395}
   hungerBar: {fileID: 375030277}
   petRect: {fileID: 1112481295}
-  hungerDecayPerMinute: 1
-  fullPauseMinutes: 20
   petFX: {fileID: 0}
+  ensure50Popup: 1
+  feed50Message: Time to feed your pet!
 --- !u!1 &375030274
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,7 +1540,6 @@ GameObject:
   - component: {fileID: 1766164395}
   - component: {fileID: 1766164394}
   - component: {fileID: 1766164393}
-  - component: {fileID: 1766164397}
   m_Layer: 5
   m_Name: FeedCanvas
   m_TagString: Untagged
@@ -1634,18 +1633,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1766164397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1766164392}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e65324cb9bbec417d8a7ae68f0c4ad2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PetStatsBootstrap
 --- !u!1 &2012595781
 GameObject:
   m_ObjectHideFlags: 0

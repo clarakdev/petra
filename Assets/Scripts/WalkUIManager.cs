@@ -6,21 +6,21 @@ using UnityEngine.UI;
 public class WalkUIManager : MonoBehaviour
 {
     [Header("UI (optional)")]
-    public PanelProgressBar walkBar;  // seeds global once if needed
-    public Canvas canvas;             // only needed if you want confetti FX
+    public PanelProgressBar walkBar;   // seeds global once if needed
+    public Canvas canvas;              // only for optional confetti FX
 
     [Header("Pet celebration")]
     public Transform pet;
     public Animator  petAnimator;
-    public string    happyTrigger = "Happy";
-    public float     jumpHeight = 1.1f;
-    public float     jumpUpDuration = 0.28f;
-    public float     jumpDownDuration = 0.22f;
+    public string    happyTrigger    = "Happy";
+    public float     jumpHeight      = 1.1f;
+    public float     jumpUpDuration  = 0.28f;
+    public float     jumpDownDuration= 0.22f;
     public float     secondJumpDelay = 0.08f;
 
     [Header("Exactly 50% popup")]
-    [Tooltip("Listens to PetNeedsManager.OnWalkHit50 (fires ONLY when walk becomes exactly 50).\n" +
-             "If GlobalNotifier is auto-subscribing, this script will not also subscribe.")]
+    [Tooltip("Listens to PetNeedsManager.OnWalkHit50 (fires ONLY when walk becomes exactly 50). " +
+             "If GlobalNotifier.autoSubscribe is true, this script will not also subscribe.")]
     public bool enableLocalWalk50Pop = true;
 
     [Header("Optional confetti FX at 50%")]
@@ -54,7 +54,6 @@ public class WalkUIManager : MonoBehaviour
     void OnDestroy() { UnsubscribeWalk50();  }
 
     // Subscribe to the EXACT-50 event from PetNeedsManager.
-    // NOTE: PetNeedsManager must implement exact-50 logic (RoundToInt, prev>50 && curr==50).
     void TrySubscribeWalk50()
     {
         if (!enableLocalWalk50Pop || _listening) return;
@@ -165,7 +164,7 @@ public class WalkUIManager : MonoBehaviour
         pet.position = basePos;
     }
 
-    // ===== Optional confetti FX (spawns temporary UI under 'canvas' and destroys it) =====
+    // ===== Optional confetti FX (temporary UI; auto-destroy) =====
     IEnumerator ConfettiBurst()
     {
         if (canvas == null) yield break;
@@ -206,7 +205,6 @@ public class WalkUIManager : MonoBehaviour
             if (cg) cg.alpha = 1f - k;
             yield return null;
         }
-        // clean up temporary UI
         Destroy(rt.gameObject);
     }
 

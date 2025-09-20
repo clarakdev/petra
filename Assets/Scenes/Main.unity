@@ -2733,6 +2733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoSubscribe: 1
+  filterByActiveSceneContext: 1
   toastHoldSeconds: 4
   fadeInSeconds: 0.15
   fadeOutSeconds: 0.35
