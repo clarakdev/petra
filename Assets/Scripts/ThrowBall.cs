@@ -11,6 +11,9 @@ public class ThrowBall : MonoBehaviour
     private Transform hand;
     private Camera cam;
 
+    // 👇 NEW: reference to your PlaySatisfaction script
+    [SerializeField] private PlaySatisfaction playSatisfaction;
+
     void Awake()
     {
         ball = GetComponent<BallController>();
@@ -22,6 +25,10 @@ public class ThrowBall : MonoBehaviour
             player = p.transform;
             hand = player.Find("Hand");
         }
+
+        // auto-find if not set in Inspector
+        if (!playSatisfaction)
+            playSatisfaction = FindFirstObjectByType<PlaySatisfaction>();
     }
 
     void Start()
@@ -31,6 +38,10 @@ public class ThrowBall : MonoBehaviour
 
     void Update()
     {
+        // 👇 NEW: block throwing if the bar is full
+        if (playSatisfaction && playSatisfaction.IsFull())
+            return;
+
         bool throwPressed =
             (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame) ||
             (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame);
@@ -50,7 +61,7 @@ public class ThrowBall : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(ThrowToPoint(target));
 
-        var pet = FindFirstObjectByType<PetFetchAI2D>();
+        var pet = FindFirstObjectByType<PetFetchManager>();
         if (pet) pet.StartFetch(ball);
     }
 
