@@ -4,7 +4,7 @@ using Photon.Realtime;
 using System.Linq;
 using UnityEngine;
 
-public class BattleManager : MonoBehaviourPunCallbacks
+public class PetBattleSpawner : MonoBehaviourPunCallbacks
 {
     public Vector2 playerSpawnPosition = new Vector2(-5, -3);
     public Vector2 enemySpawnPosition = new Vector2(5, 3);
