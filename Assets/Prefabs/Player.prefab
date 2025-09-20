@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 416247240478394418}
   - component: {fileID: 7478861960228725581}
   - component: {fileID: 5520640840320967201}
-  - component: {fileID: -974607405697330880}
+  - component: {fileID: 7043385708214960962}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -256,7 +256,7 @@ MonoBehaviour:
   backSprite: {fileID: 2924904497570240377, guid: ab6b7b10f31da2b4d8b5f2d96732f36d, type: 3}
   leftSprite: {fileID: -1400324742880364754, guid: bb735f0065aeb054892a27246f48e7d0, type: 3}
   rightSprite: {fileID: -9159370002540710823, guid: ca09e8963724f0d4e97d3b1d7607ce10, type: 3}
---- !u!114 &-974607405697330880
+--- !u!114 &7043385708214960962
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
