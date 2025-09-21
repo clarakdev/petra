@@ -193,12 +193,12 @@ public class RandomBattleQueueManager : MonoBehaviourPunCallbacks, IOnEventCallb
         }
     }
 
-    private void OnEnable()
+    private new void OnEnable()
     {
         PhotonNetwork.AddCallbackTarget(this);
     }
 
-    private void OnDisable()
+    private new void OnDisable()
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
