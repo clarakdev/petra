@@ -2,26 +2,21 @@ using System.Collections;
 using UnityEngine;
 
 /// Keeps a PanelProgressBar synced with one need in PetNeedsManager.
-/// No global enums used — this component has its own local selector.
 [RequireComponent(typeof(PanelProgressBar))]
 [DisallowMultipleComponent]
 public class PetNeedBarBinder : MonoBehaviour
 {
     public enum Need { Walk, Clean, Feed, Fetch }
-    public enum Need { Walk, Clean, Feed }
 
     [Header("Bind To")]
     [SerializeField] private Need need = Need.Walk;
 
     [Header("UI")]
-    public PanelProgressBar bar;
+    public PanelProgressBar bar;   // auto-filled if left empty
 
     PetNeedsManager _petMgr;       // Walk/Clean/Feed
     FetchNeedManager _fetchMgr;    // Fetch
 
-    public PanelProgressBar bar;   // auto-filled if left empty
-
-    PetNeedsManager _mgr;
     bool _subscribed;
     Coroutine _bindRoutine;
 
@@ -33,16 +28,12 @@ public class PetNeedBarBinder : MonoBehaviour
 #if UNITY_EDITOR
     void OnValidate()
     {
-
-        // Helpful in editor: auto-fill bar if missing.
         if (!bar) bar = GetComponent<PanelProgressBar>();
     }
 #endif
 
     void OnEnable()
     {
-
-        // (Re)bind when enabled (avoid double-start)
         if (_bindRoutine == null)
             _bindRoutine = StartCoroutine(BindWhenReady());
     }
@@ -55,31 +46,14 @@ public class PetNeedBarBinder : MonoBehaviour
 
     void OnDestroy() => Unsubscribe();
 
-    public void SetNeed(Need newNeed)
-    {
-        if (need == newNeed) return;
-        Unsubscribe();
-        need = newNeed;
-
-        Unsubscribe(); // uses current 'need'
-    }
-
-    void OnDestroy()
-    {
-        Unsubscribe();
-    }
-
     /// Public API to switch which need this bar shows at runtime.
     public void SetNeed(Need newNeed)
     {
         if (need == newNeed) return;
 
-        // IMPORTANT: unsubscribe from the OLD need first
-        Unsubscribe();
-
+        Unsubscribe(); // unsubscribe from the OLD need first
         need = newNeed;
 
-        // Rebind to the new event
         if (isActiveAndEnabled)
         {
             if (_bindRoutine != null) { StopCoroutine(_bindRoutine); _bindRoutine = null; }
@@ -109,22 +83,10 @@ public class PetNeedBarBinder : MonoBehaviour
                 case Need.Clean: _petMgr.InitializeCleanIfUnset(bar.value); break;
                 case Need.Feed:  _petMgr.InitializeFeedIfUnset (bar.value); break;
             }
-        // Wait until PetNeedsManager exists (no Update() polling)
-        while ((_mgr = PetNeedsManager.Instance) == null)
-            yield return null;
-
-        // Seed global once from the bar (only if not already persisted)
-        switch (need)
-        {
-            case Need.Walk:  _mgr.InitializeWalkIfUnset (bar.value); break;
-            case Need.Clean: _mgr.InitializeCleanIfUnset(bar.value); break;
-            case Need.Feed:  _mgr.InitializeFeedIfUnset (bar.value); break;
         }
 
         Subscribe();
         PushCurrentToBar();
-
-        // Done binding
         _bindRoutine = null;
     }
 
@@ -157,25 +119,6 @@ public class PetNeedBarBinder : MonoBehaviour
                     _petMgr.OnFeedChanged.AddListener(OnValueChanged);
                     break;
             }
-        if (_mgr == null || _subscribed) return;
-
-        // Idempotent: remove then add for safety
-        switch (need)
-        {
-            case Need.Walk:
-                _mgr.OnWalkChanged.RemoveListener(OnValueChanged);
-                _mgr.OnWalkChanged.AddListener(OnValueChanged);
-                break;
-
-            case Need.Clean:
-                _mgr.OnCleanChanged.RemoveListener(OnValueChanged);
-                _mgr.OnCleanChanged.AddListener(OnValueChanged);
-                break;
-
-            case Need.Feed:
-                _mgr.OnFeedChanged.RemoveListener(OnValueChanged);
-                _mgr.OnFeedChanged.AddListener(OnValueChanged);
-                break;
         }
 
         _subscribed = true;
@@ -201,13 +144,6 @@ public class PetNeedBarBinder : MonoBehaviour
                     case Need.Feed:  _petMgr.OnFeedChanged .RemoveListener(OnValueChanged); break;
                 }
             }
-        if (!_subscribed || _mgr == null) { _subscribed = false; return; }
-
-        switch (need)
-        {
-            case Need.Walk:  _mgr.OnWalkChanged .RemoveListener(OnValueChanged); break;
-            case Need.Clean: _mgr.OnCleanChanged.RemoveListener(OnValueChanged); break;
-            case Need.Feed:  _mgr.OnFeedChanged .RemoveListener(OnValueChanged); break;
         }
 
         _subscribed = false;
@@ -234,16 +170,6 @@ public class PetNeedBarBinder : MonoBehaviour
             };
             bar.SetValue(v);
         }
-        if (bar == null || _mgr == null) return;
-
-        float v = need switch
-        {
-            Need.Walk  => _mgr.walk,
-            Need.Clean => _mgr.clean,
-            _          => _mgr.feed
-        };
-
-        bar.SetValue(v);
     }
 
     void OnValueChanged(float v)

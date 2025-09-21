@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
@@ -15,50 +14,35 @@ public class GlobalNotifier : MonoBehaviour
     public bool autoSubscribe = true;
 
     [Header("Toast Settings")]
-    public float   toastHoldSeconds = 4.0f;
-    public float   fadeInSeconds    = 0.15f;
-    public float   fadeOutSeconds   = 0.35f;
-    public Vector2 toastSize        = new Vector2(720, 90);
-    public Vector2 toastRise        = new Vector2(0, 70);
-    [Tooltip("If true, auto-subscribes to PetNeedsManager 50% events in code. " +
-             "If you wire events in the Inspector instead, turn this OFF to avoid double toasts.")]
-    public bool autoSubscribe = true;
-
-    [Header("Toast Settings")]
     [Tooltip("How long the toast stays fully visible (not counting fade in/out).")]
-    public float   toastHoldSeconds = 4.0f;
+    public float toastHoldSeconds = 4.0f;
     [Tooltip("Fade-in time for the toast.")]
-    public float   fadeInSeconds    = 0.15f;
+    public float fadeInSeconds = 0.15f;
     [Tooltip("Fade-out time for the toast.")]
-    public float   fadeOutSeconds   = 0.35f;
+    public float fadeOutSeconds = 0.35f;
     [Tooltip("Toast panel size (px).")]
-    public Vector2 toastSize        = new Vector2(720, 90);
+    public Vector2 toastSize = new Vector2(720, 90);
     [Tooltip("How far the toast rises during fade-in (px).")]
-    public Vector2 toastRise        = new Vector2(0, 70);
+    public Vector2 toastRise = new Vector2(0, 70);
     [Tooltip("Toast font size.")]
-    public int     toastFontSize    = 30;
+    public int toastFontSize = 30;
 
     const float EXACT_EPS = 0.0001f;
 
     Canvas _canvas;
     RectTransform _root;
 
-    // Track what we’re bound to so we can safely unsubscribe/rebind
+    // Core needs (walk/clean/feed)
     bool _subscribedCore;
-    PetNeedsManager  _boundCore;
+    PetNeedsManager _boundCore;
 
+    // Fetch need
     bool _subscribedFetch;
     FetchNeedManager _boundFetch;
 
-    // one-time exact-50 on startup (don’t reset per scene)
+    // one-time startup check (don’t reset per scene)
     bool _didInitialCheck;
     bool _initialWalkShown, _initialCleanShown, _initialFeedShown, _initialFetchShown;
-    bool _subscribed;
-    PetNeedsManager _boundMgr; // track which manager we’re listening to
-
-    // one-time “exactly 50 at startup” guards (do NOT reset on scene change)
-    bool _initialWalkShown, _initialCleanShown, _initialFeedShown;
-    bool _didInitialCheck;
 
     void Awake()
     {
@@ -69,7 +53,6 @@ public class GlobalNotifier : MonoBehaviour
         BuildCanvas();
         TrySubscribeCore(true);
         TrySubscribeFetch(true);
-        TrySubscribe(force:true);
         MaybeShowInitialIfExactly50();
 
         SceneManager.activeSceneChanged += OnSceneChanged;
@@ -80,7 +63,6 @@ public class GlobalNotifier : MonoBehaviour
         SceneManager.activeSceneChanged -= OnSceneChanged;
         UnsubscribeCore();
         UnsubscribeFetch();
-        Unsubscribe();
     }
 
     void Update()
@@ -88,18 +70,14 @@ public class GlobalNotifier : MonoBehaviour
         // Rebind if managers are recreated/swapped
         TrySubscribeCore(false);
         TrySubscribeFetch(false);
-        // If manager got recreated or we lost binding, rebind.
-        TrySubscribe(force:false);
     }
 
     void OnSceneChanged(Scene _, Scene __)
     {
         if (_canvas == null) BuildCanvas();
         _canvas.sortingOrder = 5000;
-
         TrySubscribeCore(false);
         TrySubscribeFetch(false);
-        // no per-scene initial toasts
     }
 
     // -------- Core (walk/clean/feed) --------
@@ -112,33 +90,16 @@ public class GlobalNotifier : MonoBehaviour
         if (force || !_subscribedCore || _boundCore != mgr)
         {
             UnsubscribeCore();
-        // Rebind if manager instance changed on this scene
-        TrySubscribe(force:false);
-        // No initial per-scene toasts; only once at app start.
-    }
-
-    // -------- Subscriptions --------
-
-    void TrySubscribe(bool force)
-    {
-        if (!autoSubscribe) return;
-
-        var mgr = PetNeedsManager.Instance;
-        if (mgr == null) return;
-
-        // If bound manager changed (or we were never bound), rebind
-        if (force || !_subscribed || _boundMgr != mgr)
-        {
-            Unsubscribe(); // safe no-op if nothing bound
 
             mgr.OnWalkHit50 .AddListener(OnWalkHit50);
             mgr.OnCleanHit50.AddListener(OnCleanHit50);
             mgr.OnFeedHit50 .AddListener(OnFeedHit50);
 
-            _boundCore     = mgr;
+            _boundCore = mgr;
             _subscribedCore = true;
         }
     }
+
     void UnsubscribeCore()
     {
         if (!_subscribedCore) return;
@@ -162,13 +123,12 @@ public class GlobalNotifier : MonoBehaviour
         if (force || !_subscribedFetch || _boundFetch != fm)
         {
             UnsubscribeFetch();
-
             fm.OnFetchHit50.AddListener(OnFetchHit50);
-
-            _boundFetch     = fm;
+            _boundFetch = fm;
             _subscribedFetch = true;
         }
     }
+
     void UnsubscribeFetch()
     {
         if (!_subscribedFetch) return;
@@ -185,32 +145,6 @@ public class GlobalNotifier : MonoBehaviour
     void OnFetchHit50() => ShowToast("Time to play fetch!",    toastHoldSeconds);
 
     // -------- UI build / toast --------
-            _boundMgr   = mgr;
-            _subscribed = true;
-        }
-    }
-
-    void Unsubscribe()
-    {
-        if (!_subscribed) return;
-
-        if (_boundMgr != null)
-        {
-            _boundMgr.OnWalkHit50 .RemoveListener(OnWalkHit50);
-            _boundMgr.OnCleanHit50.RemoveListener(OnCleanHit50);
-            _boundMgr.OnFeedHit50 .RemoveListener(OnFeedHit50);
-        }
-
-        _boundMgr   = null;
-        _subscribed = false;
-    }
-
-    void OnWalkHit50 () => ShowToast("Time to walk your pet!",  toastHoldSeconds);
-    void OnCleanHit50() => ShowToast("Time to clean your pet!", toastHoldSeconds);
-    void OnFeedHit50 () => ShowToast("Time to feed your pet!",  toastHoldSeconds);
-
-    // -------- UI build / toast --------
-
     void BuildCanvas()
     {
         var go = new GameObject("GlobalNotifierCanvas",
@@ -301,8 +235,8 @@ public class GlobalNotifier : MonoBehaviour
 
         if (bg) Destroy(bg.gameObject);
     }
+
     // -------- Startup-only exact-50 check (includes Fetch) --------
-    // -------- Initial (startup-only) exact-50 check --------
     void MaybeShowInitialIfExactly50()
     {
         if (_didInitialCheck) return;
@@ -322,10 +256,5 @@ public class GlobalNotifier : MonoBehaviour
             _initialFetchShown = true;
             ShowToast("Time to play fetch!", toastHoldSeconds);
         }
-        if (needs == null) return;
-
-        if (!_initialWalkShown  && Mathf.Abs(needs.walk  - 50f) < EXACT_EPS) { _initialWalkShown  = true; ShowToast("Time to walk your pet!",  toastHoldSeconds); }
-        if (!_initialCleanShown && Mathf.Abs(needs.clean - 50f) < EXACT_EPS) { _initialCleanShown = true; ShowToast("Time to clean your pet!", toastHoldSeconds); }
-        if (!_initialFeedShown  && Mathf.Abs(needs.feed  - 50f) < EXACT_EPS) { _initialFeedShown  = true; ShowToast("Time to feed your pet!",  toastHoldSeconds); }
     }
 }
