@@ -2519,12 +2519,99 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1804056856}
   m_CullTransparentMesh: 1
+--- !u!1 &1815857328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1815857331}
+  - component: {fileID: 1815857330}
+  - component: {fileID: 1815857329}
+  m_Layer: 0
+  m_Name: GlobalSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1815857329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815857328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16ad143a37d8a4aada3611b0ea75c57f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walk: 100
+  clean: 100
+  feed: 100
+  walkDrainPerMinute: 0.6
+  cleanDrainPerMinute: 0.8
+  feedDrainPerMinute: 1.5
+  walkFullPauseMinutes: 20
+  cleanFullPauseMinutes: 20
+  feedFullPauseMinutes: 20
+  OnWalkChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCleanChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFeedChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWalkHit50:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCleanHit50:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFeedHit50:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1815857330
 --- !u!114 &1804056861
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815857328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f33a03552a7564d1fb9ade2997145312, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoSubscribe: 1
+  filterByActiveSceneContext: 1
+  toastHoldSeconds: 4
+  fadeInSeconds: 0.15
+  fadeOutSeconds: 0.35
+  toastSize: {x: 720, y: 90}
+  toastRise: {x: 0, y: 70}
+  toastFontSize: 30
+--- !u!4 &1815857331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815857328}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_GameObject: {fileID: 1804056856}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -2913,3 +3000,4 @@ SceneRoots:
   - {fileID: 992114386}
   - {fileID: 971256662}
   - {fileID: 326316006}
+  - {fileID: 1815857331}
