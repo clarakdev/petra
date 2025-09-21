@@ -21,6 +21,8 @@ public class WalkUIManager : MonoBehaviour
     [Header("Exactly 50% popup")]
     [Tooltip("Listens to PetNeedsManager.OnWalkHit50 (fires ONLY when walk becomes exactly 50). " +
              "If GlobalNotifier.autoSubscribe is true, this script will not also subscribe.")]
+    public bool ensure50Popup = true;                         // <— renamed to match Clean
+    public string walk50Message = "Time to walk your pet!";   // <— editable message
     public bool enableLocalWalk50Pop = true;
 
     [Header("Optional confetti FX at 50%")]
@@ -56,6 +58,7 @@ public class WalkUIManager : MonoBehaviour
     // Subscribe to the EXACT-50 event from PetNeedsManager.
     void TrySubscribeWalk50()
     {
+        if (!ensure50Popup || _listening) return;
         if (!enableLocalWalk50Pop || _listening) return;
 
         var needs = PetNeedsManager.Instance;
@@ -70,6 +73,7 @@ public class WalkUIManager : MonoBehaviour
             _onWalk50 = () =>
             {
                 var gn = GlobalNotifier.Instance;
+                if (gn != null) gn.ShowToast(walk50Message, gn.toastHoldSeconds); // use editable message
                 if (gn != null) gn.ShowToast("Time to walk your pet!", gn.toastHoldSeconds);
                 TriggerPetHappy();
                 if (playConfettiAt50) StartCoroutine(ConfettiBurst());
