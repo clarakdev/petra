@@ -930,13 +930,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FetchUIManager
   panelBar: {fileID: 595354567}
   slider: {fileID: 885690770}
-  rewardPercent: 60
-  resetAfterAward: 1
-  showToastOnFull: 1
-  toastTextOnFull: Fetch complete! +60%
-  OnBecameFull:
-    m_PersistentCalls:
-      m_Calls: []
   OnProgress:
     m_PersistentCalls:
       m_Calls: []
@@ -1255,6 +1248,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -974607405697330880, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.91
@@ -1649,10 +1646,9 @@ MonoBehaviour:
   addPerFetch: 15
   decayPerMinute: 2
   fullPauseMinutes: 5
-  awardPercentOnFull: 60
-  resetSliderAfterAward: 1
-  showToastOnFull: 1
-  toastTextOnFull: Fetch complete! +60%
+  OnBecameFull:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2058894604
 GameObject:
   m_ObjectHideFlags: 0
@@ -1811,6 +1807,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  awardPerThrowPercent: 10
   playSatisfaction: {fileID: 0}
 --- !u!58 &2058894609
 CircleCollider2D:

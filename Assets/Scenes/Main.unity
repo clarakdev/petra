@@ -578,6 +578,119 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &750704807
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 750704809}
+  - component: {fileID: 750704808}
+  - component: {fileID: 750704811}
+  - component: {fileID: 750704810}
+  m_Layer: 0
+  m_Name: GlobalSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &750704808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750704807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f33a03552a7564d1fb9ade2997145312, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GlobalNotifier
+  autoSubscribe: 1
+  toastHoldSeconds: 4
+  fadeInSeconds: 0.15
+  fadeOutSeconds: 0.35
+  toastSize: {x: 720, y: 90}
+  toastRise: {x: 0, y: 70}
+  toastFontSize: 30
+--- !u!4 &750704809
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750704807}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1061.8066, y: 546.7934, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &750704810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750704807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ffe448adaa8f46c19592f5149ee8a54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FetchNeedManager
+  fetch: 100
+  fetchDrainPerMinute: 1
+  fetchFullPauseMinutes: 20
+  OnFetchChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFetchHit50:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &750704811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750704807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc6f6be4743ad4493b431c56670fdb97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetNeedsManager
+  walk: 100
+  clean: 100
+  feed: 100
+  walkDrainPerMinute: 0.6
+  cleanDrainPerMinute: 0.8
+  feedDrainPerMinute: 1.5
+  walkFullPauseMinutes: 20
+  cleanFullPauseMinutes: 20
+  feedFullPauseMinutes: 20
+  OnWalkChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCleanChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFeedChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnWalkHit50:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCleanHit50:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFeedHit50:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &856155199
 GameObject:
   m_ObjectHideFlags: 0
@@ -2232,3 +2345,4 @@ SceneRoots:
   - {fileID: 721295273}
   - {fileID: 8897529577184378002}
   - {fileID: 5384448073018853174}
+  - {fileID: 750704809}
