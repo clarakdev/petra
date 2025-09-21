@@ -9,7 +9,7 @@ public class ThrowBall : MonoBehaviour
 
     [Header("Per-throw award")]
     [Tooltip("Percent points added to the Fetch need each time you throw.")]
-    public float awardPerThrowPercent = 10f;
+    public float awardPerThrowPercent = 10f;   // +10% per throw
 
     private BallController ball;
     private Transform player;
@@ -43,9 +43,13 @@ public class ThrowBall : MonoBehaviour
 
     void Update()
     {
-        // Block throwing while the session Slider is full
-        if (playSatisfaction && playSatisfaction.IsFull())
+        // Hard block throwing while either meter is full/locked
+        var fm = FetchNeedManager.Instance;
+        if ((playSatisfaction && playSatisfaction.IsFull()) ||
+            (fm != null && fm.IsFetchFull()))
             return;
+
+        if (Mouse.current == null && Keyboard.current == null) return;
 
         bool throwPressed =
             (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame) ||
@@ -57,7 +61,7 @@ public class ThrowBall : MonoBehaviour
 
     void Throw()
     {
-        // 1) Award +10% to Fetch immediately on throw
+        // 1) Award +10% to Fetch immediately on throw (if not full)
         var fm = FetchNeedManager.Instance;
         if (fm != null && !fm.IsFetchFull())
         {
@@ -66,15 +70,19 @@ public class ThrowBall : MonoBehaviour
             // Tiny toast each throw
             GlobalNotifier.Instance?.ShowToast(
                 $"+{awardPerThrowPercent:0.#}% fetch XP",
-                GlobalNotifier.Instance.toastHoldSeconds * 0.6f // shorter toast
+                GlobalNotifier.Instance ? GlobalNotifier.Instance.toastHoldSeconds * 0.6f : 2f
             );
         }
 
         // 2) Normal throw behaviour
         ball.SetFlying();
 
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector3 target = cam.ScreenToWorldPoint(mousePos);
+        Vector3 target = transform.position;
+        if (Mouse.current != null && cam != null)
+        {
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            target = cam.ScreenToWorldPoint(mousePos);
+        }
         target.z = hand ? hand.position.z : 0f;
 
         StopAllCoroutines();
