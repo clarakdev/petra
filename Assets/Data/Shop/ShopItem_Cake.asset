@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ShopItem_Cake
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: c3e9473f8f5d34228beb66d3ce2f32ae, type: 2}
-  Name: Cake
+  Name: Everdawn Pie
   Description: A sweet treat for your special pet
-  Cost: 5000
+  Cost: 50
+  Icon: {fileID: 21300000, guid: 489912c6941fa9b48bf20fb07eb6d7a5, type: 3}

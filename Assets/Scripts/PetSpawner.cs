@@ -1,32 +1,37 @@
 using Photon.Pun;
 using UnityEngine;
-
+using System.Collections;
 
 public class PetSpawner : MonoBehaviour
 {
-    [SerializeField] private Canvas uiCanvas;
-
     private void Start()
     {
-        Debug.Log("[PetSpawner] Spawned at: " + transform.position);
+        var sel = PetSelectionManager.instance?.currentPet;
+        if (sel == null || sel.prefab == null) return;
 
-        var pet = PetSelectionManager.instance?.currentPet;
-        if (pet == null || pet.prefab == null)
-        {
-            return;
-        }
-
-        // Find the player and spawn the pet next to them
         var player = GameObject.Find("Player");
-        Vector3 spawnPosition = player != null ? player.transform.position + new Vector3(1, 0, 0) : Vector3.zero;
+        Vector3 spawnPos = player ? player.transform.position + new Vector3(1, 0, 0) : Vector3.zero;
 
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        GameObject petGO = (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+            ? PhotonNetwork.Instantiate(sel.prefab.name, spawnPos, Quaternion.identity)
+            : Instantiate(sel.prefab, spawnPos, Quaternion.identity);
+
+        StartCoroutine(WireToUIWhenReady(petGO));
+    }
+
+    IEnumerator WireToUIWhenReady(GameObject petGO)
+    {
+        WalkUIManager mgr = null;
+        float timeout = Time.time + 2f; // try up to 2 seconds
+        while (mgr == null && Time.time < timeout)
         {
-             PhotonNetwork.Instantiate(pet.prefab.name, spawnPosition, Quaternion.identity);
+            mgr = FindObjectOfType<WalkUIManager>();
+            if (mgr == null) yield return null;
         }
-        else
+        if (mgr)
         {
-            Instantiate(pet.prefab, spawnPosition, Quaternion.identity);
+            mgr.pet = petGO.transform;
+            mgr.petAnimator = petGO.GetComponent<Animator>(); // ok if null
         }
     }
 }

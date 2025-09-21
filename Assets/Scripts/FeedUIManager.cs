@@ -1,36 +1,46 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
+[DisallowMultipleComponent]
 public class FeedUIManager : MonoBehaviour
 {
     [Header("UI Refs")]
     public Canvas canvas;
-    public PanelProgressBar hungerBar;
-    public RectTransform petRect;      // auto-bound in Start if left empty
+    public PanelProgressBar hungerBar;    // seeds global once
+    public RectTransform petRect;
+
+    [Header("Drain (local scene – leave 0)")]
+    public float hungerDecayPerMinute = 0f; // not used; global owns decay
+    public float fullPauseMinutes     = 20f; // legacy; global handles 100% pause
 
     [Header("FX (optional)")]
     public PetEmotionFX petFX;
 
-    [Header("Tuning")]
-    public float hungerDecayPerMinute = 0.5f;  // try 6.0 while testing
-    public float fullPauseMinutes     = 20f;   // pause decay after hitting 100%
+    [Header("Popup at exactly 50%")]
+    [Tooltip("Listens to PetNeedsManager.OnFeedHit50 (fires only when feed becomes exactly 50).\n" +
+             "If GlobalNotifier is auto-subscribing, we do NOT also subscribe here.")]
+    public bool ensure50Popup = true;
+    public string feed50Message = "Time to feed your pet!";
 
-    float _current;               // 0..100
-    bool  _isConsuming = false;   // blocks a second feed while animating
-    bool  _animating   = false;   // blocks Update while AnimateTo runs
-    float _decayResumeTime = -1f;
+    bool _subscribed50;
 
     void Awake()
     {
-        if (canvas == null) canvas = GetComponentInParent<Canvas>();
-        _current = hungerBar ? hungerBar.value : 0f;
-        if (hungerBar) hungerBar.SetValue(_current);
+        if (!canvas) canvas = GetComponentInParent<Canvas>();
+
+        // Seed global once from the bar (safe no-op if already persisted/seeded)
+        var mgr = PetNeedsManager.Instance;
+        if (mgr != null && hungerBar != null)
+            mgr.InitializeFeedIfUnset(hungerBar.value);
     }
+
+    void OnEnable()  { TrySubscribe50(); }
 
     void Start()
     {
-        // Auto-bind the pet image/rect and make sure the selected pet sprite is shown.
+        // Auto-bind pet rect & sprite
         if (petRect == null)
         {
             var petImg = FindFirstObjectByType<PetImage>();
@@ -38,53 +48,73 @@ public class FeedUIManager : MonoBehaviour
             {
                 petRect = petImg.RectTransform;
 
-                var mgr = PetSelectionManager.instance;
-                if (mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
-                    petImg.SetPet(mgr.currentPet.cardImage);
+                var sel = PetSelectionManager.instance;
+                if (sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
+                    petImg.SetPet(sel.currentPet.cardImage);
             }
         }
         else
         {
             var petImg = petRect.GetComponent<PetImage>();
-            var mgr = PetSelectionManager.instance;
-            if (petImg != null && mgr != null && mgr.currentPet != null && mgr.currentPet.cardImage != null)
-                petImg.SetPet(mgr.currentPet.cardImage);
+            var sel = PetSelectionManager.instance;
+            if (petImg != null && sel != null && sel.currentPet != null && sel.currentPet.cardImage != null)
+                petImg.SetPet(sel.currentPet.cardImage);
         }
     }
 
-    void Update()
+    void OnDisable() { Unsubscribe50(); }
+    void OnDestroy() { Unsubscribe50(); }
+
+    // Subscribe only if GlobalNotifier isn't already doing it
+    void TrySubscribe50()
     {
-        if (_animating || hungerBar == null) return;
+        if (_subscribed50 || !ensure50Popup) return;
 
-        bool decayPaused = IsFull() && Time.unscaledTime < _decayResumeTime;
-        if (!decayPaused && hungerDecayPerMinute > 0f && _current > 0f)
-        {
-            float perSecond = hungerDecayPerMinute / 60f;
-            _current = Mathf.Max(0f, _current - perSecond * Time.unscaledDeltaTime);
-            hungerBar.SetValue(_current);
-        }
+        var needs = PetNeedsManager.Instance;
+        if (needs == null) return;
+
+        var notifier = GlobalNotifier.Instance;
+        if (notifier != null && notifier.autoSubscribe) return; // avoid duplicate toasts
+
+        needs.OnFeedHit50.AddListener(OnFeedHit50);
+        _subscribed50 = true;
     }
 
-    public bool IsFull() => _current >= 99.999f;
+    void Unsubscribe50()
+    {
+        if (!_subscribed50) return;
+        var needs = PetNeedsManager.Instance;
+        if (needs != null) needs.OnFeedHit50.RemoveListener(OnFeedHit50);
+        _subscribed50 = false;
+    }
 
-    // Also blocks while the last item is being consumed
-    public bool CanFeedNow() => !_isConsuming && !IsFull();
+    void OnFeedHit50()
+    {
+        var gn = GlobalNotifier.Instance;
+        if (gn != null) gn.ShowToast(feed50Message, gn.toastHoldSeconds);
+    }
+
+    public bool CanFeedNow()
+    {
+        var mgr = PetNeedsManager.Instance;
+        // If global exists and is full, cannot feed. If global missing, allow (fallback path)
+        return !(mgr != null && mgr.IsFeedFull());
+    }
 
     public void Feed(DraggableFood food)
     {
-        if (!food || !canvas || !hungerBar || petRect == null) return;
+        if (food == null || canvas == null || petRect == null) return;
         if (!CanFeedNow()) return;
+
         StartCoroutine(EatRoutine(food));
     }
 
     IEnumerator EatRoutine(DraggableFood food)
     {
-        _isConsuming = true;
-
         var foodRT = food.GetComponent<RectTransform>();
-        if (foodRT == null) { _isConsuming = false; yield break; }
+        if (foodRT == null) yield break;
 
-        // ghost that flies to the pet
+        // ghost flies to pet
         var ghost = new GameObject("FoodGhost", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
         var gRT  = ghost.GetComponent<RectTransform>();
         var gImg = ghost.GetComponent<Image>();
@@ -92,7 +122,7 @@ public class FeedUIManager : MonoBehaviour
         gRT.SetAsLastSibling();
         gRT.position  = foodRT.position;
         gRT.sizeDelta = foodRT.sizeDelta;
-        gImg.sprite = (food.image != null) ? food.image.sprite : null;
+        gImg.sprite   = (food.image != null) ? food.image.sprite : null;
         gImg.preserveAspect = true;
 
         float t = 0f, dur = 0.35f;
@@ -111,25 +141,19 @@ public class FeedUIManager : MonoBehaviour
         Destroy(ghost);
         food.gameObject.SetActive(false);
 
-        // increase fullness
-        _current = Mathf.Min(100f, _current + food.nutrition);
-
-        // animate to the new value
-        _animating = true;
-        yield return StartCoroutine(hungerBar.AnimateTo(_current, 0.25f));
-        _animating = false;
-
-        // reached full → start pause window & block further feeding until below 100
-        if (IsFull())
+        // Global-first award (percent points)
+        var mgr = PetNeedsManager.Instance;
+        if (mgr != null)
         {
-            _current = 100f;
-            hungerBar.SetValue(_current);
-            _decayResumeTime = Time.unscaledTime + fullPauseMinutes * 60f;
+            if (!mgr.IsFeedFull())
+                mgr.AddFeedPercent(food.nutrition);   // nutrition is % points
+        }
+        else if (hungerBar != null) // fallback if no global
+        {
+            hungerBar.SetValue(Mathf.Min(100f, hungerBar.value + food.nutrition));
         }
 
         if (petFX) petFX.PlayHappy();
-
-        _isConsuming = false;
     }
 
     IEnumerator BiteBurst(Image srcImg, RectTransform at)
@@ -138,9 +162,9 @@ public class FeedUIManager : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             var bit = new GameObject("bite", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
-            var rt = bit.GetComponent<RectTransform>();
+            var rt  = bit.GetComponent<RectTransform>();
             var img = bit.GetComponent<Image>();
-            var cg = bit.GetComponent<CanvasGroup>();
+            var cg  = bit.GetComponent<CanvasGroup>();
             rt.SetParent(canvas.transform, false);
             rt.SetAsLastSibling();
             rt.position  = at.position + (Vector3)Random.insideUnitCircle * 10f;

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ShopItem_Potion of Regeneration
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: bfe1d683d52d04d98a5883812b74ca84, type: 2}
-  Name: Potion of Regeneration
-  Description: "A magical drink that restores your pet\u2019s energy "
-  Cost: 12000
+  Name: 'Potion '
+  Description: Heal 30 damage
+  Cost: 125
+  Icon: {fileID: 1334158145294549958, guid: 17dbd53c4395f49359b229297f417247, type: 3}

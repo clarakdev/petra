@@ -15,4 +15,5 @@ MonoBehaviour:
   Category: {fileID: 11400000, guid: 76acb3bb9b1034441abe83b6f7f5c762, type: 2}
   Name: Sunglasses
   Description: Cool shades for the coolest pet in town
-  Cost: 6000
+  Cost: 60
+  Icon: {fileID: -6925948404144973496, guid: 3daa03a2bef7b4a469b656f3ba7d6846, type: 3}

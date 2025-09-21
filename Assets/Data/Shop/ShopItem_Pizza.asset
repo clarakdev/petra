@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ShopItem_Pizza
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: c3e9473f8f5d34228beb66d3ce2f32ae, type: 2}
-  Name: Pizza
-  Description: "Cheesy, savory slices that pets can\u2019t resist eating"
-  Cost: 3500
+  Name: Moltenspire slice
+  Description: "A cheesy, savory slice that pets can\u2019t resist eating"
+  Cost: 35
+  Icon: {fileID: 6048862160296339182, guid: 9fcb9da8444204ec5be3c2ec5eddef85, type: 3}
