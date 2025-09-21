@@ -3,15 +3,20 @@ using UnityEngine.InputSystem;
 
 public class ThrowBall : MonoBehaviour
 {
+    [Header("Throw")]
     public float travelTime = 0.35f;
     public AnimationCurve ease = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    [Header("Per-throw award")]
+    [Tooltip("Percent points added to the Fetch need each time you throw.")]
+    public float awardPerThrowPercent = 10f;
 
     private BallController ball;
     private Transform player;
     private Transform hand;
     private Camera cam;
 
-    // 👇 NEW: reference to your PlaySatisfaction script
+    // Session/Slider gate (block throwing when full)
     [SerializeField] private PlaySatisfaction playSatisfaction;
 
     void Awake()
@@ -38,7 +43,7 @@ public class ThrowBall : MonoBehaviour
 
     void Update()
     {
-        // 👇 NEW: block throwing if the bar is full
+        // Block throwing while the session Slider is full
         if (playSatisfaction && playSatisfaction.IsFull())
             return;
 
@@ -52,17 +57,31 @@ public class ThrowBall : MonoBehaviour
 
     void Throw()
     {
+        // 1) Award +10% to Fetch immediately on throw
+        var fm = FetchNeedManager.Instance;
+        if (fm != null && !fm.IsFetchFull())
+        {
+            fm.AddFetchPercent(awardPerThrowPercent);
+
+            // Tiny toast each throw
+            GlobalNotifier.Instance?.ShowToast(
+                $"+{awardPerThrowPercent:0.#}% fetch XP",
+                GlobalNotifier.Instance.toastHoldSeconds * 0.6f // shorter toast
+            );
+        }
+
+        // 2) Normal throw behaviour
         ball.SetFlying();
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 target = cam.ScreenToWorldPoint(mousePos);
-        target.z = hand.position.z;
+        target.z = hand ? hand.position.z : 0f;
 
         StopAllCoroutines();
         StartCoroutine(ThrowToPoint(target));
 
         var pet = FindFirstObjectByType<PetFetchManager>();
-        if (pet) pet.StartFetch(ball);
+        if (pet) pet.StartFetch(ball); // respects your PetFetchManager gating
     }
 
     System.Collections.IEnumerator ThrowToPoint(Vector3 target)

@@ -28,7 +28,7 @@ public class BallController : MonoBehaviour
     {
         currentOwner = Owner.PlayerHand;
         rb.isKinematic = true;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         if (col) col.enabled = false;
 
         transform.SetParent(hand);
@@ -41,7 +41,7 @@ public class BallController : MonoBehaviour
     {
         currentOwner = Owner.Pet;
         rb.isKinematic = true;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         if (col) col.enabled = false;
 
         transform.SetParent(mouth);

@@ -22,7 +22,6 @@ public class PetFetchManager : MonoBehaviour
     private enum State { Idle, GoToBall, CarryToPlayer }
     private State state = State.Idle;
 
-   
     private float ignoreChaseUntil = 0f;
 
     public PlaySatisfaction playSatisfaction;
@@ -44,14 +43,14 @@ public class PetFetchManager : MonoBehaviour
             {
                 if (Time.time < ignoreChaseUntil)
                 {
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                     state = State.Idle;
                     break;
                 }
 
                 if (ball.currentOwner != BallController.Owner.Free)
                 {
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                     state = State.Idle;
                     break;
                 }
@@ -70,7 +69,7 @@ public class PetFetchManager : MonoBehaviour
 
                 if (Vector2.Distance(transform.position, target) <= dropDistance)
                 {
-                    rb.velocity = Vector2.zero;
+                    rb.linearVelocity = Vector2.zero;
                     DropBallAt(target);
                     break;
                 }
@@ -81,7 +80,7 @@ public class PetFetchManager : MonoBehaviour
 
             case State.Idle:
             {
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
 
                 if (Time.time >= ignoreChaseUntil &&
                     ball && ball.currentOwner == BallController.Owner.Free)
@@ -93,7 +92,7 @@ public class PetFetchManager : MonoBehaviour
         }
     }
 
-    private void MoveTowards(Vector3 targetPos)
+    void MoveTowards(Vector3 targetPos)
     {
         Vector2 pos     = rb.position;
         Vector2 target  = (Vector2)targetPos;
@@ -101,25 +100,21 @@ public class PetFetchManager : MonoBehaviour
         rb.MovePosition(Vector2.MoveTowards(pos, target, maxStep));
     }
 
-    private void PickUpBall()
+    void PickUpBall()
     {
         ball.AttachToMouth(mouthPoint);
         state = State.CarryToPlayer;
     }
 
-    private void DropBallAt(Vector3 near)
+    void DropBallAt(Vector3 near)
     {
-        
         Vector2 dirToTarget = ((Vector2)near - (Vector2)transform.position).normalized;
         Vector3 dropPos = near - (Vector3)(dirToTarget * 0.12f);
 
         bool canSnapNow = playerHand &&
                           Vector2.Distance(dropPos, playerHand.position) <= handSnapRadius;
 
-        if (canSnapNow)
-        {
-            ball.AttachToHand(playerHand);
-        }
+        if (canSnapNow) ball.AttachToHand(playerHand);
         else
         {
             ball.Release(dropPos);
@@ -132,7 +127,7 @@ public class PetFetchManager : MonoBehaviour
         if (playSatisfaction) playSatisfaction.AddFromFetch();
     }
 
-    private System.Collections.IEnumerator SnapToHandIfClose()
+    System.Collections.IEnumerator SnapToHandIfClose()
     {
         yield return new WaitForSeconds(handSnapDelay);
         if (!playerHand) yield break;
@@ -141,17 +136,19 @@ public class PetFetchManager : MonoBehaviour
             ball.AttachToHand(playerHand);
     }
 
+    // Single gate to allow starting a fetch (silent block if session is full)
+    public bool CanStartFetch()
+    {
+        if (playSatisfaction && playSatisfaction.IsFull())
+            return false; // silently block while full/locked
+        return true;
+    }
+
     // called by ThrowBall after the ball lands (or right away for looped fetch)
     public void StartFetch(BallController newBall)
     {
         if (state != State.Idle) return;
-        if (playSatisfaction && playSatisfaction.IsFull())
-        {
-            {
-            Debug.Log("[PetFetchManager] Pet is satisfied, won’t fetch anymore.");
-            return;
-            }
-        }
+        if (!CanStartFetch())   return;
 
         ball = newBall;
         state = State.GoToBall;
