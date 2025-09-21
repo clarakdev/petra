@@ -23,6 +23,7 @@ public class WalkUIManager : MonoBehaviour
              "If GlobalNotifier.autoSubscribe is true, this script will not also subscribe.")]
     public bool ensure50Popup = true;                         // <— renamed to match Clean
     public string walk50Message = "Time to walk your pet!";   // <— editable message
+    public bool enableLocalWalk50Pop = true;
 
     [Header("Optional confetti FX at 50%")]
     public bool   playConfettiAt50 = false;
@@ -58,6 +59,7 @@ public class WalkUIManager : MonoBehaviour
     void TrySubscribeWalk50()
     {
         if (!ensure50Popup || _listening) return;
+        if (!enableLocalWalk50Pop || _listening) return;
 
         var needs = PetNeedsManager.Instance;
         if (needs == null) return;
@@ -72,6 +74,7 @@ public class WalkUIManager : MonoBehaviour
             {
                 var gn = GlobalNotifier.Instance;
                 if (gn != null) gn.ShowToast(walk50Message, gn.toastHoldSeconds); // use editable message
+                if (gn != null) gn.ShowToast("Time to walk your pet!", gn.toastHoldSeconds);
                 TriggerPetHappy();
                 if (playConfettiAt50) StartCoroutine(ConfettiBurst());
             };

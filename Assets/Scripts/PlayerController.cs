@@ -19,10 +19,23 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private Vector2 networkPosition;
     private Vector2 networkVelocity;
 
-    void Start()
+    private PlayerInput playerInput;
+
+    void Awake()
     {
+        playerInput = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Disable PlayerInput for remote players
+        if (playerInput != null && !photonView.IsMine)
+        {
+            playerInput.enabled = false;
+        }
+    }
+
+    void Start()
+    {
         spriteRenderer.sprite = frontSprite; // Default facing front
         networkPosition = rb.position;
         networkVelocity = Vector2.zero;
