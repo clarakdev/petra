@@ -19,7 +19,7 @@ public class ShopUI : MonoBehaviour
     [SerializeField] List<ShopItem> AvailableItems;
 
     [SerializeField] Purchaser PurchaserRef;
-    [SerializeField] string ExitSceneName = "StoreScene";
+    [SerializeField] string ExitSceneName = "Store";
 
     Purchaser CurrentPurchaser;
     ShopItemCategory SelectedCategory;

@@ -1649,7 +1649,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: WalkScene
+          m_StringArgument: Walk
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1473361964
@@ -2031,7 +2031,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: CleanScene
+          m_StringArgument: Clean
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1568050162
@@ -2296,7 +2296,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: FeedScene
+          m_StringArgument: Feed
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1706495703
