@@ -277,7 +277,6 @@ RectTransform:
   - {fileID: 1409005224}
   - {fileID: 1363908889}
   - {fileID: 1804056857}
-  - {fileID: 1454861109}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2192,11 +2191,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7132076fe784134eb49325d3113c78e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneSwapper
---- !u!224 &1454861109 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-  m_PrefabInstance: {fileID: 3712626670315975214}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1491601703
 GameObject:
   m_ObjectHideFlags: 0
@@ -2791,7 +2785,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 301256616}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2863,23 +2857,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3040,6 +3034,7 @@ SceneRoots:
   - {fileID: 342195380}
   - {fileID: 301256616}
   - {fileID: 721295273}
+  - {fileID: 3712626670315975214}
   - {fileID: 5384448073018853174}
   - {fileID: 750704809}
   - {fileID: 885303951}
