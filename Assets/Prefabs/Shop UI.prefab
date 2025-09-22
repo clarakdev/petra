@@ -2314,8 +2314,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ecc6ec7f183a1474cb5e90a6c5b094ec, type: 2}
   - {fileID: 11400000, guid: 6413d27967a6f4e61b532931088328ed, type: 2}
   - {fileID: 11400000, guid: faa765eabfe5d4cf78e0398275097e30, type: 2}
-  - {fileID: 11400000, guid: 076e2c97f1f9a47b4bc52940a34a6c32, type: 2}
+  - {fileID: 11400000, guid: 8fe1a16bf4aff46c9a73f05df4a0ba1d, type: 2}
   PurchaserRef: {fileID: 0}
+  ExitSceneName: StoreScene
 --- !u!1 &8564865694214201174
 GameObject:
   m_ObjectHideFlags: 0

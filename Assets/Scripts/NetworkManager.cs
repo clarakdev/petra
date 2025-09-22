@@ -1,6 +1,5 @@
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEditor.XR;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
@@ -43,12 +42,46 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             MaxPlayers = (byte)maxPlayers,
             IsOpen = true,
-            IsVisible = true
+            IsVisible = true,
+            PublishUserId = true // ensure Player.UserId is available in-room
         };
 
         PhotonNetwork.JoinOrCreateRoom(roomName, options, TypedLobby.Default);
     }
 
+    public override void OnJoinedRoom()
+    {
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+        // Only spawn player and pet follower in non-battlefield scenes
+        if (sceneName != "Battlefield")
+        {
+            // Desired spawn position
+            Vector3 spawnPosition = new Vector3(0f, -4.02f, 0f);
+
+            // Instantiate player at spawnPosition
+            GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
+            playerObj.name = "Player";
+
+            // Instantiate PetSpawner for this player
+            GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");
+            if (petSpawnerPrefab != null && playerObj != null)
+            {
+                GameObject petSpawnerObj = Instantiate(petSpawnerPrefab, playerObj.transform.position, Quaternion.identity);
+                petSpawnerObj.transform.SetParent(playerObj.transform);
+            }
+        }
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError($"JoinRoomFailed: {message}");
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError($"CreateRoomFailed: {message}");
+    }
 
     [PunRPC]
     public void ChangeScene(string sceneName)

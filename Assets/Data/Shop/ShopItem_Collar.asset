@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44ad30def65c48fcaa94a1486690a78, type: 3}
   m_Name: ShopItem_Collar
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
-  Category: {fileID: 11400000, guid: 76acb3bb9b1034441abe83b6f7f5c762, type: 2}
-  Name: Collar
-  Description: A cute collar for your cute pet
-  Cost: 7500
+  Category: {fileID: 11400000, guid: bfe1d683d52d04d98a5883812b74ca84, type: 2}
+  Name: Hyper Potion
+  Description: Heal 80 damage
+  Cost: 200
+  Icon: {fileID: -4078751032234228209, guid: d815bc96091974bc998f424a9c9f3161, type: 3}
