@@ -344,7 +344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 150
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -433,6 +433,10 @@ PrefabInstance:
     - target: {fileID: 7249418381082440489, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_Name
       value: HUD_Currency
+      objectReference: {fileID: 0}
+    - target: {fileID: 9016670399293406325, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
+      propertyPath: m_margin.x
+      value: -104.100464
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
