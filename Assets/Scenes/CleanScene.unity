@@ -344,7 +344,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 200
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -433,10 +433,6 @@ PrefabInstance:
     - target: {fileID: 7249418381082440489, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
       propertyPath: m_Name
       value: HUD_Currency
-      objectReference: {fileID: 0}
-    - target: {fileID: 9016670399293406325, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_margin.x
-      value: -104.100464
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1336,7 +1332,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -80}
   m_SizeDelta: {x: 1000, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1489678234
@@ -1716,7 +1712,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: PetCare
+          m_StringArgument: PetCareScene
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1598534977
