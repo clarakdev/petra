@@ -543,6 +543,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 717659531}
   m_CullTransparentMesh: 1
+--- !u!1001 &1043570109
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1247.1396
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 500.81152
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2439335696005224915, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: m_Name
+      value: PetSpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 3235327774858553051, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+      propertyPath: sceneViewId
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
 --- !u!1001 &1492942546
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1274,3 +1335,4 @@ SceneRoots:
   - {fileID: 1533770894}
   - {fileID: 691902540}
   - {fileID: 2078774129}
+  - {fileID: 1043570109}
