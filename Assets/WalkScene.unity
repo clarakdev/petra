@@ -131,7 +131,6 @@ GameObject:
   - component: {fileID: 89424031}
   - component: {fileID: 89424030}
   - component: {fileID: 89424029}
-  - component: {fileID: 89424032}
   m_Layer: 5
   m_Name: WalkProgressBar
   m_TagString: Untagged
@@ -175,7 +174,7 @@ MonoBehaviour:
   fill: {fileID: 1510715092}
   label: {fileID: 976086549}
   max: 100
-  value: 100
+  value: 40
   padding: 6
   fillColorNormal: {r: 0.69, g: 0.53, b: 1, a: 1}
   fillColorFull: {r: 0.69, g: 0.53, b: 1, a: 1}
@@ -218,20 +217,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 89424026}
   m_CullTransparentMesh: 1
---- !u!114 &89424032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 89424026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 653aa90c7240844bca07099c49bd24fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PetNeedBarBinder
-  need: 0
-  bar: {fileID: 89424029}
 --- !u!1 &105039262
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,113 +302,67 @@ MonoBehaviour:
   m_GameObject: {fileID: 105039262}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
+  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
-  playerPixelRange: 120
-  requirePetNear: 0
-  petPixelRange: 120
-  player: {fileID: 0}
-  pet: {fileID: 0}
-  uiCanvas: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUI
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
+  showXPToast: 1
   xpAmount: 5
-  OnAwardXP:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 564932545}
-        m_TargetAssemblyTypeName: WalkUIManager, Assembly-CSharp
-        m_MethodName: AddXPPercent
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  showToast: 1
   toastDuration: 2
-  toastFontSize: 30
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastFontSize: 26
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
+  approachSeconds: 0.2
+  sniffSeconds: 0.5
+  playerOffset: {x: -0.2, y: 0}
+  petOffset: {x: 0.5, y: 0}
   heartSprite: {fileID: 0}
-  heartCount: 8
-  heartSizeRange: {x: 28, y: 46}
-  heartDuration: 0.8
-  heartRise: {x: 60, y: 110}
-  heartDriftX: {x: -35, y: 35}
-  heartColor: {r: 1, g: 0.5, b: 0.7, a: 1}
-  oneShot: 1
-  cooldownSeconds: 0
---- !u!1001 &369732979
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4.06
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6250568013566111799, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 7043385708214960962, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
-      propertyPath: sceneViewId
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+  heartCount: 5
+  heartDuration: 0.7
+  heartRise: 1.2
+  heartSpread: {x: 0.4, y: 0.6}
+  heartSortingOrder: 1000
+  showHoverArrow: 1
+  arrowSprite: {fileID: 0}
+  hoverArrowSize: {x: 34, y: 34}
+  hoverArrowOffset: {x: 0, y: 60}
+  hoverBobAmplitude: 10
+  hoverBobSpeed: 2.2
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
+  triangleSprite: {fileID: 0}
+  trianglesCount: 10
+  trianglesDuration: 1
+  trianglesRiseRange: {x: 45, y: 80}
+  trianglesDriftX: {x: -30, y: 30}
+  trianglesSpinDegPerSec: {x: -180, y: 180}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
+  trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &418916710
 GameObject:
   m_ObjectHideFlags: 0
@@ -509,401 +448,67 @@ MonoBehaviour:
   m_GameObject: {fileID: 418916710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
+  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
-  playerPixelRange: 120
-  requirePetNear: 0
-  petPixelRange: 120
-  player: {fileID: 0}
-  pet: {fileID: 0}
-  uiCanvas: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmell
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
+  showXPToast: 1
   xpAmount: 5
-  OnAwardXP:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 564932545}
-        m_TargetAssemblyTypeName: WalkUIManager, Assembly-CSharp
-        m_MethodName: AddXPPercent
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  showToast: 1
-  toastDuration: 1.1
-  toastFontSize: 28
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastDuration: 2
+  toastFontSize: 26
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
+  approachSeconds: 0.2
+  sniffSeconds: 0.5
+  playerOffset: {x: -0.2, y: 0}
+  petOffset: {x: 0.5, y: 0}
   heartSprite: {fileID: 0}
-  heartCount: 8
-  heartSizeRange: {x: 28, y: 46}
-  heartDuration: 0.8
-  heartRise: {x: 60, y: 110}
-  heartDriftX: {x: -35, y: 35}
-  heartColor: {r: 1, g: 0.5, b: 0.7, a: 1}
-  oneShot: 1
-  cooldownSeconds: 0
---- !u!1 &564932544
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 564932546}
-  - component: {fileID: 564932545}
-  m_Layer: 0
-  m_Name: WalkController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &564932545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564932544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae815e1f1e6a2445f9b851bebb4c0bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WalkUIManager
-  walkBar: {fileID: 89424029}
-  canvas: {fileID: 0}
-  pet: {fileID: 0}
-  petAnimator: {fileID: 0}
-  happyTrigger: Happy
-  jumpHeight: 1.1
-  jumpUpDuration: 0.28
-  jumpDownDuration: 0.22
-  secondJumpDelay: 0.08
-  ensure50Popup: 1
-  walk50Message: Time to walk your pet!
-  enableLocalWalk50Pop: 1
-  playConfettiAt50: 0
-  confettiSprite: {fileID: 0}
-  confettiSize: {x: 40, y: 40}
-  confettiCount: 6
---- !u!4 &564932546
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 564932544}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1061.8066, y: 546.7934, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &581366134
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1439991210}
-    m_Modifications:
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0.125
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.8557038
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0.125
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.8557038
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 390.7935
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 69.779
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3540120797714141503, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_Name
-      value: XPbar
-      objectReference: {fileID: 0}
-    - target: {fileID: 5334723617371101825, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: walkBar
-      value: 
-      objectReference: {fileID: 89424029}
-    - target: {fileID: 5334723617371101825, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: sources.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5334723617371101825, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: sources.Array.data[0].bar
-      value: 
-      objectReference: {fileID: 89424029}
-    - target: {fileID: 5334723617371101825, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: sources.Array.data[0].reward
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8935099624597720354, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
---- !u!224 &581366135 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1864478018744686884, guid: 1607faf9cd29d0b4688a08252cd5bcc2, type: 3}
-  m_PrefabInstance: {fileID: 581366134}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &612607601
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1439991210}
-    m_Modifications:
-    - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 795
-      objectReference: {fileID: 0}
-    - target: {fileID: 2165132772211170808, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -150
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 146.4964
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7249418381082440489, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-      propertyPath: m_Name
-      value: HUD_Currency
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
---- !u!224 &612607602 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6102434521618069799, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
-  m_PrefabInstance: {fileID: 612607601}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &825607753
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.98
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1729476452585604501, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2439335696005224915, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: m_Name
-      value: PetSpawner
-      objectReference: {fileID: 0}
-    - target: {fileID: 3235327774858553051, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
-      propertyPath: sceneViewId
-      value: 2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 94f5f2af2f2fae9468b8358007e4c1a3, type: 3}
+  heartCount: 5
+  heartDuration: 0.7
+  heartRise: 1.2
+  heartSpread: {x: 0.4, y: 0.6}
+  heartSortingOrder: 1000
+  showHoverArrow: 1
+  arrowSprite: {fileID: 0}
+  hoverArrowSize: {x: 34, y: 34}
+  hoverArrowOffset: {x: 0, y: 60}
+  hoverBobAmplitude: 10
+  hoverBobSpeed: 2.2
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
+  triangleSprite: {fileID: 0}
+  trianglesCount: 10
+  trianglesDuration: 1
+  trianglesRiseRange: {x: 45, y: 80}
+  trianglesDriftX: {x: -30, y: 30}
+  trianglesSpinDegPerSec: {x: -180, y: 180}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
+  trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &863332666
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,44 +598,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChestOpenUI
   progressPercent: 40
-  openOnClick: 1
   chestImage: {fileID: 863332668}
   closedSprite: {fileID: 21300000, guid: 35897c4bb39e2e74d919227cc5bbabb8, type: 3}
   openSprite: {fileID: 21300000, guid: 888df2a07ee450245a20724231ec5103, type: 3}
   closedObject: {fileID: 0}
   openObject: {fileID: 0}
-  autoOpenOnProximity: 1
-  playerPixelRange: 140
-  requirePetNear: 0
-  petPixelRange: 140
-  player: {fileID: 0}
-  pet: {fileID: 0}
-  uiCanvas: {fileID: 0}
-  progressBar: {fileID: 0}
-  showHoverArrow: 0
   arrowSprite: {fileID: 0}
   arrowSize: {x: 34, y: 34}
   arrowOffset: {x: 0, y: 60}
   arrowBobAmplitude: 10
   arrowBobSpeed: 2.2
-  arrowColor: {r: 1, g: 1, b: 1, a: 0.95}
-  heartSprite: {fileID: 0}
-  heartCount: 10
-  heartSizeRange: {x: 28, y: 46}
-  heartDuration: 0.9
-  heartRise: {x: 60, y: 110}
-  heartDriftX: {x: -35, y: 35}
-  heartColor: {r: 1, g: 0.5, b: 0.7, a: 1}
+  arrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
+  disableRaycastAfterOpen: 1
   showXPToast: 1
   xpAmount: 40
   toastDuration: 3
-  toastFontSize: 40
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastFontSize: 30
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
   toastOffset: {x: 0, y: 90}
   toastRise: {x: 0, y: 40}
-  oneShot: 1
-  cooldownSeconds: 0
-  disableRaycastAfterOpen: 1
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  arrowImg: {fileID: 0}
+  opened: 0
 --- !u!1 &976086547
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,7 +687,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100%
+  m_text: 40%
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1305,6 +904,75 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1078634245}
   m_CullTransparentMesh: 1
+--- !u!1001 &1163710045
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -974607405697330880, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1061.8066
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 546.7934
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5515205299859289519, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6250568013566111799, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6250568013566111799, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 7043385708214960962, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c8b6606397f61b44d9878b7ffa0d5808, type: 3}
 --- !u!1 &1237496753
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,48 +1058,67 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237496753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
+  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
-  playerPixelRange: 120
-  requirePetNear: 0
-  petPixelRange: 120
-  player: {fileID: 0}
-  pet: {fileID: 0}
-  uiCanvas: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUI
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
+  showXPToast: 1
   xpAmount: 5
-  OnAwardXP:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 564932545}
-        m_TargetAssemblyTypeName: WalkUIManager, Assembly-CSharp
-        m_MethodName: AddXPPercent
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  showToast: 1
   toastDuration: 2
-  toastFontSize: 30
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastFontSize: 26
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
+  approachSeconds: 0.2
+  sniffSeconds: 0.5
+  playerOffset: {x: -0.2, y: 0}
+  petOffset: {x: 0.5, y: 0}
   heartSprite: {fileID: 0}
-  heartCount: 8
-  heartSizeRange: {x: 28, y: 46}
-  heartDuration: 0.8
-  heartRise: {x: 60, y: 110}
-  heartDriftX: {x: -35, y: 35}
-  heartColor: {r: 1, g: 0.5, b: 0.7, a: 1}
-  oneShot: 1
-  cooldownSeconds: 0
+  heartCount: 5
+  heartDuration: 0.7
+  heartRise: 1.2
+  heartSpread: {x: 0.4, y: 0.6}
+  heartSortingOrder: 1000
+  showHoverArrow: 1
+  arrowSprite: {fileID: 0}
+  hoverArrowSize: {x: 34, y: 34}
+  hoverArrowOffset: {x: 0, y: 60}
+  hoverBobAmplitude: 10
+  hoverBobSpeed: 2.2
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
+  triangleSprite: {fileID: 0}
+  trianglesCount: 10
+  trianglesDuration: 1
+  trianglesRiseRange: {x: 45, y: 80}
+  trianglesDriftX: {x: -30, y: 30}
+  trianglesSpinDegPerSec: {x: -180, y: 180}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
+  trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
 --- !u!1 &1263174991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1468,8 +1155,8 @@ Camera:
   m_GameObject: {fileID: 1263174991}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.5264151, g: 1, b: 0.5264151, a: 1}
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1626,7 +1313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 0}
+  m_Color: {r: 0.56891733, g: 0.7735849, b: 0.36854753, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1756,7 +1443,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: PetCare
+          m_StringArgument: PetCarescene
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1421364476
@@ -1892,8 +1579,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1352726284}
-  - {fileID: 612607602}
-  - {fileID: 581366135}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2140,48 +1825,112 @@ MonoBehaviour:
   m_GameObject: {fileID: 1988562309}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03f60c03d993446ad922c69b7e03cf80, type: 3}
+  m_Script: {fileID: 11500000, guid: 91e82ee592217447c8732eeef74afba6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUIProximity
-  playerPixelRange: 120
-  requirePetNear: 0
-  petPixelRange: 120
-  player: {fileID: 0}
-  pet: {fileID: 0}
-  uiCanvas: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::FlowerSmellUI
   progressPercent: 5
   progressBar: {fileID: 0}
   progressBarName: WalkProgressBar
+  showXPToast: 1
   xpAmount: 5
-  OnAwardXP:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 564932545}
-        m_TargetAssemblyTypeName: WalkUIManager, Assembly-CSharp
-        m_MethodName: AddXPPercent
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 5
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  showToast: 1
   toastDuration: 2
-  toastFontSize: 30
-  toastColor: {r: 1, g: 1, b: 1, a: 1}
+  toastFontSize: 26
+  toastColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  toastOffset: {x: 0, y: 80}
   toastRise: {x: 0, y: 36}
+  approachSeconds: 0.2
+  sniffSeconds: 0.5
+  playerOffset: {x: -0.2, y: 0}
+  petOffset: {x: 0.5, y: 0}
   heartSprite: {fileID: 0}
-  heartCount: 8
-  heartSizeRange: {x: 28, y: 46}
-  heartDuration: 0.8
-  heartRise: {x: 60, y: 110}
-  heartDriftX: {x: -35, y: 35}
-  heartColor: {r: 1, g: 0.5, b: 0.7, a: 1}
-  oneShot: 1
-  cooldownSeconds: 0
+  heartCount: 5
+  heartDuration: 0.7
+  heartRise: 1.2
+  heartSpread: {x: 0.4, y: 0.6}
+  heartSortingOrder: 1000
+  showHoverArrow: 1
+  arrowSprite: {fileID: 0}
+  hoverArrowSize: {x: 34, y: 34}
+  hoverArrowOffset: {x: 0, y: 60}
+  hoverBobAmplitude: 10
+  hoverBobSpeed: 2.2
+  hoverArrowColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.95
+  triangleSprite: {fileID: 0}
+  trianglesCount: 10
+  trianglesDuration: 1
+  trianglesRiseRange: {x: 45, y: 80}
+  trianglesDriftX: {x: -30, y: 30}
+  trianglesSpinDegPerSec: {x: -180, y: 180}
+  trianglesColorA:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  trianglesColorB:
+    r: 1
+    g: 1
+    b: 1
+    a: 0.8
+  trianglesScaleRange: {x: 0.6, y: 1}
+  self: {fileID: 0}
+  canvasRect: {fileID: 0}
+  rootCanvas: {fileID: 0}
+  hoverArrowImg: {fileID: 0}
+  busy: 0
+  consumed: 0
+--- !u!1 &2028305466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2028305467}
+  - component: {fileID: 2028305468}
+  m_Layer: 0
+  m_Name: PetSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2028305467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028305466}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1061.8066, y: 546.7934, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2028305468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028305466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed816a2c09d3e94690c4872e8298207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetSpawner
+  uiCanvas: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2189,6 +1938,5 @@ SceneRoots:
   - {fileID: 1263174994}
   - {fileID: 1439991210}
   - {fileID: 1667808574}
-  - {fileID: 369732979}
-  - {fileID: 825607753}
-  - {fileID: 564932546}
+  - {fileID: 2028305467}
+  - {fileID: 1163710045}

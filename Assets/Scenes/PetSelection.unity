@@ -284,7 +284,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.4363047, g: 0.75393385, b: 0.8792453, a: 1}
+    m_NormalColor: {r: 0.7344347, g: 0.94716984, b: 0.39852613, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -605,7 +605,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 438}
+  m_AnchoredPosition: {x: -36, y: 438}
   m_SizeDelta: {x: 681.8194, y: 77.3762}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &926577524
@@ -899,7 +899,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.1929782, g: 0, b: 0.381132, a: 0}
+  m_BackGroundColor: {r: 0.10784618, g: 0.3056603, b: 0.2628336, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
