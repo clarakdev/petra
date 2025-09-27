@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.12, y: -2.67, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c434dd8f1f2e7924594def20d0a68677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PetBattle
-  battleSpritePlayerSide: {fileID: -5744960214368502774, guid: cc80532dd70e98247b77a3afcb242f1e, type: 3}
-  battleSpriteEnemySide: {fileID: 9066517640561864882, guid: ee4764d8ac53f1e4e9a73522a430fd5c, type: 3}
+  battleSpritePlayerSide: {fileID: -5208860181799393257, guid: 72d7b0b68bf3a524bac96bcf7bb90f48, type: 3}
+  battleSpriteEnemySide: {fileID: -8590932226871881646, guid: 6524e19c499254c4e90618de010ed1c4, type: 3}
   maxHealth: 0
   currentHealth: 0
 --- !u!114 &4078019788300540595
@@ -119,7 +119,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -5744960214368502774, guid: cc80532dd70e98247b77a3afcb242f1e, type: 3}
+  m_Sprite: {fileID: -5208860181799393257, guid: 72d7b0b68bf3a524bac96bcf7bb90f48, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
