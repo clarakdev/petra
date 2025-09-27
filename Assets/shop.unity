@@ -1792,6 +1792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Purchaser
   CurrentFunds: 10000
+  playerCurrency: {fileID: 265202017}
 --- !u!4 &863679065
 Transform:
   m_ObjectHideFlags: 0
