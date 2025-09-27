@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8952612273508303254}
   - component: {fileID: 7478861960228725581}
   - component: {fileID: 5520640840320967201}
-  - component: {fileID: -974607405697330880}
   - component: {fileID: 5849545813180367182}
   - component: {fileID: 5687807520690989632}
   - component: {fileID: 7248864236028424720}
@@ -34,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.98, y: 0.02, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -86,7 +85,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1872895787026713789, guid: 0850db7cf878b34428cd448b018369f3, type: 3}
+  m_Sprite: {fileID: -394716003361740594, guid: e05357e7b5982ee4f943fb179678d9c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -228,33 +227,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   moveSpeed: 5
-  frontSprite: {fileID: -1872895787026713789, guid: 0850db7cf878b34428cd448b018369f3, type: 3}
-  backSprite: {fileID: 2924904497570240377, guid: ab6b7b10f31da2b4d8b5f2d96732f36d, type: 3}
-  leftSprite: {fileID: -1400324742880364754, guid: bb735f0065aeb054892a27246f48e7d0, type: 3}
-  rightSprite: {fileID: -9159370002540710823, guid: ca09e8963724f0d4e97d3b1d7607ce10, type: 3}
---- !u!114 &7043385708214960962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6250568013566111799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents:
-  - {fileID: 5520640840320967201}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
+  frontSprite: {fileID: -394716003361740594, guid: e05357e7b5982ee4f943fb179678d9c6, type: 3}
+  backSprite: {fileID: -5224351780265092137, guid: 1ffc0113e6d790f409192b590f3b6a07, type: 3}
+  leftSprite: {fileID: -395944783959437601, guid: fe40007f74d433e4d843cafb646a90da, type: 3}
+  rightSprite: {fileID: 3480039303974040888, guid: e22cca8c205169a41ae070445e2ffab4, type: 3}
 --- !u!50 &5849545813180367182
 Rigidbody2D:
   serializedVersion: 5
@@ -316,17 +292,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.022579432, y: 0.25967932}
+  m_Offset: {x: -0.06657696, y: 0.007072091}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.15, y: 10.19}
+    oldSize: {x: 2.27, y: 3.02}
     newSize: {x: 10.15, y: 10.19}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6.627396, y: 9.083541}
+  m_Size: {x: 1.8724375, y: 3.080406}
   m_EdgeRadius: 0
 --- !u!114 &7248864236028424720
 MonoBehaviour:
@@ -340,3 +316,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57d82ce093a6b394aa5ec73438dd0f56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawnHelper
+  minMoveDistance: 0.5
+  checkInterval: 0.1
+--- !u!114 &7043385708214960962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6250568013566111799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 5520640840320967201}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

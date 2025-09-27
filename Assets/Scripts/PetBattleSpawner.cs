@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class PetBattleSpawner : MonoBehaviourPunCallbacks
 {
-    public Vector2 playerSpawnPosition = new Vector2(-5, -3);
-    public Vector2 enemySpawnPosition = new Vector2(5, 3);
+    public Vector2 playerSpawnPosition = new Vector2(-5, -1);
+    public Vector2 enemySpawnPosition = new Vector2(5, 2);
 
     private bool enemyPetSpawned = false;
 
