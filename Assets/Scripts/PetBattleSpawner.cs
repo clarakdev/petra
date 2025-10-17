@@ -9,6 +9,9 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
     public Vector2 playerSpawnPosition = new Vector2(-5, -1);
     public Vector2 enemySpawnPosition = new Vector2(5, 2);
 
+    public HealthBar playerHealthBar;
+    public HealthBar enemyHealthBar;
+
     private bool enemyPetSpawned = false;
 
     void Start()
@@ -37,7 +40,13 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         GameObject playerPet = Instantiate(localPet.battlePrefab, playerSpawnPosition, Quaternion.identity);
         var playerPetBattle = playerPet.GetComponent<PetBattle>();
         if (playerPetBattle != null)
+        {
             playerPetBattle.SetFacing(true);
+            playerPetBattle.healthBar = playerHealthBar; // Assign player's health bar
+            playerPetBattle.maxHealth = 100; // Set desired starting health
+            playerPetBattle.currentHealth = playerPetBattle.maxHealth;
+            playerPetBattle.healthBar.SetMaxHealth(playerPetBattle.maxHealth);
+        }
 
         // Try to spawn enemy's pet if the property is already set
         int enemyPetIndex = GetEnemyPetIndex();
@@ -59,7 +68,13 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 GameObject enemyPetObj = Instantiate(enemyPet.battlePrefab, enemySpawnPosition, Quaternion.identity);
                 var enemyPetBattle = enemyPetObj.GetComponent<PetBattle>();
                 if (enemyPetBattle != null)
+                {
                     enemyPetBattle.SetFacing(false);
+                    enemyPetBattle.healthBar = enemyHealthBar; // Assign enemy's health bar
+                    enemyPetBattle.maxHealth = 100; // Set desired starting health
+                    enemyPetBattle.currentHealth = enemyPetBattle.maxHealth;
+                    enemyPetBattle.healthBar.SetMaxHealth(enemyPetBattle.maxHealth);
+                }
 
                 enemyPetSpawned = true;
                 Debug.Log("[BattleManager] Enemy pet spawned: " + enemyPet.name);

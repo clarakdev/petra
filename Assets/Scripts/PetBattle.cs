@@ -24,9 +24,19 @@ public class PetBattle : MonoBehaviourPun
         spriteRenderer.sprite = isPlayerSide ? battleSpritePlayerSide : battleSpriteEnemySide;
     }
 
-    public void TakeDamage(int damage)
+    [PunRPC]
+    public void InitialiseHealth(int health)
     {
-        currentHealth = Mathf.Max(0, currentHealth - Mathf.Max(0, damage));
+        maxHealth = health;
+        currentHealth = health;
+        if (healthBar != null)
+            healthBar.SetMaxHealth(health);
+    }
+
+    [PunRPC]
+    public void ApplyDamage(int damage)
+    {
+        currentHealth = Mathf.Max(0, currentHealth - damage);
         healthBar.SetHealth(currentHealth);
     }
 }

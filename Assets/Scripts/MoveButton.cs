@@ -14,6 +14,6 @@ public class MoveButton : MonoBehaviour
 
     public void OnClick()
     {
-        manager.TryAttack(move);
+        manager.PlayerAttack(move.power);
     }
 }
