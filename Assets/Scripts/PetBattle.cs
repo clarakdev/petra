@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class PetBattle : MonoBehaviourPun
 {
+    [Header("Sprites")]
     public Sprite battleSpritePlayerSide; // Player's pet, seen from behind
     public Sprite battleSpriteEnemySide;  // Opponent's pet, seen from the front
 
+    [Header("Health")]
     public int maxHealth = 100;
     public int currentHealth;
     public HealthBar healthBar;
@@ -22,9 +24,9 @@ public class PetBattle : MonoBehaviourPun
         spriteRenderer.sprite = isPlayerSide ? battleSpritePlayerSide : battleSpriteEnemySide;
     }
 
-    void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
+        currentHealth = Mathf.Max(0, currentHealth - Mathf.Max(0, damage));
         healthBar.SetHealth(currentHealth);
     }
 }
