@@ -4,8 +4,8 @@ using UnityEngine;
 public class PetBattle : MonoBehaviourPun
 {
     [Header("Sprites")]
-    public Sprite battleSpritePlayerSide; // Player's pet, seen from behind
-    public Sprite battleSpriteEnemySide;  // Opponent's pet, seen from the front
+    public Sprite battleSpritePlayerSide;
+    public Sprite battleSpriteEnemySide;
 
     [Header("Health")]
     public int maxHealth = 100;
@@ -14,8 +14,7 @@ public class PetBattle : MonoBehaviourPun
 
     void Start()
     {
-        currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        // Health is set by spawner, so no need to set here
     }
 
     public void SetFacing(bool isPlayerSide)
@@ -25,18 +24,10 @@ public class PetBattle : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void InitialiseHealth(int health)
-    {
-        maxHealth = health;
-        currentHealth = health;
-        if (healthBar != null)
-            healthBar.SetMaxHealth(health);
-    }
-
-    [PunRPC]
     public void ApplyDamage(int damage)
     {
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        healthBar.SetHealth(currentHealth);
+        if (healthBar != null)
+            healthBar.SetHealth(currentHealth);
     }
 }

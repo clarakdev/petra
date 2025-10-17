@@ -5,21 +5,18 @@ public class BattleManager : MonoBehaviourPun
 {
     public PetBattle playerPet;
     public PetBattle enemyPet;
-    public HealthBar playerHealthBar;
-    public HealthBar enemyHealthBar;
     public bool isPlayerTurn = true;
-
-    void Start()
-    {
-        if (playerPet != null && playerHealthBar != null)
-            playerPet.healthBar = playerHealthBar;
-
-        if (enemyPet != null && enemyHealthBar != null)
-            enemyPet.healthBar = enemyHealthBar;
-    }
 
     public void PlayerAttack(int damage)
     {
+        Debug.Log("PlayerAttack called with damage: " + damage);
+
+        if (enemyPet == null || enemyPet.photonView == null)
+        {
+            Debug.LogError("enemyPet or its PhotonView is null!");
+            return;
+        }
+
         if (isPlayerTurn)
         {
             enemyPet.photonView.RPC("ApplyDamage", RpcTarget.All, damage);
@@ -29,6 +26,14 @@ public class BattleManager : MonoBehaviourPun
 
     public void EnemyAttack(int damage)
     {
+        Debug.Log("EnemyAttack called with damage: " + damage);
+
+        if (playerPet == null || playerPet.photonView == null)
+        {
+            Debug.LogError("playerPet or its PhotonView is null!");
+            return;
+        }
+
         if (!isPlayerTurn)
         {
             playerPet.photonView.RPC("ApplyDamage", RpcTarget.All, damage);

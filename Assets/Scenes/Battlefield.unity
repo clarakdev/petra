@@ -533,6 +533,7 @@ GameObject:
   m_Component:
   - component: {fileID: 182769834}
   - component: {fileID: 182769833}
+  - component: {fileID: 182769835}
   m_Layer: 0
   m_Name: PetBattle (Enemy)
   m_TagString: Untagged
@@ -572,6 +573,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &182769835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182769832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 4
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &329681625
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,6 +816,7 @@ GameObject:
   m_Component:
   - component: {fileID: 433664026}
   - component: {fileID: 433664025}
+  - component: {fileID: 433664027}
   m_Layer: 0
   m_Name: PetBattle (Player)
   m_TagString: Untagged
@@ -832,6 +856,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &433664027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433664024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 3
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &489611722
 GameObject:
   m_ObjectHideFlags: 0
@@ -1159,7 +1205,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 845950859}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 845950861}
+        m_TargetAssemblyTypeName: MoveButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &845950859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1296,7 +1354,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 855392931}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 855392933}
+        m_TargetAssemblyTypeName: MoveButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &855392931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2206,8 +2276,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   playerPet: {fileID: 433664025}
   enemyPet: {fileID: 182769833}
-  playerHealthBar: {fileID: 133792785}
-  enemyHealthBar: {fileID: 1065686277}
   isPlayerTurn: 1
 --- !u!114 &1158980728
 MonoBehaviour:
@@ -2228,7 +2296,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 1
+  sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1161165388
@@ -2817,7 +2885,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1330177875}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1330177877}
+        m_TargetAssemblyTypeName: MoveButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1330177875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3759,7 +3839,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1986623609}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1986623611}
+        m_TargetAssemblyTypeName: MoveButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1986623609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4352,6 +4444,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6249414281993750017, guid: 5b33b3fef23284f4fbf78188f26b9416, type: 3}
+      propertyPath: battleManager
+      value: 
+      objectReference: {fileID: 1158980727}
     - target: {fileID: 6249414281993750017, guid: 5b33b3fef23284f4fbf78188f26b9416, type: 3}
       propertyPath: enemyHealthBar
       value: 

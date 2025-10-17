@@ -50,6 +50,7 @@ MonoBehaviour:
   battleSpriteEnemySide: {fileID: 4522574261692088017, guid: 6abcd82c24267094f950ad8dfce1ed8a, type: 3}
   maxHealth: 0
   currentHealth: 0
+  healthBar: {fileID: 0}
 --- !u!114 &8625322858339912740
 MonoBehaviour:
   m_ObjectHideFlags: 0
