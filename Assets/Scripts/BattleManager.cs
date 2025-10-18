@@ -160,7 +160,7 @@ public class BattleManager : MonoBehaviourPunCallbacks
     // --- Public UI hooks ----------------------------------------------------
     public void PlayerAttack(int damage)
     {
-        Debug.Log($"[BattleManager] PlayerAttack({damage}) clicked by {PhotonNetwork.LocalPlayer.NickName}");
+        Debug.Log($"[BattleManager] PlayerAttack({damage}) clicked by {PhotonNetwork.LocalPlayer.NickName} (iAmPlayerSide={iAmPlayerSide})");
 
         if (isProcessingAttack)
         {
@@ -184,11 +184,12 @@ public class BattleManager : MonoBehaviourPunCallbacks
         }
 
         int targetId = target.photonView.ViewID;
-        Debug.Log($"[BattleManager] Attacking target ViewID: {targetId} (owner: {target.photonView.Owner.NickName}) with damage: {damage}");
+        Debug.Log($"[BattleManager] Attacking target ViewID: {targetId} (owner: {target.photonView.Owner.NickName}) with EXACT damage: {damage}");
 
         isProcessingAttack = true;
 
-        // Tell everyone to apply damage
+        // Tell everyone to apply damage - SEND EXACT DAMAGE VALUE
+        Debug.Log($"[BattleManager] >>> SENDING RPC_ApplyDamage with targetId={targetId}, damage={damage}");
         photonView.RPC(nameof(RPC_ApplyDamage), RpcTarget.All, targetId, damage);
 
         // Request master to toggle turn (works for both master and non-master)
@@ -276,7 +277,7 @@ public class BattleManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void RPC_ApplyDamage(int targetViewId, int amount)
     {
-        Debug.Log($"[BattleManager] RPC_ApplyDamage called: ViewID={targetViewId}, Damage={amount}");
+        Debug.Log($"[BattleManager] <<< RPC_ApplyDamage RECEIVED: ViewID={targetViewId}, Damage Amount={amount} (caller: {PhotonNetwork.LocalPlayer.NickName})");
 
         var targetView = PhotonView.Find(targetViewId);
         if (targetView == null)
@@ -292,6 +293,7 @@ public class BattleManager : MonoBehaviourPunCallbacks
             return;
         }
 
+        Debug.Log($"[BattleManager] Applying {amount} damage to {pet.photonView.Owner.NickName}'s pet");
         bool isDead = pet.ApplyDamage(amount);
         Debug.Log($"[BattleManager] Damage applied. Pet HP: {pet.currentHealth}/{pet.maxHealth}");
 

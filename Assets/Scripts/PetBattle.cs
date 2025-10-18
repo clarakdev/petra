@@ -14,28 +14,16 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
 
     public bool IsDead => currentHealth <= 0;
 
+    private bool isInitialized = false;
+
     private void Awake()
     {
-        // Make sure we start with valid HP FIRST before anything else
-        if (currentHealth <= 0 || currentHealth > maxHealth)
-            currentHealth = maxHealth;
-
         Debug.Log($"[PetBattle] Awake: currentHealth={currentHealth}, maxHealth={maxHealth}");
     }
 
     private void Start()
     {
-        // Ensure health is valid
-        if (currentHealth <= 0 || currentHealth > maxHealth)
-            currentHealth = maxHealth;
-
-        // If a HealthBar is wired, reflect initial values.
-        if (healthBar != null)
-        {
-            healthBar.SetMaxHealth(maxHealth);
-            healthBar.SetHealth(currentHealth);
-            Debug.Log($"[PetBattle] Start: Health bar updated - {currentHealth}/{maxHealth}");
-        }
+        Debug.Log($"[PetBattle] Start: currentHealth={currentHealth}, maxHealth={maxHealth}");
     }
 
     public void SetFacing(bool isPlayerSide)
@@ -45,11 +33,21 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
             spriteRenderer.sprite = isPlayerSide ? battleSpritePlayerSide : battleSpriteEnemySide;
     }
 
+    /// Marks this pet as fully initialized (called by spawner after setting health)
+    public void MarkInitialized()
+    {
+        isInitialized = true;
+        Debug.Log($"[PetBattle] Pet marked as initialized. Health: {currentHealth}/{maxHealth}");
+    }
+
     /// Apply damage locally on this client. Returns true if HP reaches 0.
     /// Call this via RPC so all clients update simultaneously.
     public bool ApplyDamage(int damage)
     {
+        int oldHealth = currentHealth;
         currentHealth = Mathf.Max(0, currentHealth - Mathf.Max(0, damage));
+
+        Debug.Log($"[PetBattle] Damage applied: {oldHealth} - {damage} = {currentHealth}");
 
         // Update the health bar if it exists
         if (healthBar != null)
@@ -100,21 +98,50 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
-            // Send current health to other clients
-            stream.SendNext(currentHealth);
-            stream.SendNext(maxHealth);
+            if (isInitialized)
+            {
+                stream.SendNext(currentHealth);
+                stream.SendNext(maxHealth);
+                Debug.Log($"[PetBattle] SENDING health data (initialized=true): currentHealth={currentHealth}, maxHealth={maxHealth}");
+            }
+            else
+            {
+                // Don't send during initialisation; let spawner take control
+                stream.SendNext(-1);
+                stream.SendNext(-1);
+                Debug.Log($"[PetBattle] SKIPPING health send (not initialized yet)");
+            }
         }
         else
         {
-            // Receive health from owner
-            currentHealth = (int)stream.ReceiveNext();
-            maxHealth = (int)stream.ReceiveNext();
+            // NON-OWNER receives health
+            int receivedHealth = (int)stream.ReceiveNext();
+            int receivedMaxHealth = (int)stream.ReceiveNext();
 
-            // Update health bar if we have one
-            if (healthBar != null)
+            if (receivedHealth == -1 || receivedMaxHealth == -1)
             {
-                healthBar.SetMaxHealth(maxHealth);
-                healthBar.SetHealth(currentHealth);
+                Debug.Log($"[PetBattle] RECEIVED sentinel values (initialization phase), ignoring");
+                return;
+            }
+
+            // Only update if the values are valid
+            if (receivedHealth >= 0 && receivedMaxHealth > 0 && receivedHealth <= receivedMaxHealth)
+            {
+                currentHealth = receivedHealth;
+                maxHealth = receivedMaxHealth;
+
+                Debug.Log($"[PetBattle] RECEIVED and ACCEPTED health data: currentHealth={currentHealth}, maxHealth={maxHealth}");
+
+                // Update health bar if we have one
+                if (healthBar != null)
+                {
+                    healthBar.SetMaxHealth(maxHealth);
+                    healthBar.SetHealth(currentHealth);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[PetBattle] RECEIVED INVALID health data: receivedHealth={receivedHealth}, receivedMaxHealth={receivedMaxHealth}. Ignoring!");
             }
         }
     }

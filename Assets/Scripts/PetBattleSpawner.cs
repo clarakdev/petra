@@ -7,27 +7,20 @@ using UnityEngine;
 
 public class PetBattleSpawner : MonoBehaviourPunCallbacks
 {
-    public Vector2 playerSpawnPosition = new Vector2(-5, -1);  // MY pet (close to me)
-    public Vector2 enemySpawnPosition = new Vector2(5, 2);     // ENEMY pet (far away)
+    public Vector2 playerSpawnPosition = new Vector2(-5, -1);
+    public Vector2 enemySpawnPosition = new Vector2(5, 2);
 
-    public HealthBar playerHealthBar;  // MY health bar
-    public HealthBar enemyHealthBar;   // ENEMY health bar
+    public HealthBar playerHealthBar;
+    public HealthBar enemyHealthBar;
 
     private bool myPetSpawned = false;
     private GameObject myPetInstance;
 
     void Start()
     {
-        // First, check if any pets already exist (I joined late)
         RepositionExistingPets();
-
-        // Spawn my pet over the network
         SpawnMyPet();
-
-        // Wait for enemy pet to exist, then position it
         StartCoroutine(WaitForEnemyPet());
-
-        // Also check periodically in case something was missed
         InvokeRepeating(nameof(CheckForUnassignedPets), 1f, 1f);
     }
 
@@ -40,7 +33,16 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         {
             if (pet.photonView != null && !pet.photonView.IsMine && pet.healthBar == null)
             {
-                Debug.Log("[BattleSpawner] Found enemy pet without health bar, fixing...");
+                Debug.Log($"[BattleSpawner] Found unassigned enemy pet. Health: {pet.currentHealth}/{pet.maxHealth}");
+
+                // CRITICAL FIX: Force health to max if it's at invalid value
+                if (pet.currentHealth < pet.maxHealth && pet.maxHealth == 100)
+                {
+                    Debug.LogWarning($"[BattleSpawner] Enemy pet has corrupted health ({pet.currentHealth}/{pet.maxHealth}). Waiting for sync...");
+                    // Don't assign health bar yet - wait for proper sync
+                    continue;
+                }
+
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
                 pet.AssignHealthBar(enemyHealthBar);
@@ -51,27 +53,47 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         if (foundUnassigned)
         {
             AssignPetsToBattleManager();
-            CancelInvoke(nameof(CheckForUnassignedPets)); // Stop checking once we found it
+            CancelInvoke(nameof(CheckForUnassignedPets));
         }
     }
 
     private void RepositionExistingPets()
     {
-        // If I'm joining late, other player's pet might already be spawned
         var existingPets = FindObjectsOfType<PetBattle>();
-
         Debug.Log($"[BattleSpawner] Found {existingPets.Length} existing pets");
 
         foreach (var pet in existingPets)
         {
             if (pet.photonView != null && !pet.photonView.IsMine)
             {
-                // This is the enemy's pet, move it to enemy position on MY screen
+                Debug.Log($"[BattleSpawner] Repositioning existing enemy pet. Current health: {pet.currentHealth}/{pet.maxHealth}");
+
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
-                pet.AssignHealthBar(enemyHealthBar);  // Use the new method
-                Debug.Log("[BattleSpawner] Repositioned existing enemy pet to enemy side");
+
+                // Wait a frame for synchronization before assigning health bar
+                StartCoroutine(DelayedHealthBarAssignment(pet, enemyHealthBar));
             }
+        }
+    }
+
+    private IEnumerator DelayedHealthBarAssignment(PetBattle pet, HealthBar healthBar)
+    {
+        // Wait for at least one network update cycle
+        yield return new WaitForSeconds(0.5f);
+
+        Debug.Log($"[BattleSpawner] Delayed health bar assignment. Pet health: {pet.currentHealth}/{pet.maxHealth}");
+
+        // Verify health is valid before assigning
+        if (pet.currentHealth > 0 && pet.currentHealth <= pet.maxHealth)
+        {
+            pet.AssignHealthBar(healthBar);
+            Debug.Log($"[BattleSpawner] Health bar assigned successfully at {pet.currentHealth}/{pet.maxHealth}");
+        }
+        else
+        {
+            Debug.LogError($"[BattleSpawner] INVALID health values: {pet.currentHealth}/{pet.maxHealth}. Retrying...");
+            StartCoroutine(DelayedHealthBarAssignment(pet, healthBar));
         }
     }
 
@@ -79,7 +101,6 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
     {
         if (myPetSpawned) return;
 
-        // Get my pet selection
         int localPetIndex = GetLocalPetIndex();
         Pet localPet = null;
 
@@ -98,29 +119,35 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
             return;
         }
 
-        // Get path relative to Resources folder
         string prefabPath = localPet.battlePrefab.name;
 
-        // Spawn MY pet over network at a NEUTRAL position first
-        // We'll reposition it locally after
         myPetInstance = PhotonNetwork.Instantiate(
             prefabPath,
-            Vector3.zero,  // Spawn at origin, then move
+            Vector3.zero,
             Quaternion.identity
         );
 
-        // Immediately position MY pet on MY screen
         myPetInstance.transform.position = playerSpawnPosition;
 
         var petBattle = myPetInstance.GetComponent<PetBattle>();
         if (petBattle != null)
         {
-            petBattle.SetFacing(true);  // Player side sprite
+            // Set health FIRST
             petBattle.maxHealth = 100;
             petBattle.currentHealth = petBattle.maxHealth;
-            petBattle.AssignHealthBar(playerHealthBar);  // Use the new method
 
-            Debug.Log($"[BattleSpawner] My pet spawned: {localPet.name} with health bar assigned");
+            Debug.Log($"[BattleSpawner] MY pet health set to: {petBattle.currentHealth}/{petBattle.maxHealth}");
+
+            // Mark initialized BEFORE assigning health bar
+            petBattle.MarkInitialized();
+
+            // Now set visuals
+            petBattle.SetFacing(true);
+
+            // Assign health bar with correct values
+            petBattle.AssignHealthBar(playerHealthBar);
+
+            Debug.Log($"[BattleSpawner] My pet fully initialized: {localPet.name} at {petBattle.currentHealth}/{petBattle.maxHealth}");
         }
 
         myPetSpawned = true;
@@ -129,7 +156,6 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
     private void ForceRepositionAllPets()
     {
         var allPets = FindObjectsOfType<PetBattle>();
-
         Debug.Log($"[BattleSpawner] ForceRepositionAllPets found {allPets.Length} pets");
 
         foreach (var pet in allPets)
@@ -138,44 +164,45 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
             if (pet.photonView.IsMine)
             {
-                // MY pet - only reposition if health bar is missing
                 if (pet.healthBar == null)
                 {
+                    pet.maxHealth = 100;
+                    pet.currentHealth = pet.maxHealth;
                     pet.transform.position = playerSpawnPosition;
                     pet.SetFacing(true);
                     pet.AssignHealthBar(playerHealthBar);
-                    Debug.Log("[BattleSpawner] Fixed MY pet's missing health bar");
+                    Debug.Log($"[BattleSpawner] Fixed MY pet's health: {pet.currentHealth}/{pet.maxHealth}");
                 }
             }
             else
             {
-                // ENEMY pet - always reposition and assign health bar
+                Debug.Log($"[BattleSpawner] Enemy pet health BEFORE: {pet.currentHealth}/{pet.maxHealth}");
+
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
-                pet.AssignHealthBar(enemyHealthBar);
-                Debug.Log($"[BattleSpawner] Repositioned ENEMY pet ({pet.photonView.Owner.NickName}) to enemy side with health bar");
+
+                // Delayed assignment to wait for sync
+                StartCoroutine(DelayedHealthBarAssignment(pet, enemyHealthBar));
+
+                Debug.Log($"[BattleSpawner] Enemy pet repositioned, waiting for health sync");
             }
         }
 
-        // Assign to battle manager
         AssignPetsToBattleManager();
     }
 
     private IEnumerator WaitForEnemyPet()
     {
-        // Wait for the other player's pet to spawn
         PetBattle enemyPet = null;
         float timeout = 10f;
         float elapsed = 0f;
 
         while (enemyPet == null && elapsed < timeout)
         {
-            // Find all pets
             var allPets = FindObjectsOfType<PetBattle>();
 
             foreach (var pet in allPets)
             {
-                // The enemy pet is the one that's NOT mine
                 if (pet.photonView != null && !pet.photonView.IsMine)
                 {
                     enemyPet = pet;
@@ -192,11 +219,16 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
         if (enemyPet != null)
         {
-            Debug.Log("[BattleSpawner] Enemy pet detected, setting up");
-            // Directly setup the enemy pet
+            Debug.Log($"[BattleSpawner] Enemy pet detected. Initial health: {enemyPet.currentHealth}/{enemyPet.maxHealth}");
+
+            // Position and set facing immediately
             enemyPet.transform.position = enemySpawnPosition;
             enemyPet.SetFacing(false);
-            enemyPet.AssignHealthBar(enemyHealthBar);
+
+            // Wait for network sync before assigning health bar
+            yield return StartCoroutine(WaitForValidHealth(enemyPet));
+
+            Debug.Log($"[BattleSpawner] Enemy pet setup complete. Final health: {enemyPet.currentHealth}/{enemyPet.maxHealth}");
 
             AssignPetsToBattleManager();
         }
@@ -204,6 +236,41 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         {
             Debug.LogError("[BattleSpawner] Timeout waiting for enemy pet!");
         }
+    }
+
+    // Wait for health to be properly synchronised
+    private IEnumerator WaitForValidHealth(PetBattle pet)
+    {
+        float timeout = 5f;
+        float elapsed = 0f;
+        int lastHealth = pet.currentHealth;
+
+        Debug.Log($"[BattleSpawner] Waiting for valid health sync. Current: {pet.currentHealth}/{pet.maxHealth}");
+
+        while (elapsed < timeout)
+        {
+            // Check if health has been updated by network sync
+            if (pet.currentHealth != lastHealth)
+            {
+                Debug.Log($"[BattleSpawner] Health changed from {lastHealth} to {pet.currentHealth}");
+                lastHealth = pet.currentHealth;
+            }
+
+            // Consider health valid if it's full or has been explicitly set
+            if (pet.currentHealth == pet.maxHealth && pet.maxHealth == 100)
+            {
+                Debug.Log($"[BattleSpawner] Valid health detected: {pet.currentHealth}/{pet.maxHealth}");
+                pet.AssignHealthBar(enemyHealthBar);
+                yield break;
+            }
+
+            yield return new WaitForSeconds(0.2f);
+            elapsed += 0.2f;
+        }
+
+        // Timeout: force assign anyway and log warning
+        Debug.LogWarning($"[BattleSpawner] Timeout waiting for health sync. Assigning with current values: {pet.currentHealth}/{pet.maxHealth}");
+        pet.AssignHealthBar(enemyHealthBar);
     }
 
     private void AssignPetsToBattleManager()
@@ -215,9 +282,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
             return;
         }
 
-        // Find my pet and enemy pet
         var allPets = FindObjectsOfType<PetBattle>();
-
         PetBattle myPet = null;
         PetBattle theirPet = null;
 
@@ -227,36 +292,32 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
             if (pet.photonView.IsMine)
             {
-                myPet = pet;  // MY pet
+                myPet = pet;
             }
             else
             {
-                theirPet = pet;   // ENEMY pet
+                theirPet = pet;
             }
         }
 
-        // CRITICAL FIX: Assign pets based on who I am
-        // For Master (Player 1): playerPet = my pet, enemyPet = their pet
-        // For Non-Master (Player 2): playerPet = their pet (Player 1's), enemyPet = my pet
-        // This is because "playerPet" in BattleManager refers to Player 1's pet, not "my" pet
         if (PhotonNetwork.IsMasterClient)
         {
-            // I am Player 1
-            battleMgr.playerPet = myPet;      // Player 1's pet (mine)
-            battleMgr.enemyPet = theirPet;    // Player 2's pet (theirs)
+            battleMgr.playerPet = myPet;
+            battleMgr.enemyPet = theirPet;
             battleMgr.iAmPlayerSide = true;
         }
         else
         {
-            // I am Player 2
-            battleMgr.playerPet = theirPet;   // Player 1's pet (theirs)
-            battleMgr.enemyPet = myPet;       // Player 2's pet (mine)
+            battleMgr.playerPet = theirPet;
+            battleMgr.enemyPet = myPet;
             battleMgr.iAmPlayerSide = false;
         }
 
-        Debug.Log($"[BattleSpawner] Pets assigned. IsMaster={PhotonNetwork.IsMasterClient}, " +
-                  $"playerPet owner={battleMgr.playerPet?.photonView?.Owner?.NickName}, " +
-                  $"enemyPet owner={battleMgr.enemyPet?.photonView?.Owner?.NickName}");
+        Debug.Log($"[BattleSpawner] Pets assigned to BattleManager.");
+        if (battleMgr.playerPet)
+            Debug.Log($"  playerPet: owner={battleMgr.playerPet.photonView.Owner.NickName}, health={battleMgr.playerPet.currentHealth}/{battleMgr.playerPet.maxHealth}");
+        if (battleMgr.enemyPet)
+            Debug.Log($"  enemyPet: owner={battleMgr.enemyPet.photonView.Owner.NickName}, health={battleMgr.enemyPet.currentHealth}/{battleMgr.enemyPet.maxHealth}");
     }
 
     private int GetLocalPetIndex()
@@ -268,10 +329,8 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         return -1;
     }
 
-    // This callback fires when ANY PhotonView is instantiated over the network
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        // When the other player joins, recheck pet positions
         if (!newPlayer.IsLocal)
         {
             Debug.Log("[BattleSpawner] Other player entered, rechecking positions");

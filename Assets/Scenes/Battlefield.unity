@@ -519,7 +519,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 57
+  m_Value: 74
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -556,7 +556,7 @@ MonoBehaviour:
   battleSpritePlayerSide: {fileID: 0}
   battleSpriteEnemySide: {fileID: 0}
   maxHealth: 100
-  currentHealth: 30
+  currentHealth: 100
   healthBar: {fileID: 1065686277}
 --- !u!4 &182769834
 Transform:
@@ -591,7 +591,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 182769833}
   sceneViewId: 4
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -839,7 +840,7 @@ MonoBehaviour:
   battleSpritePlayerSide: {fileID: 0}
   battleSpriteEnemySide: {fileID: 0}
   maxHealth: 100
-  currentHealth: 30
+  currentHealth: 100
   healthBar: {fileID: 133792785}
 --- !u!4 &433664026
 Transform:
@@ -2257,7 +2258,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
-  m_Value: 88.4
+  m_Value: 44.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
