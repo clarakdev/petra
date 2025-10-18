@@ -16,17 +16,25 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
 
     private void Awake()
     {
-        // Make sure we start with valid HP
-        if (currentHealth <= 0) currentHealth = maxHealth;
+        // Make sure we start with valid HP FIRST before anything else
+        if (currentHealth <= 0 || currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
+        Debug.Log($"[PetBattle] Awake: currentHealth={currentHealth}, maxHealth={maxHealth}");
     }
 
     private void Start()
     {
+        // Ensure health is valid
+        if (currentHealth <= 0 || currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
         // If a HealthBar is wired, reflect initial values.
         if (healthBar != null)
         {
             healthBar.SetMaxHealth(maxHealth);
             healthBar.SetHealth(currentHealth);
+            Debug.Log($"[PetBattle] Start: Health bar updated - {currentHealth}/{maxHealth}");
         }
     }
 

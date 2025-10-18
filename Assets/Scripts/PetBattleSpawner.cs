@@ -218,23 +218,45 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         // Find my pet and enemy pet
         var allPets = FindObjectsOfType<PetBattle>();
 
+        PetBattle myPet = null;
+        PetBattle theirPet = null;
+
         foreach (var pet in allPets)
         {
             if (pet.photonView == null) continue;
 
             if (pet.photonView.IsMine)
             {
-                battleMgr.playerPet = pet;  // MY pet
+                myPet = pet;  // MY pet
             }
             else
             {
-                battleMgr.enemyPet = pet;   // ENEMY pet
+                theirPet = pet;   // ENEMY pet
             }
         }
 
-        battleMgr.iAmPlayerSide = true;  // I always control the "player" side
+        // CRITICAL FIX: Assign pets based on who I am
+        // For Master (Player 1): playerPet = my pet, enemyPet = their pet
+        // For Non-Master (Player 2): playerPet = their pet (Player 1's), enemyPet = my pet
+        // This is because "playerPet" in BattleManager refers to Player 1's pet, not "my" pet
+        if (PhotonNetwork.IsMasterClient)
+        {
+            // I am Player 1
+            battleMgr.playerPet = myPet;      // Player 1's pet (mine)
+            battleMgr.enemyPet = theirPet;    // Player 2's pet (theirs)
+            battleMgr.iAmPlayerSide = true;
+        }
+        else
+        {
+            // I am Player 2
+            battleMgr.playerPet = theirPet;   // Player 1's pet (theirs)
+            battleMgr.enemyPet = myPet;       // Player 2's pet (mine)
+            battleMgr.iAmPlayerSide = false;
+        }
 
-        Debug.Log("[BattleSpawner] Pets assigned to BattleManager");
+        Debug.Log($"[BattleSpawner] Pets assigned. IsMaster={PhotonNetwork.IsMasterClient}, " +
+                  $"playerPet owner={battleMgr.playerPet?.photonView?.Owner?.NickName}, " +
+                  $"enemyPet owner={battleMgr.enemyPet?.photonView?.Owner?.NickName}");
     }
 
     private int GetLocalPetIndex()
