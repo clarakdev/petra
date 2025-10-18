@@ -26,6 +26,33 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
         // Wait for enemy pet to exist, then position it
         StartCoroutine(WaitForEnemyPet());
+
+        // Also check periodically in case something was missed
+        InvokeRepeating(nameof(CheckForUnassignedPets), 1f, 1f);
+    }
+
+    private void CheckForUnassignedPets()
+    {
+        var allPets = FindObjectsOfType<PetBattle>();
+        bool foundUnassigned = false;
+
+        foreach (var pet in allPets)
+        {
+            if (pet.photonView != null && !pet.photonView.IsMine && pet.healthBar == null)
+            {
+                Debug.Log("[BattleSpawner] Found enemy pet without health bar, fixing...");
+                pet.transform.position = enemySpawnPosition;
+                pet.SetFacing(false);
+                pet.AssignHealthBar(enemyHealthBar);
+                foundUnassigned = true;
+            }
+        }
+
+        if (foundUnassigned)
+        {
+            AssignPetsToBattleManager();
+            CancelInvoke(nameof(CheckForUnassignedPets)); // Stop checking once we found it
+        }
     }
 
     private void RepositionExistingPets()
@@ -42,7 +69,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 // This is the enemy's pet, move it to enemy position on MY screen
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
-                pet.healthBar = enemyHealthBar;
+                pet.AssignHealthBar(enemyHealthBar);  // Use the new method
                 Debug.Log("[BattleSpawner] Repositioned existing enemy pet to enemy side");
             }
         }
@@ -89,22 +116,21 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         if (petBattle != null)
         {
             petBattle.SetFacing(true);  // Player side sprite
-            petBattle.healthBar = playerHealthBar;  // MY health bar
             petBattle.maxHealth = 100;
             petBattle.currentHealth = petBattle.maxHealth;
-            petBattle.healthBar.SetMaxHealth(petBattle.maxHealth);
+            petBattle.AssignHealthBar(playerHealthBar);  // Use the new method
+
+            Debug.Log($"[BattleSpawner] My pet spawned: {localPet.name} with health bar assigned");
         }
 
         myPetSpawned = true;
-        Debug.Log($"[BattleSpawner] My pet spawned: {localPet.name}");
-
-        // Force recheck of all pets immediately after spawning
-        Invoke(nameof(ForceRepositionAllPets), 0.1f);
     }
 
     private void ForceRepositionAllPets()
     {
         var allPets = FindObjectsOfType<PetBattle>();
+
+        Debug.Log($"[BattleSpawner] ForceRepositionAllPets found {allPets.Length} pets");
 
         foreach (var pet in allPets)
         {
@@ -112,19 +138,22 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
             if (pet.photonView.IsMine)
             {
-                // MY pet always goes to player position
-                pet.transform.position = playerSpawnPosition;
-                pet.SetFacing(true);
-                pet.healthBar = playerHealthBar;
-                Debug.Log("[BattleSpawner] Repositioned MY pet to player side");
+                // MY pet - only reposition if health bar is missing
+                if (pet.healthBar == null)
+                {
+                    pet.transform.position = playerSpawnPosition;
+                    pet.SetFacing(true);
+                    pet.AssignHealthBar(playerHealthBar);
+                    Debug.Log("[BattleSpawner] Fixed MY pet's missing health bar");
+                }
             }
             else
             {
-                // ENEMY pet always goes to enemy position
+                // ENEMY pet - always reposition and assign health bar
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
-                pet.healthBar = enemyHealthBar;
-                Debug.Log("[BattleSpawner] Repositioned ENEMY pet to enemy side");
+                pet.AssignHealthBar(enemyHealthBar);
+                Debug.Log($"[BattleSpawner] Repositioned ENEMY pet ({pet.photonView.Owner.NickName}) to enemy side with health bar");
             }
         }
 
@@ -163,8 +192,13 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
         if (enemyPet != null)
         {
-            Debug.Log("[BattleSpawner] Enemy pet detected, repositioning all pets");
-            ForceRepositionAllPets();
+            Debug.Log("[BattleSpawner] Enemy pet detected, setting up");
+            // Directly setup the enemy pet
+            enemyPet.transform.position = enemySpawnPosition;
+            enemyPet.SetFacing(false);
+            enemyPet.AssignHealthBar(enemyHealthBar);
+
+            AssignPetsToBattleManager();
         }
         else
         {
