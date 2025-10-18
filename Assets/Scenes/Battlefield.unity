@@ -1271,6 +1271,7 @@ MonoBehaviour:
   move: {fileID: 11400000, guid: 5de74191651c081429f8df85765c5eb4, type: 2}
   manager: {fileID: 1158980727}
   label: {fileID: 1649772578}
+  ui: {fileID: 1040265502}
 --- !u!1 &855392928
 GameObject:
   m_ObjectHideFlags: 0
@@ -1420,6 +1421,7 @@ MonoBehaviour:
   move: {fileID: 11400000, guid: d9816f945af3d4a468f7a7b22402d633, type: 2}
   manager: {fileID: 1158980727}
   label: {fileID: 1010974305}
+  ui: {fileID: 1040265502}
 --- !u!1 &944465132
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,7 +2278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   playerPet: {fileID: 433664025}
   enemyPet: {fileID: 182769833}
-  isPlayerTurn: 1
+  iAmPlayerSide: 1
 --- !u!114 &1158980728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2951,6 +2953,7 @@ MonoBehaviour:
   move: {fileID: 11400000, guid: 33f73272ce527554e80cfc82f1b369b8, type: 2}
   manager: {fileID: 1158980727}
   label: {fileID: 2029422768}
+  ui: {fileID: 1040265502}
 --- !u!1 &1355990874
 GameObject:
   m_ObjectHideFlags: 0
@@ -3905,6 +3908,7 @@ MonoBehaviour:
   move: {fileID: 11400000, guid: 1a523f0779e3b1641a9abca8ece5b458, type: 2}
   manager: {fileID: 1158980727}
   label: {fileID: 2123592341}
+  ui: {fileID: 1040265502}
 --- !u!1 &2029422766
 GameObject:
   m_ObjectHideFlags: 0
