@@ -47,8 +47,6 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
         int oldHealth = currentHealth;
         currentHealth = Mathf.Max(0, currentHealth - Mathf.Max(0, damage));
 
-        Debug.Log($"[PetBattle] Damage applied: {oldHealth} - {damage} = {currentHealth}");
-
         // Update the health bar if it exists
         if (healthBar != null)
         {
@@ -101,16 +99,12 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
             if (isInitialized)
             {
                 stream.SendNext(currentHealth);
-                stream.SendNext(maxHealth);
-                Debug.Log($"[PetBattle] SENDING health data (initialized=true): currentHealth={currentHealth}, maxHealth={maxHealth}");
-            }
+                stream.SendNext(maxHealth);            }
             else
             {
                 // Don't send during initialisation; let spawner take control
                 stream.SendNext(-1);
-                stream.SendNext(-1);
-                Debug.Log($"[PetBattle] SKIPPING health send (not initialized yet)");
-            }
+                stream.SendNext(-1);            }
         }
         else
         {
@@ -119,9 +113,7 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
             int receivedMaxHealth = (int)stream.ReceiveNext();
 
             if (receivedHealth == -1 || receivedMaxHealth == -1)
-            {
-                Debug.Log($"[PetBattle] RECEIVED sentinel values (initialization phase), ignoring");
-                return;
+            {                return;
             }
 
             // Only update if the values are valid
@@ -130,18 +122,12 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
                 currentHealth = receivedHealth;
                 maxHealth = receivedMaxHealth;
 
-                Debug.Log($"[PetBattle] RECEIVED and ACCEPTED health data: currentHealth={currentHealth}, maxHealth={maxHealth}");
-
                 // Update health bar if we have one
                 if (healthBar != null)
                 {
                     healthBar.SetMaxHealth(maxHealth);
                     healthBar.SetHealth(currentHealth);
                 }
-            }
-            else
-            {
-                Debug.LogWarning($"[PetBattle] RECEIVED INVALID health data: receivedHealth={receivedHealth}, receivedMaxHealth={receivedMaxHealth}. Ignoring!");
             }
         }
     }
