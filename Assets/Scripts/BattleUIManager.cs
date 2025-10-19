@@ -10,7 +10,8 @@ public class BattleUIManager : MonoBehaviour
 
     [SerializeField] private Button fightButton;
     [SerializeField] private Button inventoryButton;
-    [SerializeField] private Button backButton;
+    [SerializeField] private Button backButtonMove;  // Back button in MovePanel
+    [SerializeField] private Button backButtonInventory;   // Back button in InventoryPanel
 
     private void Awake()
     {
@@ -27,28 +28,36 @@ public class BattleUIManager : MonoBehaviour
             inventoryButton = commandPanel.transform.Find("InventoryButton")?.GetComponent<Button>();
 
         // Auto-find back button in MovePanel
-        if (!backButton && movePanel)
-            backButton = movePanel.transform.Find("BackButton")?.GetComponent<Button>();
+        if (!backButtonMove && movePanel)
+            backButtonMove = movePanel.transform.Find("BackButton")?.GetComponent<Button>();
+
+        // Auto-find back button in InventoryPanel
+        if (!backButtonInventory && inventoryPanel)
+            backButtonInventory = inventoryPanel.transform.Find("BackButton")?.GetComponent<Button>();
 
         Debug.Log($"[BattleUIManager] Awake - CommandPanel: {(commandPanel ? "YES" : "NO")}, " +
                   $"MovePanel: {(movePanel ? "YES" : "NO")}, " +
                   $"InventoryPanel: {(inventoryPanel ? "YES" : "NO")}, " +
                   $"FightButton: {(fightButton ? "YES" : "NO")}, " +
-                  $"InventoryButton: {(inventoryButton ? "YES" : "NO")}");
+                  $"InventoryButton: {(inventoryButton ? "YES" : "NO")}, " +
+                  $"BackButtonMove: {(backButtonMove ? "YES" : "NO")}, " +
+                  $"BackButtonInventory: {(backButtonInventory ? "YES" : "NO")}");
     }
 
     private void OnEnable()
     {
         if (fightButton) fightButton.onClick.AddListener(OnFightClicked);
         if (inventoryButton) inventoryButton.onClick.AddListener(OnInventoryClicked);
-        if (backButton) backButton.onClick.AddListener(OnBackClicked);
+        if (backButtonMove) backButtonMove.onClick.AddListener(OnBackClicked);
+        if (backButtonInventory) backButtonInventory.onClick.AddListener(OnBackClicked);
     }
 
     private void OnDisable()
     {
         if (fightButton) fightButton.onClick.RemoveListener(OnFightClicked);
         if (inventoryButton) inventoryButton.onClick.RemoveListener(OnInventoryClicked);
-        if (backButton) backButton.onClick.RemoveListener(OnBackClicked);
+        if (backButtonMove) backButtonMove.onClick.RemoveListener(OnBackClicked);
+        if (backButtonInventory) backButtonInventory.onClick.RemoveListener(OnBackClicked);
     }
 
     private void Start() => ShowCommandMenu();
