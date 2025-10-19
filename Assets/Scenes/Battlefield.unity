@@ -3201,8 +3201,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleUIManager
   commandPanel: {fileID: 539585454}
   movePanel: {fileID: 951314963}
+  inventoryPanel: {fileID: 1784519262}
   playerStatusPanel: {fileID: 955774937}
   fightButton: {fileID: 0}
+  inventoryButton: {fileID: 0}
   backButton: {fileID: 0}
 --- !u!1 &1064080738
 GameObject:
@@ -4571,7 +4573,7 @@ GameObject:
   - component: {fileID: 1351527731}
   - component: {fileID: 1351527730}
   m_Layer: 5
-  m_Name: InventoryButton
+  m_Name: ConfirmButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5635,6 +5637,7 @@ GameObject:
   - component: {fileID: 1784519266}
   - component: {fileID: 1784519265}
   - component: {fileID: 1784519264}
+  - component: {fileID: 1784519267}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: Untagged
@@ -5726,6 +5729,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1784519267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784519262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22835b12ebd4bac4683c60133414fbda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleInventoryFilter
+  inventoryContainer: {fileID: 361694907}
+  confirmButton: {fileID: 1351527730}
 --- !u!1 &1798472678
 GameObject:
   m_ObjectHideFlags: 0
