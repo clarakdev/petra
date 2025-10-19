@@ -301,10 +301,20 @@ public class BattleManager : MonoBehaviourPunCallbacks
         pet.currentHealth += amount; // Also heal the new HP
         int newMaxHP = pet.maxHealth;
 
-        Debug.Log($"[BattleManager] RPC_IncreaseMaxHealth: Pet max HP increased {oldMaxHP} -> {newMaxHP} (+{amount})");
+        // Update health bar
+        if (pet.healthBar != null)
+        {
+            pet.healthBar.SetMaxHealth(newMaxHP);
+            pet.healthBar.SetHealth(pet.currentHealth);
+        }
 
-        // Optional: Save this permanently to PlayerPrefs or database
-        // PlayerPrefs.SetInt($"Pet_{pet.name}_MaxHP", newMaxHP);
+        // CRITICAL: Update health text immediately (same as potion)
+        if (pet.healthText != null)
+        {
+            pet.healthText.text = $"{pet.currentHealth} / {pet.maxHealth}";
+        }
+
+        Debug.Log($"[BattleManager] RPC_IncreaseMaxHealth: Pet max HP increased {oldMaxHP} -> {newMaxHP} (+{amount})");
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
