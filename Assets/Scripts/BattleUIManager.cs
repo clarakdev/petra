@@ -75,7 +75,6 @@ public class BattleUIManager : MonoBehaviour
     {
         Debug.Log("[BattleUIManager] OnInventoryClicked - Showing inventory (potions only)");
         if (commandPanel) commandPanel.SetActive(false);
-        if (playerStatusPanel) playerStatusPanel.SetActive(false);
         if (movePanel) movePanel.SetActive(false);
         if (inventoryPanel) inventoryPanel.SetActive(true);
     }
