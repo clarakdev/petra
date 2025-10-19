@@ -314,9 +314,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         UpdatePetNameDisplay(pet, enemyNameText);
     }
 
-    /// <summary>
     /// Updates the pet name display based on the prefab name
-    /// </summary>
     private void UpdatePetNameDisplay(PetBattle pet, TextMeshProUGUI nameText)
     {
         if (nameText == null || pet == null) return;
