@@ -297,8 +297,9 @@ public class BattleManager : MonoBehaviourPunCallbacks
         }
 
         int oldMaxHP = pet.maxHealth;
+        int oldCurrentHP = pet.currentHealth;
         pet.maxHealth += amount;
-        pet.currentHealth += amount; // Also heal the new HP
+        pet.currentHealth = pet.maxHealth; // Set current health to new max
         int newMaxHP = pet.maxHealth;
 
         // Update health bar
@@ -308,7 +309,6 @@ public class BattleManager : MonoBehaviourPunCallbacks
             pet.healthBar.SetHealth(pet.currentHealth);
         }
 
-        // CRITICAL: Update health text immediately (same as potion)
         if (pet.healthText != null)
         {
             pet.healthText.text = $"{pet.currentHealth} / {pet.maxHealth}";

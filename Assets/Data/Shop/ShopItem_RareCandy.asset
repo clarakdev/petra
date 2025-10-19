@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   Category: {fileID: 11400000, guid: 09eb1ea90cf1d6c439ee9d4be83ec370, type: 2}
   Name: Rare Candy
-  Description: Permanently increases max HP by 30
+  Description: Permanently increases Max HP by 30 and fully restores health to the
+    new maximum
   Cost: 999999
   Icon: {fileID: 8713837879773084247, guid: efe43774be2e7024da4ea98abc970bc4, type: 3}
