@@ -2,7 +2,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -16,37 +16,54 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
     private TextMeshProUGUI playerHealthText;
     private TextMeshProUGUI enemyHealthText;
+    private TextMeshProUGUI playerNameText;
+    private TextMeshProUGUI enemyNameText;
+
+    // Mapping of prefab names to pet display names
+    private static readonly Dictionary<string, string> PrefabToPetName = new Dictionary<string, string>()
+    {
+        { "PetBattle_1", "Noctyra" },
+        { "PetBattle_2", "Florinelle" },
+        { "PetBattle_3", "Glacern" },
+        { "PetBattle_4", "Pyrrin" }
+    };
 
     private bool myPetSpawned = false;
     private GameObject myPetInstance;
 
     void Awake()
     {
-        // Auto-find health text references from the UI hierarchy
-        // Find all TextMeshProUGUI in the scene and match by parent names
+        // Auto-find health text and name text references from the UI hierarchy
         var allHealthTexts = FindObjectsOfType<TextMeshProUGUI>();
 
         foreach (var text in allHealthTexts)
         {
+            var parentName = text.transform.parent?.name;
+
             if (text.name == "HealthText")
             {
-                // Check if parent is PlayerStatusPanel or EnemyStatusPanel
-                var parentName = text.transform.parent?.name;
-
                 if (parentName == "PlayerStatusPanel")
                     playerHealthText = text;
                 else if (parentName == "EnemyStatusPanel")
                     enemyHealthText = text;
             }
+            else if (text.name == "NameText")
+            {
+                if (parentName == "PlayerStatusPanel")
+                    playerNameText = text;
+                else if (parentName == "EnemyStatusPanel")
+                    enemyNameText = text;
+            }
         }
 
-        Debug.Log($"[BattleSpawner] Awake: playerHealthText={(playerHealthText != null ? "FOUND" : "NOT FOUND")}, enemyHealthText={(enemyHealthText != null ? "FOUND" : "NOT FOUND")}");
+        Debug.Log($"[BattleSpawner] Awake: playerHealthText={(playerHealthText != null ? "FOUND" : "NOT FOUND")}, " +
+                  $"enemyHealthText={(enemyHealthText != null ? "FOUND" : "NOT FOUND")}, " +
+                  $"playerNameText={(playerNameText != null ? "FOUND" : "NOT FOUND")}, " +
+                  $"enemyNameText={(enemyNameText != null ? "FOUND" : "NOT FOUND")}");
     }
 
     void Start()
     {
-        Debug.Log($"[BattleSpawner] START: playerHealthText={(playerHealthText != null ? "ASSIGNED" : "NULL")}, enemyHealthText={(enemyHealthText != null ? "ASSIGNED" : "NULL")}");
-
         RepositionExistingPets();
         SpawnMyPet();
         StartCoroutine(WaitForEnemyPet());
@@ -74,7 +91,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 pet.SetFacing(false);
                 pet.AssignHealthBar(enemyHealthBar);
                 pet.AssignHealthText(enemyHealthText);
-                Debug.Log($"[BattleSpawner] CheckForUnassignedPets: Assigned text to enemy pet. enemyHealthText is {(enemyHealthText != null ? "NOT NULL" : "NULL")}");
+                UpdatePetNameDisplay(pet, enemyNameText);
                 foundUnassigned = true;
             }
         }
@@ -100,12 +117,12 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
 
-                StartCoroutine(DelayedHealthAssignment(pet, enemyHealthBar, enemyHealthText));
+                StartCoroutine(DelayedHealthAssignment(pet, enemyHealthBar, enemyHealthText, enemyNameText));
             }
         }
     }
 
-    private IEnumerator DelayedHealthAssignment(PetBattle pet, HealthBar healthBar, TextMeshProUGUI healthText)
+    private IEnumerator DelayedHealthAssignment(PetBattle pet, HealthBar healthBar, TextMeshProUGUI healthText, TextMeshProUGUI nameText)
     {
         yield return new WaitForSeconds(0.5f);
 
@@ -115,12 +132,13 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         {
             pet.AssignHealthBar(healthBar);
             pet.AssignHealthText(healthText);
-            Debug.Log($"[BattleSpawner] Health bar and text assigned successfully at {pet.currentHealth}/{pet.maxHealth}");
+            UpdatePetNameDisplay(pet, nameText);
+            Debug.Log($"[BattleSpawner] Health bar, text, and name assigned successfully at {pet.currentHealth}/{pet.maxHealth}");
         }
         else
         {
             Debug.LogError($"[BattleSpawner] INVALID health values: {pet.currentHealth}/{pet.maxHealth}. Retrying...");
-            StartCoroutine(DelayedHealthAssignment(pet, healthBar, healthText));
+            StartCoroutine(DelayedHealthAssignment(pet, healthBar, healthText, nameText));
         }
     }
 
@@ -169,6 +187,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
             petBattle.AssignHealthBar(playerHealthBar);
             petBattle.AssignHealthText(playerHealthText);
+            UpdatePetNameDisplay(petBattle, playerNameText);
 
             Debug.Log($"[BattleSpawner] My pet fully initialized: {localPet.name} at {petBattle.currentHealth}/{petBattle.maxHealth}");
         }
@@ -195,7 +214,8 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                     pet.SetFacing(true);
                     pet.AssignHealthBar(playerHealthBar);
                     pet.AssignHealthText(playerHealthText);
-                    Debug.Log($"[BattleSpawner] Fixed MY pet's health: {pet.currentHealth}/{pet.maxHealth}. playerHealthText is {(playerHealthText != null ? "NOT NULL" : "NULL")}");
+                    UpdatePetNameDisplay(pet, playerNameText);
+                    Debug.Log($"[BattleSpawner] Fixed MY pet's health: {pet.currentHealth}/{pet.maxHealth}");
                 }
             }
             else
@@ -205,7 +225,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
 
-                StartCoroutine(DelayedHealthAssignment(pet, enemyHealthBar, enemyHealthText));
+                StartCoroutine(DelayedHealthAssignment(pet, enemyHealthBar, enemyHealthText, enemyNameText));
 
                 Debug.Log($"[BattleSpawner] Enemy pet repositioned, waiting for health sync");
             }
@@ -280,6 +300,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 Debug.Log($"[BattleSpawner] Valid health detected: {pet.currentHealth}/{pet.maxHealth}");
                 pet.AssignHealthBar(enemyHealthBar);
                 pet.AssignHealthText(enemyHealthText);
+                UpdatePetNameDisplay(pet, enemyNameText);
                 yield break;
             }
 
@@ -290,6 +311,29 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         Debug.LogWarning($"[BattleSpawner] Timeout waiting for health sync. Assigning with current values: {pet.currentHealth}/{pet.maxHealth}");
         pet.AssignHealthBar(enemyHealthBar);
         pet.AssignHealthText(enemyHealthText);
+        UpdatePetNameDisplay(pet, enemyNameText);
+    }
+
+    /// <summary>
+    /// Updates the pet name display based on the prefab name
+    /// </summary>
+    private void UpdatePetNameDisplay(PetBattle pet, TextMeshProUGUI nameText)
+    {
+        if (nameText == null || pet == null) return;
+
+        // Get the prefab name from the pet's gameObject name (it includes the prefab name)
+        string prefabName = pet.gameObject.name.Replace("(Clone)", "").Trim();
+
+        if (PrefabToPetName.TryGetValue(prefabName, out string petDisplayName))
+        {
+            nameText.text = petDisplayName;
+            Debug.Log($"[BattleSpawner] Set pet name to '{petDisplayName}' (prefab: {prefabName})");
+        }
+        else
+        {
+            Debug.LogWarning($"[BattleSpawner] Could not find pet name for prefab: {prefabName}");
+            nameText.text = prefabName; // Fallback to prefab name
+        }
     }
 
     private void AssignPetsToBattleManager()
