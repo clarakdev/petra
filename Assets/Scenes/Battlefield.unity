@@ -558,6 +558,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 1065686277}
+  healthText: {fileID: 1435008807}
 --- !u!4 &182769834
 Transform:
   m_ObjectHideFlags: 0
@@ -1073,6 +1074,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   healthBar: {fileID: 133792785}
+  healthText: {fileID: 1749662857}
 --- !u!4 &433664026
 Transform:
   m_ObjectHideFlags: 0
@@ -3586,7 +3588,7 @@ MonoBehaviour:
   playerStatusPanel: {fileID: 955774937}
   fightButton: {fileID: 0}
   inventoryButton: {fileID: 0}
-  backButtonMove: {fileID: 0}
+  backButtonMove: {fileID: 2129355730}
   backButtonInventory: {fileID: 771638340}
 --- !u!1 &1064080738
 GameObject:

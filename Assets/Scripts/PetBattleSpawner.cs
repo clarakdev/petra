@@ -4,6 +4,7 @@ using Photon.Realtime;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using TMPro;
 
 public class PetBattleSpawner : MonoBehaviourPunCallbacks
 {
@@ -13,11 +14,39 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
     public HealthBar playerHealthBar;
     public HealthBar enemyHealthBar;
 
+    private TextMeshProUGUI playerHealthText;
+    private TextMeshProUGUI enemyHealthText;
+
     private bool myPetSpawned = false;
     private GameObject myPetInstance;
 
+    void Awake()
+    {
+        // Auto-find health text references from the UI hierarchy
+        // Find all TextMeshProUGUI in the scene and match by parent names
+        var allHealthTexts = FindObjectsOfType<TextMeshProUGUI>();
+
+        foreach (var text in allHealthTexts)
+        {
+            if (text.name == "HealthText")
+            {
+                // Check if parent is PlayerStatusPanel or EnemyStatusPanel
+                var parentName = text.transform.parent?.name;
+
+                if (parentName == "PlayerStatusPanel")
+                    playerHealthText = text;
+                else if (parentName == "EnemyStatusPanel")
+                    enemyHealthText = text;
+            }
+        }
+
+        Debug.Log($"[BattleSpawner] Awake: playerHealthText={(playerHealthText != null ? "FOUND" : "NOT FOUND")}, enemyHealthText={(enemyHealthText != null ? "FOUND" : "NOT FOUND")}");
+    }
+
     void Start()
     {
+        Debug.Log($"[BattleSpawner] START: playerHealthText={(playerHealthText != null ? "ASSIGNED" : "NULL")}, enemyHealthText={(enemyHealthText != null ? "ASSIGNED" : "NULL")}");
+
         RepositionExistingPets();
         SpawnMyPet();
         StartCoroutine(WaitForEnemyPet());
@@ -35,17 +64,17 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
             {
                 Debug.Log($"[BattleSpawner] Found unassigned enemy pet. Health: {pet.currentHealth}/{pet.maxHealth}");
 
-                // CRITICAL FIX: Force health to max if it's at invalid value
                 if (pet.currentHealth < pet.maxHealth && pet.maxHealth == 100)
                 {
                     Debug.LogWarning($"[BattleSpawner] Enemy pet has corrupted health ({pet.currentHealth}/{pet.maxHealth}). Waiting for sync...");
-                    // Don't assign health bar yet - wait for proper sync
                     continue;
                 }
 
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
                 pet.AssignHealthBar(enemyHealthBar);
+                pet.AssignHealthText(enemyHealthText);
+                Debug.Log($"[BattleSpawner] CheckForUnassignedPets: Assigned text to enemy pet. enemyHealthText is {(enemyHealthText != null ? "NOT NULL" : "NULL")}");
                 foundUnassigned = true;
             }
         }
@@ -71,29 +100,27 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
 
-                // Wait a frame for synchronization before assigning health bar
-                StartCoroutine(DelayedHealthBarAssignment(pet, enemyHealthBar));
+                StartCoroutine(DelayedHealthAssignment(pet, enemyHealthBar, enemyHealthText));
             }
         }
     }
 
-    private IEnumerator DelayedHealthBarAssignment(PetBattle pet, HealthBar healthBar)
+    private IEnumerator DelayedHealthAssignment(PetBattle pet, HealthBar healthBar, TextMeshProUGUI healthText)
     {
-        // Wait for at least one network update cycle
         yield return new WaitForSeconds(0.5f);
 
-        Debug.Log($"[BattleSpawner] Delayed health bar assignment. Pet health: {pet.currentHealth}/{pet.maxHealth}");
+        Debug.Log($"[BattleSpawner] Delayed health assignment. Pet health: {pet.currentHealth}/{pet.maxHealth}");
 
-        // Verify health is valid before assigning
         if (pet.currentHealth > 0 && pet.currentHealth <= pet.maxHealth)
         {
             pet.AssignHealthBar(healthBar);
-            Debug.Log($"[BattleSpawner] Health bar assigned successfully at {pet.currentHealth}/{pet.maxHealth}");
+            pet.AssignHealthText(healthText);
+            Debug.Log($"[BattleSpawner] Health bar and text assigned successfully at {pet.currentHealth}/{pet.maxHealth}");
         }
         else
         {
             Debug.LogError($"[BattleSpawner] INVALID health values: {pet.currentHealth}/{pet.maxHealth}. Retrying...");
-            StartCoroutine(DelayedHealthBarAssignment(pet, healthBar));
+            StartCoroutine(DelayedHealthAssignment(pet, healthBar, healthText));
         }
     }
 
@@ -132,20 +159,16 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         var petBattle = myPetInstance.GetComponent<PetBattle>();
         if (petBattle != null)
         {
-            // Set health FIRST
             petBattle.maxHealth = 100;
             petBattle.currentHealth = petBattle.maxHealth;
 
             Debug.Log($"[BattleSpawner] MY pet health set to: {petBattle.currentHealth}/{petBattle.maxHealth}");
 
-            // Mark initialized BEFORE assigning health bar
             petBattle.MarkInitialized();
-
-            // Now set visuals
             petBattle.SetFacing(true);
 
-            // Assign health bar with correct values
             petBattle.AssignHealthBar(playerHealthBar);
+            petBattle.AssignHealthText(playerHealthText);
 
             Debug.Log($"[BattleSpawner] My pet fully initialized: {localPet.name} at {petBattle.currentHealth}/{petBattle.maxHealth}");
         }
@@ -171,7 +194,8 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                     pet.transform.position = playerSpawnPosition;
                     pet.SetFacing(true);
                     pet.AssignHealthBar(playerHealthBar);
-                    Debug.Log($"[BattleSpawner] Fixed MY pet's health: {pet.currentHealth}/{pet.maxHealth}");
+                    pet.AssignHealthText(playerHealthText);
+                    Debug.Log($"[BattleSpawner] Fixed MY pet's health: {pet.currentHealth}/{pet.maxHealth}. playerHealthText is {(playerHealthText != null ? "NOT NULL" : "NULL")}");
                 }
             }
             else
@@ -181,8 +205,7 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
                 pet.transform.position = enemySpawnPosition;
                 pet.SetFacing(false);
 
-                // Delayed assignment to wait for sync
-                StartCoroutine(DelayedHealthBarAssignment(pet, enemyHealthBar));
+                StartCoroutine(DelayedHealthAssignment(pet, enemyHealthBar, enemyHealthText));
 
                 Debug.Log($"[BattleSpawner] Enemy pet repositioned, waiting for health sync");
             }
@@ -221,11 +244,9 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         {
             Debug.Log($"[BattleSpawner] Enemy pet detected. Initial health: {enemyPet.currentHealth}/{enemyPet.maxHealth}");
 
-            // Position and set facing immediately
             enemyPet.transform.position = enemySpawnPosition;
             enemyPet.SetFacing(false);
 
-            // Wait for network sync before assigning health bar
             yield return StartCoroutine(WaitForValidHealth(enemyPet));
 
             Debug.Log($"[BattleSpawner] Enemy pet setup complete. Final health: {enemyPet.currentHealth}/{enemyPet.maxHealth}");
@@ -238,7 +259,6 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
         }
     }
 
-    // Wait for health to be properly synchronised
     private IEnumerator WaitForValidHealth(PetBattle pet)
     {
         float timeout = 5f;
@@ -249,18 +269,17 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
 
         while (elapsed < timeout)
         {
-            // Check if health has been updated by network sync
             if (pet.currentHealth != lastHealth)
             {
                 Debug.Log($"[BattleSpawner] Health changed from {lastHealth} to {pet.currentHealth}");
                 lastHealth = pet.currentHealth;
             }
 
-            // Consider health valid if it's full or has been explicitly set
             if (pet.currentHealth == pet.maxHealth && pet.maxHealth == 100)
             {
                 Debug.Log($"[BattleSpawner] Valid health detected: {pet.currentHealth}/{pet.maxHealth}");
                 pet.AssignHealthBar(enemyHealthBar);
+                pet.AssignHealthText(enemyHealthText);
                 yield break;
             }
 
@@ -268,9 +287,9 @@ public class PetBattleSpawner : MonoBehaviourPunCallbacks
             elapsed += 0.2f;
         }
 
-        // Timeout: force assign anyway and log warning
         Debug.LogWarning($"[BattleSpawner] Timeout waiting for health sync. Assigning with current values: {pet.currentHealth}/{pet.maxHealth}");
         pet.AssignHealthBar(enemyHealthBar);
+        pet.AssignHealthText(enemyHealthText);
     }
 
     private void AssignPetsToBattleManager()
