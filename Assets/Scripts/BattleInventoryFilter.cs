@@ -155,15 +155,45 @@ public class BattleInventoryFilter : MonoBehaviour
 
     private bool IsPotionItem(ShopItem item)
     {
-        if (item == null || item.Category == null) return false;
+        if (item == null || item.Category == null)
+        {
+            Debug.Log($"[BattleInventoryFilter] Item or Category is null");
+            return false;
+        }
 
-        bool isPotion = false;
+        bool isUsable = false;
 
-        if (item.Category.Name != null && item.Category.Name.ToLower().Contains("potion")) isPotion = true;
-        if (item.Category.name.ToLower().Contains("potion")) isPotion = true;
-        if (item.Name != null && item.Name.ToLower().Contains("potion")) isPotion = true;
+        // Check for potions
+        if (item.Category.Name != null && item.Category.Name.ToLower().Contains("potion"))
+        {
+            isUsable = true;
+        }
 
-        return isPotion;
+        if (item.Category.name.ToLower().Contains("potion"))
+        {
+            isUsable = true;
+        }
+
+        // Check for consumables (includes Rare Candy)
+        if (item.Category.Name != null && item.Category.Name.ToLower().Contains("consumable"))
+        {
+            isUsable = true;
+        }
+
+        if (item.Category.name.ToLower().Contains("consumable"))
+        {
+            isUsable = true;
+        }
+
+        // Check item name
+        if (item.Name != null && (item.Name.ToLower().Contains("potion") || item.Name.ToLower().Contains("candy")))
+        {
+            isUsable = true;
+        }
+
+        Debug.Log($"[BattleInventoryFilter] Checking '{item.Name}' - Category.Name: '{item.Category.Name}', Category.name: '{item.Category.name}' -> IsUsable: {isUsable}");
+
+        return isUsable;
     }
 
     private bool HasPotion(ShopItem potion)
@@ -263,14 +293,66 @@ public class BattleInventoryFilter : MonoBehaviour
     {
         if (potion == null) return;
 
-        int healAmount = ParseHealAmount(potion.Description);
-        if (healAmount > 0)
+        Debug.Log($"[BattleInventoryFilter] === USING ITEM: {potion.Name} ===");
+        Debug.Log($"[BattleInventoryFilter] Description: '{potion.Description}'");
+
+        // Check if it's a Rare Candy (permanent max HP increase)
+        if (potion.Name.ToLower().Contains("rare candy") || potion.Name.ToLower().Contains("rarecandy"))
         {
-            HealPlayer(healAmount);
+            int hpIncrease = ParseHealAmount(potion.Description);
+            if (hpIncrease > 0)
+            {
+                IncreaseMaxHealth(hpIncrease);
+            }
+            else
+            {
+                Debug.LogWarning($"[BattleInventoryFilter] Could not parse HP increase from Rare Candy description");
+            }
+        }
+        // Regular healing potion
+        else
+        {
+            int healAmount = ParseHealAmount(potion.Description);
+            if (healAmount > 0)
+            {
+                Debug.Log($"[BattleInventoryFilter] Parsed heal amount: {healAmount}");
+                HealPlayer(healAmount);
+            }
+            else
+            {
+                Debug.LogWarning($"[BattleInventoryFilter] Could not parse heal amount from: '{potion.Description}'");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Permanently increase max health
+    /// </summary>
+    private void IncreaseMaxHealth(int amount)
+    {
+        var battleManager = FindObjectOfType<BattleManager>();
+        if (battleManager == null)
+        {
+            Debug.LogError("[BattleInventoryFilter] BattleManager not found!");
+            return;
+        }
+
+        PetBattle myPet = battleManager.iAmPlayerSide ? battleManager.playerPet : battleManager.enemyPet;
+
+        if (myPet != null && myPet.photonView != null)
+        {
+            int petViewID = myPet.photonView.ViewID;
+
+            Debug.Log($"[BattleInventoryFilter] Requesting max HP increase for pet ViewID: {petViewID}");
+
+            // Send RPC to increase max health on all clients
+            battleManager.photonView.RPC("RPC_IncreaseMaxHealth", RpcTarget.All, petViewID, amount);
+
+            Debug.Log($"[BattleInventoryFilter] Max HP increase RPC sent for +{amount} max HP");
         }
         else
         {
-            Debug.LogWarning($"[BattleInventoryFilter] Could not parse heal amount from: '{potion.Description}'");
+            Debug.LogError("[BattleInventoryFilter] Could not find player's pet or pet PhotonView!");
         }
     }
 

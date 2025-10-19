@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44ad30def65c48fcaa94a1486690a78, type: 3}
   m_Name: ShopItem_RareCandy
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
-  Category: {fileID: 0}
-  Name: 
-  Description: 
-  Cost: 0
-  Icon: {fileID: 0}
+  Category: {fileID: 11400000, guid: 09eb1ea90cf1d6c439ee9d4be83ec370, type: 2}
+  Name: Rare Candy
+  Description: Permanently increases max HP by 30
+  Cost: 999999
+  Icon: {fileID: 8713837879773084247, guid: efe43774be2e7024da4ea98abc970bc4, type: 3}
