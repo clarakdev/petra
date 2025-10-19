@@ -3,10 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 
-/// <summary>
 /// Filters inventory to show only potions in battle and handles potion usage
-/// Attach this to the InventoryPanel GameObject in your battle scene
-/// </summary>
 public class BattleInventoryFilter : MonoBehaviour
 {
     [Header("References")]
@@ -55,14 +52,9 @@ public class BattleInventoryFilter : MonoBehaviour
                     }
                 }
             }
-            Debug.Log($"[BattleInventoryFilter] Found {slots.Count} inventory slots");
         }
 
-        if (confirmButton != null)
-        {
-            Debug.Log("[BattleInventoryFilter] Confirm button found");
-        }
-        else
+        if (confirmButton == null)
         {
             Debug.LogWarning("[BattleInventoryFilter] Confirm button not found!");
         }
@@ -79,7 +71,6 @@ public class BattleInventoryFilter : MonoBehaviour
         {
             confirmButton.onClick.RemoveAllListeners();
             confirmButton.interactable = false;
-            Debug.Log("[BattleInventoryFilter] Confirm button setup complete");
         }
 
         RebuildPotionView();
@@ -103,40 +94,32 @@ public class BattleInventoryFilter : MonoBehaviour
         }
 
         var stacks = InventoryManager.Instance.Stacks;
-        currentPotions.Clear();
+        var potionEntries = new List<(ShopItem item, int quantity)>();
 
         foreach (var entry in stacks)
         {
-            if (entry.item != null && IsPotionItem(entry.item))
+            if (entry.item != null && IsPotionItem(entry.item) && entry.quantity > 0)
             {
-                currentPotions.Add(entry.item);
+                potionEntries.Add((entry.item, entry.quantity));
             }
         }
 
-        Debug.Log($"[BattleInventoryFilter] Found {currentPotions.Count} potions");
-
         int slotIndex = 0;
-        for (int i = 0; i < currentPotions.Count && slotIndex < slots.Count; i++)
+        for (int i = 0; i < potionEntries.Count && slotIndex < slots.Count; i++)
         {
-            var item = currentPotions[i];
-            int quantity = GetItemQuantity(item);
+            var entry = potionEntries[i];
+            slots[slotIndex].ShowItem(entry.item, entry.quantity);
 
-            if (quantity > 0)
+            int capturedIndex = slotIndex;
+            ShopItem capturedItem = entry.item;
+            var btn = slots[slotIndex].GetComponent<Button>();
+            if (btn != null)
             {
-                slots[slotIndex].ShowItem(item, quantity);
-
-                int capturedIndex = slotIndex;
-                ShopItem capturedItem = item;
-                var btn = slots[slotIndex].GetComponent<Button>();
-                if (btn != null)
-                {
-                    btn.onClick.RemoveAllListeners();
-                    btn.onClick.AddListener(() => OnSlotClicked(capturedIndex, capturedItem));
-                    btn.interactable = true;
-                }
-
-                slotIndex++;
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => OnSlotClicked(capturedIndex, capturedItem));
+                btn.interactable = true;
             }
+            slotIndex++;
         }
 
         for (; slotIndex < slots.Count; slotIndex++)
@@ -174,22 +157,13 @@ public class BattleInventoryFilter : MonoBehaviour
     {
         if (item == null || item.Category == null) return false;
 
-        if (item.Category.Name != null && item.Category.Name.ToLower().Contains("potion"))
-        {
-            return true;
-        }
+        bool isPotion = false;
 
-        if (item.Category.name.ToLower().Contains("potion"))
-        {
-            return true;
-        }
+        if (item.Category.Name != null && item.Category.Name.ToLower().Contains("potion")) isPotion = true;
+        if (item.Category.name.ToLower().Contains("potion")) isPotion = true;
+        if (item.Name != null && item.Name.ToLower().Contains("potion")) isPotion = true;
 
-        if (item.Name != null && item.Name.ToLower().Contains("potion"))
-        {
-            return true;
-        }
-
-        return false;
+        return isPotion;
     }
 
     private bool HasPotion(ShopItem potion)
@@ -201,8 +175,6 @@ public class BattleInventoryFilter : MonoBehaviour
     {
         selectedSlotIndex = slotIndex;
         selectedPotion = potion;
-
-        Debug.Log($"[BattleInventoryFilter] Selected potion: {potion.Name} from slot {slotIndex}");
 
         for (int i = 0; i < slots.Count; i++)
         {
@@ -227,7 +199,6 @@ public class BattleInventoryFilter : MonoBehaviour
             confirmButton.interactable = true;
             confirmButton.onClick.RemoveAllListeners();
             confirmButton.onClick.AddListener(OnConfirmClicked);
-            Debug.Log("[BattleInventoryFilter] Confirm button enabled and listener added");
         }
     }
 
@@ -261,8 +232,6 @@ public class BattleInventoryFilter : MonoBehaviour
 
     private void OnConfirmClicked()
     {
-        Debug.Log("[BattleInventoryFilter] === CONFIRM BUTTON CLICKED ===");
-
         if (selectedPotion == null)
         {
             Debug.LogWarning("[BattleInventoryFilter] No potion selected!");
@@ -283,49 +252,20 @@ public class BattleInventoryFilter : MonoBehaviour
             return;
         }
 
-        string potionName = selectedPotion.Name;
-        ShopItem potionToUse = selectedPotion;
-
-        Debug.Log($"[BattleInventoryFilter] Using {potionName}");
-
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.OnInventoryChanged -= RebuildPotionView;
-        }
-
-        UsePotion(potionToUse);
-
-        int removed = InventoryManager.Instance.RemoveItem(potionToUse, 1);
-        Debug.Log($"[BattleInventoryFilter] Removed {removed} {potionName} from inventory");
-
-        if (InventoryManager.Instance != null)
-        {
-            InventoryManager.Instance.OnInventoryChanged += RebuildPotionView;
-        }
-
+        UsePotion(selectedPotion);
+        InventoryManager.Instance.RemoveItem(selectedPotion, 1);
         DeselectPotion();
-
-        Debug.Log("[BattleInventoryFilter] Ending turn NOW...");
         EndTurnAfterPotionUse();
-
-        Debug.Log("[BattleInventoryFilter] Closing inventory panel now");
         gameObject.SetActive(false);
-
-        Debug.Log("[BattleInventoryFilter] === CONFIRM BUTTON COMPLETE ===");
     }
 
     private void UsePotion(ShopItem potion)
     {
         if (potion == null) return;
 
-        Debug.Log($"[BattleInventoryFilter] === USING POTION: {potion.Name} ===");
-        Debug.Log($"[BattleInventoryFilter] Description: '{potion.Description}'");
-
         int healAmount = ParseHealAmount(potion.Description);
-
         if (healAmount > 0)
         {
-            Debug.Log($"[BattleInventoryFilter] Parsed heal amount: {healAmount}");
             HealPlayer(healAmount);
         }
         else
@@ -377,12 +317,7 @@ public class BattleInventoryFilter : MonoBehaviour
         if (myPet != null && myPet.photonView != null)
         {
             int petViewID = myPet.photonView.ViewID;
-
-            Debug.Log($"[BattleInventoryFilter] Requesting networked heal for pet ViewID: {petViewID}");
-
             battleManager.photonView.RPC("RPC_ApplyHealing", RpcTarget.All, petViewID, amount);
-
-            Debug.Log($"[BattleInventoryFilter] Heal RPC sent for {amount} HP");
         }
         else
         {
@@ -392,8 +327,6 @@ public class BattleInventoryFilter : MonoBehaviour
 
     private void EndTurnAfterPotionUse()
     {
-        Debug.Log("[BattleInventoryFilter] === STARTING EndTurnAfterPotionUse ===");
-
         var battleManager = FindObjectOfType<BattleManager>();
         if (battleManager == null)
         {
@@ -401,29 +334,19 @@ public class BattleInventoryFilter : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[BattleInventoryFilter] BattleManager found: {battleManager.name}");
-
         if (battleManager.photonView == null)
         {
             Debug.LogError("[BattleInventoryFilter] BattleManager.photonView is NULL!");
             return;
         }
 
-        Debug.Log("[BattleInventoryFilter] === ENDING TURN AFTER POTION USE ===");
-        Debug.Log($"[BattleInventoryFilter] PhotonView.ViewID: {battleManager.photonView.ViewID}");
-        Debug.Log($"[BattleInventoryFilter] PhotonView.IsMine: {battleManager.photonView.IsMine}");
-        Debug.Log($"[BattleInventoryFilter] IsMasterClient: {PhotonNetwork.IsMasterClient}");
-        Debug.Log($"[BattleInventoryFilter] PhotonNetwork.IsConnected: {PhotonNetwork.IsConnected}");
-
         try
         {
-            Debug.Log("[BattleInventoryFilter] Calling RPC_RequestToggleTurn...");
             battleManager.photonView.RPC("RPC_RequestToggleTurn", RpcTarget.MasterClient);
-            Debug.Log("[BattleInventoryFilter] ??? RPC_RequestToggleTurn sent successfully ???");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[BattleInventoryFilter] ??? Failed to send RPC: {e.Message}\n{e.StackTrace}");
+            Debug.LogError($"[BattleInventoryFilter] Failed to send RPC: {e.Message}");
         }
     }
 }
