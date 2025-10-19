@@ -5150,7 +5150,7 @@ GameObject:
   - component: {fileID: 1435008808}
   - component: {fileID: 1435008807}
   m_Layer: 5
-  m_Name: LevelText
+  m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5172,8 +5172,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 291.06042, y: 39.287247}
-  m_SizeDelta: {x: 132.6913, y: 40.0686}
+  m_AnchoredPosition: {x: 260, y: 40.19661}
+  m_SizeDelta: {x: 175.4304, y: 38.2499}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1435008807
 MonoBehaviour:
@@ -5195,7 +5195,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lv. 1
+  m_text: 100 / 100
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5883,7 +5883,7 @@ GameObject:
   - component: {fileID: 1749662858}
   - component: {fileID: 1749662857}
   m_Layer: 5
-  m_Name: LevelText
+  m_Name: HealthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5905,8 +5905,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 291.06042, y: 39.287247}
-  m_SizeDelta: {x: 132.6913, y: 40.0686}
+  m_AnchoredPosition: {x: 260, y: 35.148}
+  m_SizeDelta: {x: 172.9865, y: 48.346}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1749662857
 MonoBehaviour:
@@ -5928,7 +5928,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lv. 1
+  m_text: 100 / 100
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
