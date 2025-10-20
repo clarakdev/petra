@@ -235,7 +235,6 @@ public class BattleManager : MonoBehaviourPunCallbacks
             commandPanel.SetActive(false);
         }
 
-        // FIXED: Simple comparison - did I lose?
         bool iWon = (PhotonNetwork.LocalPlayer.ActorNumber != loserActorNumber);
 
         Debug.Log($"[BattleManager] Result for {PhotonNetwork.LocalPlayer.NickName} (ActorNumber {PhotonNetwork.LocalPlayer.ActorNumber}): " +
@@ -254,6 +253,30 @@ public class BattleManager : MonoBehaviourPunCallbacks
         {
             Debug.LogError("[BattleManager] No BattleResultManager found!");
         }
+    }
+
+    [PunRPC]
+    private void RPC_ApplyHealing(int targetViewId, int amount)
+    {
+        var targetView = PhotonView.Find(targetViewId);
+        if (targetView == null)
+        {
+            Debug.LogError($"[BattleManager] RPC_ApplyHealing: Could not find PhotonView {targetViewId}");
+            return;
+        }
+
+        var pet = targetView.GetComponent<PetBattle>();
+        if (pet == null)
+        {
+            Debug.LogError($"[BattleManager] RPC_ApplyHealing: No PetBattle component on ViewID {targetViewId}");
+            return;
+        }
+
+        int oldHP = pet.currentHealth;
+        pet.Heal(amount);
+        int newHP = pet.currentHealth;
+
+        Debug.Log($"[BattleManager] RPC_ApplyHealing: Pet healed {oldHP} -> {newHP} (requested {amount})");
     }
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)

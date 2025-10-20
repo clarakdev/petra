@@ -50,6 +50,7 @@ MonoBehaviour:
   - RPC_EndBattle
   - RPC_TurnChanged
   - RPC_RequestToggleTurn
+  - RPC_ApplyHealing
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
