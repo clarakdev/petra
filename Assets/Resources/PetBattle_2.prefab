@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9090129053708850443}
   m_Layer: 0
   m_Name: PetBattle_2
-  m_TagString: Untagged
+  m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -50,6 +50,7 @@ MonoBehaviour:
   battleSpriteEnemySide: {fileID: -7013210949411144663, guid: 2475d597e2a2114498f6770d798427d6, type: 3}
   maxHealth: 0
   currentHealth: 0
+  healthBar: {fileID: 0}
 --- !u!114 &5788422425675696623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,8 +68,9 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 3425445397664326709}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
