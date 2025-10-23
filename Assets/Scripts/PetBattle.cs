@@ -1,4 +1,5 @@
 using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
 public class PetBattle : MonoBehaviourPun, IPunObservable
@@ -11,6 +12,7 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
     public int maxHealth = 100;
     public int currentHealth;
     public HealthBar healthBar;
+    public TextMeshProUGUI healthText;
 
     public bool IsDead => currentHealth <= 0;
 
@@ -24,6 +26,7 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
     private void Start()
     {
         Debug.Log($"[PetBattle] Start: currentHealth={currentHealth}, maxHealth={maxHealth}");
+        UpdateHealthTextUI();
     }
 
     public void SetFacing(bool isPlayerSide)
@@ -33,31 +36,24 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
             spriteRenderer.sprite = isPlayerSide ? battleSpritePlayerSide : battleSpriteEnemySide;
     }
 
-    /// Marks this pet as fully initialized (called by spawner after setting health)
     public void MarkInitialized()
     {
         isInitialized = true;
         Debug.Log($"[PetBattle] Pet marked as initialized. Health: {currentHealth}/{maxHealth}");
+        UpdateHealthTextUI();
     }
 
-    /// Apply damage locally on this client. Returns true if HP reaches 0.
-    /// Call this via RPC so all clients update simultaneously.
     public bool ApplyDamage(int damage)
     {
         int oldHealth = currentHealth;
         currentHealth = Mathf.Max(0, currentHealth - Mathf.Max(0, damage));
 
-        // Update the health bar if it exists
         if (healthBar != null)
         {
             healthBar.SetHealth(currentHealth);
-            Debug.Log($"[PetBattle] {photonView.Owner.NickName}'s pet HP: {currentHealth}/{maxHealth} on {PhotonNetwork.LocalPlayer.NickName}'s screen");
-        }
-        else
-        {
-            Debug.LogWarning($"[PetBattle] No health bar assigned for {photonView.Owner.NickName}'s pet!");
         }
 
+        UpdateHealthTextUI();
         return IsDead;
     }
 
@@ -69,17 +65,18 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
             healthBar.SetMaxHealth(maxHealth);
             healthBar.SetHealth(currentHealth);
         }
+        UpdateHealthTextUI();
     }
 
-    // Optional heal if you need it later
     public void Heal(int amount)
     {
         currentHealth = Mathf.Min(maxHealth, currentHealth + Mathf.Max(0, amount));
         if (healthBar != null)
             healthBar.SetHealth(currentHealth);
+
+        UpdateHealthTextUI();
     }
 
-    /// Assign health bar reference - can be called multiple times as pets are repositioned
     public void AssignHealthBar(HealthBar bar)
     {
         healthBar = bar;
@@ -87,11 +84,29 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
         {
             healthBar.SetMaxHealth(maxHealth);
             healthBar.SetHealth(currentHealth);
-            Debug.Log($"[PetBattle] Health bar assigned to {photonView.Owner.NickName}'s pet. Current HP: {currentHealth}/{maxHealth}");
+        }
+        UpdateHealthTextUI();
+    }
+
+    public void AssignHealthText(TextMeshProUGUI textComponent)
+    {
+        healthText = textComponent;
+        Debug.Log($"[PetBattle] *** ASSIGNED HEALTH TEXT to pet (IsMine={photonView.IsMine}), healthText is now: {(healthText != null ? "NOT NULL" : "NULL")}");
+        UpdateHealthTextUI();
+    }
+
+    private void UpdateHealthTextUI()
+    {
+        if (healthText != null)
+        {
+            healthText.text = $"{currentHealth} / {maxHealth}";
+        }
+        else
+        {
+            Debug.LogWarning($"[PetBattle] *** WARNING: UpdateHealthTextUI called but healthText is NULL (IsMine={photonView.IsMine})");
         }
     }
 
-    // Synchronise health across network
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -99,35 +114,38 @@ public class PetBattle : MonoBehaviourPun, IPunObservable
             if (isInitialized)
             {
                 stream.SendNext(currentHealth);
-                stream.SendNext(maxHealth);            }
+                stream.SendNext(maxHealth);
+            }
             else
             {
-                // Don't send during initialisation; let spawner take control
                 stream.SendNext(-1);
-                stream.SendNext(-1);            }
+                stream.SendNext(-1);
+            }
         }
         else
         {
-            // NON-OWNER receives health
             int receivedHealth = (int)stream.ReceiveNext();
             int receivedMaxHealth = (int)stream.ReceiveNext();
 
+            Debug.Log($"[PetBattle] *** RECEIVED NETWORK UPDATE: health={receivedHealth}, maxHealth={receivedMaxHealth}, IsMine={photonView.IsMine}, healthText={(healthText != null ? "NOT NULL" : "NULL")}");
+
             if (receivedHealth == -1 || receivedMaxHealth == -1)
-            {                return;
+            {
+                return;
             }
 
-            // Only update if the values are valid
             if (receivedHealth >= 0 && receivedMaxHealth > 0 && receivedHealth <= receivedMaxHealth)
             {
                 currentHealth = receivedHealth;
                 maxHealth = receivedMaxHealth;
 
-                // Update health bar if we have one
                 if (healthBar != null)
                 {
                     healthBar.SetMaxHealth(maxHealth);
                     healthBar.SetHealth(currentHealth);
                 }
+
+                UpdateHealthTextUI();
             }
         }
     }

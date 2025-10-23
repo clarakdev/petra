@@ -279,6 +279,44 @@ public class BattleManager : MonoBehaviourPunCallbacks
         Debug.Log($"[BattleManager] RPC_ApplyHealing: Pet healed {oldHP} -> {newHP} (requested {amount})");
     }
 
+    [PunRPC]
+    private void RPC_IncreaseMaxHealth(int targetViewId, int amount)
+    {
+        var targetView = PhotonView.Find(targetViewId);
+        if (targetView == null)
+        {
+            Debug.LogError($"[BattleManager] RPC_IncreaseMaxHealth: Could not find PhotonView {targetViewId}");
+            return;
+        }
+
+        var pet = targetView.GetComponent<PetBattle>();
+        if (pet == null)
+        {
+            Debug.LogError($"[BattleManager] RPC_IncreaseMaxHealth: No PetBattle component on ViewID {targetViewId}");
+            return;
+        }
+
+        int oldMaxHP = pet.maxHealth;
+        int oldCurrentHP = pet.currentHealth;
+        pet.maxHealth += amount;
+        pet.currentHealth = pet.maxHealth; // Set current health to new max
+        int newMaxHP = pet.maxHealth;
+
+        // Update health bar
+        if (pet.healthBar != null)
+        {
+            pet.healthBar.SetMaxHealth(newMaxHP);
+            pet.healthBar.SetHealth(pet.currentHealth);
+        }
+
+        if (pet.healthText != null)
+        {
+            pet.healthText.text = $"{pet.currentHealth} / {pet.maxHealth}";
+        }
+
+        Debug.Log($"[BattleManager] RPC_IncreaseMaxHealth: Pet max HP increased {oldMaxHP} -> {newMaxHP} (+{amount})");
+    }
+
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         TryResolvePetsFromRoomProps(PhotonNetwork.CurrentRoom.CustomProperties);

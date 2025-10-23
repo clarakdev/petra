@@ -51,6 +51,7 @@ MonoBehaviour:
   - RPC_TurnChanged
   - RPC_RequestToggleTurn
   - RPC_ApplyHealing
+  - RPC_IncreaseMaxHealth
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
