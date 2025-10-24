@@ -13,13 +13,14 @@ GameObject:
   - component: {fileID: 5467655365976528139}
   - component: {fileID: 8850139766647586076}
   - component: {fileID: 6062365800630857502}
+  - component: {fileID: 2385525965445692237}
   m_Layer: 0
   m_Name: Pet_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1603083661977461933
 Transform:
   m_ObjectHideFlags: 0
@@ -82,12 +83,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -8590932226871881646, guid: 6524e19c499254c4e90618de010ed1c4, type: 3}
+  m_Sprite: {fileID: -332218779762779449, guid: 5b11f5ce3fe1c421f96442f91eb2542c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.24, y: 15.23}
+  m_Size: {x: 0.64, y: 0.84}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -135,7 +136,7 @@ MonoBehaviour:
   moveSpeed: 5
   followDistance: 1.5
   frontSprite: {fileID: -8590932226871881646, guid: 6524e19c499254c4e90618de010ed1c4, type: 3}
-  backSprite: {fileID: -5208860181799393257, guid: 72d7b0b68bf3a524bac96bcf7bb90f48, type: 3}
+  backSprite: {fileID: 7611091847253422933, guid: cc1ff6818b51b4e23836453ab4f2b3f4, type: 3}
   leftSprite: {fileID: -2358349243498553487, guid: a25fafc9f53d7cc4fb041e1bbef62be4, type: 3}
   rightSprite: {fileID: 2406058414149995446, guid: 5ab9bb49ccff7f74fa747f9c99215b6d, type: 3}
 --- !u!114 &6062365800630857502
@@ -161,3 +162,21 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2385525965445692237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3958605840276955232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3303503c3927485bb52e67125765f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetAccessoryManager
+  petName: Deer
+  petRenderer: {fileID: 1232028115594826984}
+  frontSprite: {fileID: -8590932226871881646, guid: 6524e19c499254c4e90618de010ed1c4, type: 3}
+  backSprite: {fileID: 7611091847253422933, guid: cc1ff6818b51b4e23836453ab4f2b3f4, type: 3}
+  leftSprite: {fileID: -2358349243498553487, guid: a25fafc9f53d7cc4fb041e1bbef62be4, type: 3}
+  rightSprite: {fileID: 2406058414149995446, guid: 5ab9bb49ccff7f74fa747f9c99215b6d, type: 3}
