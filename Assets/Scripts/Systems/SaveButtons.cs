@@ -7,7 +7,10 @@ public class SaveButtons : MonoBehaviour
         if (GameState.Instance != null)
         {
             GameState.Instance.SaveNow();
+            
             Debug.Log("[SaveButtons] Manual save done.");
+            FindObjectOfType<SaveStatusUI>()?.UpdateLastSavedText();
+
         }
         else
         {

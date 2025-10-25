@@ -2592,6 +2592,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD_Currency
       objectReference: {fileID: 0}
+    - target: {fileID: 9016670399293406325, guid: d38cd8edca7643349beaf551026be0ec, type: 3}
+      propertyPath: m_text
+      value: 'COINS: 1000'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

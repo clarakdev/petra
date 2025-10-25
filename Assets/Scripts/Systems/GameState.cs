@@ -24,6 +24,11 @@ public class GameState : MonoBehaviour
         CacheReferences();
     }
 
+    private void Start()
+    {
+        //LoadNow(); // Attempt to load save data on game start
+    }   
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -34,30 +39,54 @@ public class GameState : MonoBehaviour
         CacheReferences();
     }
 
-    private void CacheReferences()
+private void CacheReferences()
+{
+    if (playerCurrency == null)
     {
         playerCurrency = FindObjectOfType<PlayerCurrency>();
-        petSelectionManager = FindObjectOfType<PetSelectionManager>(); // safe to ignore warning for now
+
+        //Create one automatically if missing
+        if (playerCurrency == null)
+        {
+            Debug.LogWarning("[GameState] No PlayerCurrency found, creating one...");
+            GameObject obj = new GameObject("PlayerCurrency");
+            playerCurrency = obj.AddComponent<PlayerCurrency>();
+        }
     }
+
+    if (petSelectionManager == null)
+        petSelectionManager = FindObjectOfType<PetSelectionManager>();
+}
+
+
 
     // ----- SAVE / LOAD -----
 
     public void SaveNow()
     {
+        CacheReferences();
+
+        if (playerCurrency == null)
+        {
+            Debug.LogWarning("[GameState] PlayerCurrency not found — retrying in 0.1s...");
+            Invoke(nameof(SaveNow), 0.1f);
+            return;
+        }
+
         var data = new SaveData
         {
             version = 1,
             currentScene = SceneManager.GetActiveScene().name,
-            currency = playerCurrency != null ? playerCurrency.currency : 0,
+            currency = playerCurrency.currency,
             selectedPetId = petSelectionManager != null && petSelectionManager.currentPet != null
-            ? petSelectionManager.currentPet.name
-            : null,
-
-            lastSavedUtc = System.DateTime.UtcNow.ToString("o")
+                ? petSelectionManager.currentPet.name
+                : null,
+            lastSavedUtc = System.DateTime.Now.ToString("dd MMM yyyy, hh:mm tt")
         };
 
-        SaveSystem.Save(data);
-    }
+    SaveSystem.Save(data);
+}
+
 
     public void LoadNow()
     {
@@ -85,12 +114,13 @@ public class GameState : MonoBehaviour
         }
 
 
-        // Optional: automatically load the saved scene
+        /*// Optional: automatically load the saved scene
         string current = SceneManager.GetActiveScene().name;
         if (!string.IsNullOrEmpty(data.currentScene) && data.currentScene != current)
         {
             SceneManager.LoadScene(data.currentScene);
         }
+        */
     }
 
     private void OnApplicationQuit()
