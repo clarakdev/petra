@@ -17,3 +17,4 @@ MonoBehaviour:
   Description: Cool shades for the coolest pet in town
   Cost: 60
   Icon: {fileID: -5763358134779969536, guid: 27af0b3529118864da7009efe515dac5, type: 3}
+  EquipType: 2
