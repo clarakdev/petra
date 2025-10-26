@@ -42,6 +42,16 @@ MonoBehaviour:
   - ChangeScene
   - TakeDamage
   - RPC_RequestJoinQueue
+  - RPC_ApplyDamageToEnemy
+  - RPC_SetTurn
+  - ApplyDamage
+  - InitialiseHealth
+  - RPC_ApplyDamage
+  - RPC_EndBattle
+  - RPC_TurnChanged
+  - RPC_RequestToggleTurn
+  - RPC_ApplyHealing
+  - RPC_IncreaseMaxHealth
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
