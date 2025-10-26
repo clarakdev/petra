@@ -69,6 +69,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
             playerObj.name = "Player";
 
+            // ? Set player scale for all clients
+            playerObj.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+
             // Instantiate PetSpawner and attach it to the player
             GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");
             if (petSpawnerPrefab != null && playerObj != null)
@@ -78,6 +81,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
     }
+
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
