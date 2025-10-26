@@ -1,4 +1,4 @@
-# Petra – A Mystical Pet Bonding Adventure
+# Petra: A Mystical Pet Bonding Adventure
 
 **Petra** is a 2D top-down multiplayer game built in **Unity**, where players raise and bond with a single mystical pet.  
 The main goal is to increase the pet’s bonding stats through various activities while engaging in one-on-one battles, trading items with other players, and customising through an in-game shop.
