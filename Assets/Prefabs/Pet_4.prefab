@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1376067660540162605}
   - component: {fileID: 5420963582603829759}
   - component: {fileID: 1496736217422557244}
-  - component: {fileID: -1758469561627957871}
   m_Layer: 0
   m_Name: Pet_4
   m_TagString: Untagged
@@ -162,17 +161,3 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-1758469561627957871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267907977136730660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19f7784f9c334435b982c56260652b97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PetSpawnHelper
-  minMoveDistance: 0.3
-  checkInterval: 0.1
