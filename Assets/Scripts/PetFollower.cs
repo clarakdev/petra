@@ -15,22 +15,28 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
     [SerializeField] private Sprite backSprite;
     [SerializeField] private Sprite leftSprite;
     [SerializeField] private Sprite rightSprite;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        target = GameObject.Find("Player").transform;
+        target = GameObject.Find("Player")?.transform;
     }
-
-    // Update is called once per frame
 
     void Update()
     {
+        // ✅ Reconnect to player if lost (after scene load or Photon room change)
+        if (target == null)
+        {
+            var found = GameObject.Find("Player");
+            if (found != null)
+                target = found.transform;
+        }
+
         if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             if (target)
@@ -62,10 +68,8 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         }
     }
 
-    // Change sprite based on movement direction
     private void UpdateSpriteDirection(Vector2 direction)
     {
-        // Check if horizontal movement is greater than vertical movement
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
             if (direction.x < 0)
@@ -82,13 +86,19 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         }
     }
 
+    // ✅ Added method so NetworkManager can re-link pet target to new Player
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(rb.position);
             stream.SendNext(rb.linearVelocity);
-            stream.SendNext(spriteRenderer.sprite.name); // Send sprite direction by name
+            stream.SendNext(spriteRenderer.sprite.name);
         }
         else
         {
@@ -96,23 +106,14 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
             rb.linearVelocity = (Vector2)stream.ReceiveNext();
             string spriteName = (string)stream.ReceiveNext();
 
-            // Set sprite based on name
             if (spriteName == leftSprite.name)
-            {
                 spriteRenderer.sprite = leftSprite;
-            }
             else if (spriteName == rightSprite.name)
-            {
                 spriteRenderer.sprite = rightSprite;
-            }
             else if (spriteName == backSprite.name)
-            {
                 spriteRenderer.sprite = backSprite;
-            }
             else
-            {
                 spriteRenderer.sprite = frontSprite;
-            }
         }
     }
 }

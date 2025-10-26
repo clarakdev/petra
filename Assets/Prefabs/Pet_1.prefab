@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 91464096724232252}
   - component: {fileID: 4863467730511914638}
   - component: {fileID: 2248407611919878094}
+  - component: {fileID: -2967075016535817866}
   m_Layer: 0
   m_Name: Pet_1
   m_TagString: Untagged
@@ -79,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 3137861
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 4522574261692088017, guid: 6abcd82c24267094f950ad8dfce1ed8a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -161,3 +162,17 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-2967075016535817866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23185813275973405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f7784f9c334435b982c56260652b97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetSpawnHelper
+  minMoveDistance: 0.3
+  checkInterval: 0.1
