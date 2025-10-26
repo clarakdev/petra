@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 5467655365976528139}
   - component: {fileID: 8850139766647586076}
   - component: {fileID: 6062365800630857502}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pet_3
-  m_TagString: Untagged
+  m_TagString: Pet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
