@@ -115,3 +115,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
   maxStacks: 24
   dontDestroyOnLoad: 1
+  catalog:
+  - {fileID: 11400000, guid: 8fe1a16bf4aff46c9a73f05df4a0ba1d, type: 2}
+  - {fileID: 11400000, guid: 60f656ae9334241979906698f6f4714c, type: 2}
+  - {fileID: 11400000, guid: ec0c005c710c24813b0c4cc5326efe71, type: 2}
+  - {fileID: 11400000, guid: 30a8987970bba41949312b29d4fd01b6, type: 2}
+  - {fileID: 11400000, guid: 29c6664a18abd432793c87b6142a9c33, type: 2}
+  - {fileID: 11400000, guid: 2920a8ef167a84c3782e7fb2cc55ee5a, type: 2}
+  - {fileID: 11400000, guid: 2fccb00047dda4778957d9c82884d194, type: 2}
+  - {fileID: 11400000, guid: ecc6ec7f183a1474cb5e90a6c5b094ec, type: 2}
+  - {fileID: 11400000, guid: 6f974c671272db840b0b384b39771f7a, type: 2}
+  - {fileID: 11400000, guid: 6413d27967a6f4e61b532931088328ed, type: 2}
+  - {fileID: 11400000, guid: faa765eabfe5d4cf78e0398275097e30, type: 2}
