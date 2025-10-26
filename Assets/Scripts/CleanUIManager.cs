@@ -21,6 +21,10 @@ public class CleanUIManager : MonoBehaviour
 
     bool _subscribed50;
 
+    [Header("Rewards")]
+    public int coinsForFullClean = 25;  // how many coins to award when bar hits 100
+    private bool _paidForThisFull = false;
+
     void Awake()
     {
         if (!canvas) canvas = GetComponentInParent<Canvas>();
@@ -31,7 +35,14 @@ public class CleanUIManager : MonoBehaviour
             mgr.InitializeCleanIfUnset(cleanBar.value);
     }
 
-    void OnEnable()  { TrySubscribe50(); }
+    void OnEnable()
+    {
+        TrySubscribe50();
+
+        var needs = PetNeedsManager.Instance;
+        if (needs != null)
+            needs.OnCleanChanged.AddListener(OnCleanValueChanged);
+    }
 
     void Start()
     {
@@ -57,8 +68,19 @@ public class CleanUIManager : MonoBehaviour
         }
     }
 
-    void OnDisable() { Unsubscribe50(); }
-    void OnDestroy() { Unsubscribe50(); }
+    void OnDisable()
+    {
+        Unsubscribe50();
+
+        var needs = PetNeedsManager.Instance;
+        if (needs != null)
+            needs.OnCleanChanged.RemoveListener(OnCleanValueChanged);
+    }
+
+    void OnDestroy()
+    {
+        Unsubscribe50();
+    }
 
     // ---- 50% popup wiring (without duplicates) ----
     void TrySubscribe50()
@@ -112,13 +134,13 @@ public class CleanUIManager : MonoBehaviour
         if (!itemRT) yield break;
 
         // ghost fly-in
-        var ghost  = new GameObject("CleanGhost", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
-        var gRT    = ghost.GetComponent<RectTransform>();
-        var gImg   = ghost.GetComponent<Image>();
+        var ghost = new GameObject("CleanGhost", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
+        var gRT = ghost.GetComponent<RectTransform>();
+        var gImg = ghost.GetComponent<Image>();
         gRT.SetParent(canvas.transform, false);
-        gRT.position  = itemRT.position;
+        gRT.position = itemRT.position;
         gRT.sizeDelta = itemRT.sizeDelta;
-        gImg.sprite   = (item.image != null) ? item.image.sprite : null;
+        gImg.sprite = (item.image != null) ? item.image.sprite : null;
         gImg.preserveAspect = true;
 
         float t = 0f, dur = 0.35f;
@@ -128,7 +150,7 @@ public class CleanUIManager : MonoBehaviour
         {
             t += Time.unscaledDeltaTime;
             float k = t / dur;
-            gRT.position   = Vector3.Lerp(a, b, k);
+            gRT.position = Vector3.Lerp(a, b, k);
             gRT.localScale = Vector3.one * (1f - 0.2f * k);
             yield return null;
         }
@@ -159,15 +181,15 @@ public class CleanUIManager : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             var bubble = new GameObject("bubble", typeof(RectTransform), typeof(CanvasGroup), typeof(Image));
-            var rt  = bubble.GetComponent<RectTransform>();
+            var rt = bubble.GetComponent<RectTransform>();
             var img = bubble.GetComponent<Image>();
-            var cg  = bubble.GetComponent<CanvasGroup>();
+            var cg = bubble.GetComponent<CanvasGroup>();
             rt.SetParent(canvas.transform, false);
-            rt.position  = center + (Vector3)Random.insideUnitCircle * 10f;
+            rt.position = center + (Vector3)Random.insideUnitCircle * 10f;
             rt.sizeDelta = size * Random.Range(0.7f, 1.2f);
-            img.sprite   = sprite;
-            img.type     = Image.Type.Sliced;
-            img.color    = new Color(1f,1f,1f,0.75f);
+            img.sprite = sprite;
+            img.type = Image.Type.Sliced;
+            img.color = new Color(1f, 1f, 1f, 0.75f);
             StartCoroutine(RiseFade(rt, cg));
         }
         yield return new WaitForSecondsRealtime(0.25f);
@@ -187,11 +209,34 @@ public class CleanUIManager : MonoBehaviour
         {
             t += Time.unscaledDeltaTime;
             float k = t / dur;
-            rt.position   = Vector3.Lerp(a, b, k);
+            rt.position = Vector3.Lerp(a, b, k);
             rt.localScale = Vector3.one * (1f + 0.3f * k);
             if (cg) cg.alpha = 1f - k;
             yield return null;
         }
         Destroy(rt.gameObject);
+    }
+
+    private void OnCleanValueChanged(float cleanPercent)
+    {
+        // Re-arm the reward if it dropped below 100 again
+        if (cleanPercent < 100f - 0.01f)
+        {
+            _paidForThisFull = false;
+            return;
+        }
+
+        // Award coins once per full clean
+        if (!_paidForThisFull && cleanPercent >= 100f - 0.01f)
+        {
+            var wallet = FindFirstObjectByType<PlayerCurrency>();
+            if (wallet != null)
+            {
+                wallet.EarnCurrency(coinsForFullClean);
+                Debug.Log($"[CleanUIManager] Clean reached 100%. Awarded {coinsForFullClean} coins. Total: {wallet.currency}");
+            }
+
+            _paidForThisFull = true; // prevent duplicate payouts
+        }
     }
 }

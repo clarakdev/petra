@@ -12,6 +12,7 @@ public class PlayerCurrency : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         DontDestroyOnLoad(gameObject);
 
         // Initialize coins early (before GameState tries to read it)
@@ -36,6 +37,7 @@ public class PlayerCurrency : MonoBehaviour
             currency -= amount;
             return true;
         }
+
         return false;
     }
 }
