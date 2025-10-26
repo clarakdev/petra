@@ -4401,12 +4401,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1817035267491977174, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1817035267491977174, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
+      propertyPath: m_Size.y
+      value: 1.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1817035267491977174, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3187967762358054563, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
       propertyPath: m_Name
       value: ShopLady
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511819553562610344, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
+      propertyPath: m_Size.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4511819553562610344, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
+      propertyPath: m_Size.y
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 4511819553562610344, guid: 7c104cda75ba01741ba641079c99b3c6, type: 3}
       propertyPath: m_IsTrigger
