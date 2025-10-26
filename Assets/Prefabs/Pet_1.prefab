@@ -13,13 +13,14 @@ GameObject:
   - component: {fileID: 91464096724232252}
   - component: {fileID: 4863467730511914638}
   - component: {fileID: 2248407611919878094}
+  - component: {fileID: 3230623647744041453}
   m_Layer: 0
   m_Name: Pet_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2440944981822131830
 Transform:
   m_ObjectHideFlags: 0
@@ -161,3 +162,29 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &3230623647744041453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23185813275973405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3303503c3927485bb52e67125765f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetAccessoryManager
+  petName: Snake
+  petRenderer: {fileID: 3458138025724293291}
+  frontSprite: {fileID: 4522574261692088017, guid: 6abcd82c24267094f950ad8dfce1ed8a, type: 3}
+  backSprite: {fileID: 4870407538266123449, guid: 4e9472feb861e134eababfd797df387d, type: 3}
+  leftSprite: {fileID: -2428369777378428205, guid: 8179713e55eb6b6458410ee7f603de81, type: 3}
+  rightSprite: {fileID: 2972800738403531671, guid: e2cc329e091470541a5b0349906b8afc, type: 3}
+  greenHatFront: {fileID: -5856455869634184027, guid: d7302d3d696734912aeb46f248b72661, type: 3}
+  greenHatBack: {fileID: -5393680215176166693, guid: 65f96ffb1195844bfbb23b63dec80dac, type: 3}
+  greenHatLeft: {fileID: -6714252586583338987, guid: 18c8f097ee38c40de9a169b6e0be907b, type: 3}
+  greenHatRight: {fileID: -5168349558578390887, guid: a1f7eb7c5e02b4cd1aa5c85805d4c847, type: 3}
+  sunglassesFront: {fileID: 708814352897972832, guid: 71652c9d1158e4bbb937c2c711520e0b, type: 3}
+  sunglassesBack: {fileID: 2972800738403531671, guid: e2cc329e091470541a5b0349906b8afc, type: 3}
+  sunglassesLeft: {fileID: -7856021151072147485, guid: 0bcdfbb78c3fe496f821d7361f66e9ad, type: 3}
+  sunglassesRight: {fileID: 8414714065465887267, guid: 6824491b21ad04694b48fbe84c326058, type: 3}
