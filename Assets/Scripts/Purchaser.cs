@@ -1,8 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Purchaser : MonoBehaviour
 {
     [SerializeField] private PlayerCurrency playerCurrency;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip purchaseClip; // NEW: sound to play on successful buy
 
     private void Awake()
     {
@@ -15,7 +18,18 @@ public class Purchaser : MonoBehaviour
     public bool SpendCurrency(int amount)
     {
         if (!playerCurrency) return false;
-        return playerCurrency.SpendCurrency(amount);
+
+        bool ok = playerCurrency.SpendCurrency(amount);
+        if (ok)
+        {
+            // ✅ purchase actually went through
+            if (SoundManager.Instance != null && purchaseClip != null)
+            {
+                SoundManager.Instance.PlaySFX(purchaseClip);
+            }
+        }
+
+        return ok;
     }
 
     public void EarnCurrency(int amount)

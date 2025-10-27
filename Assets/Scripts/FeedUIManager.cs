@@ -24,6 +24,9 @@ public class FeedUIManager : MonoBehaviour
     public bool ensure50Popup = true;
     public string feed50Message = "Time to feed your pet!";
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip feedClip; // <--- NEW: assign chomp / eating SFX here in Inspector
+
     bool _subscribed50;
 
     void Awake()
@@ -154,6 +157,12 @@ public class FeedUIManager : MonoBehaviour
         }
 
         if (petFX) petFX.PlayHappy();
+
+        // 🔊 NEW: play eat / chomp SFX after feeding finishes
+        if (SoundManager.Instance != null && feedClip != null)
+        {
+            SoundManager.Instance.PlaySFX(feedClip);
+        }
     }
 
     IEnumerator BiteBurst(Image srcImg, RectTransform at)
