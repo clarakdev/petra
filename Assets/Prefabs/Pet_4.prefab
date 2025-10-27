@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 4779035202939211278}
   - component: {fileID: 1376067660540162605}
   - component: {fileID: 5420963582603829759}
-  - component: {fileID: 1496736217422557244}
-  - component: {fileID: 356331847731949689}
   m_Layer: 0
   m_Name: Pet_4
   m_TagString: Untagged
@@ -80,15 +78,15 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 3137861
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 7537031767871138231, guid: 3df5bb37c7812194d827e1eb598272c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 15.36, y: 10.24}
+  m_Size: {x: 0.48, y: 0.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

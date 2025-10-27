@@ -1,3 +1,4 @@
+using System.Linq; // for Select in debug log
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,7 +30,7 @@ public class ItemPickup : MonoBehaviour
             pickupKey = $"Pickup_{gameObject.scene.name}_{gameObject.name}_{pos.x:F1}_{pos.y:F1}";
         }
 
-        // IMMEDIATELY check and hide BEFORE any rendering can happen
+        // Immediately check and hide before any rendering happens
         CheckAndHideIfPickedUp();
     }
 
@@ -40,7 +41,7 @@ public class ItemPickup : MonoBehaviour
         {
             isPickedUp = true;
 
-            // Hide immediately - don't wait
+            // Hide immediately
             if (visualObject != null && visualObject != gameObject)
             {
                 visualObject.SetActive(false);
@@ -64,7 +65,7 @@ public class ItemPickup : MonoBehaviour
 
     private void EnsureColliderSetup()
     {
-        // Check if we have BoxCollider2D
+        // Ensure we have a BoxCollider2D
         BoxCollider2D col2D = GetComponent<BoxCollider2D>();
         if (col2D == null)
         {
@@ -80,6 +81,7 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = true;
+            Debug.Log($"[ItemPickup] Player nearby TRUE ({pickupKey})");
         }
     }
 
@@ -88,28 +90,56 @@ public class ItemPickup : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = false;
+            Debug.Log($"[ItemPickup] Player nearby FALSE ({pickupKey})");
         }
     }
 
     void Update()
     {
-        // Skip if already picked up or not ready
+        // Skip if already picked up or processing
         if (isPickedUp || isProcessing) return;
 
-        // If require nearby and player isn't nearby, skip
+        // Skip if require nearby and player isn't nearby
         if (requirePlayerNearby && !playerNearby) return;
 
-        // Check for mouse click
+        // Skip if no mouse
         if (Mouse.current == null) return;
 
+        // Handle mouse click
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            Collider2D hit = Physics2D.OverlapPoint(mousePos);
+            Vector3 mp = Mouse.current.position.ReadValue();
+            Vector3 world = Camera.main != null
+                ? Camera.main.ScreenToWorldPoint(mp)
+                : new Vector3(mp.x, mp.y, 0f);
+            Vector2 p = new Vector2(world.x, world.y);
 
-            if (hit != null && hit.gameObject == gameObject)
+            // Use OverlapPointAll to get *all* colliders under the mouse
+            Collider2D[] hits = Physics2D.OverlapPointAll(p);
+
+            bool hitThis = false;
+            foreach (var h in hits)
+            {
+                if (h && h.gameObject == gameObject)
+                {
+                    hitThis = true;
+                    break;
+                }
+            }
+
+            if (hitThis)
             {
                 TryPickup();
+            }
+            else if (hits != null && hits.Length > 0)
+            {
+                // Debug: see what was under the cursor (often Tilemap/Composite)
+                string names = string.Join(", ", hits.Select(h => h ? h.name : "null"));
+                Debug.Log($"[ItemPickup] Click hit other colliders: {names}");
+            }
+            else
+            {
+                Debug.Log("[ItemPickup] Click: no colliders at point.");
             }
         }
     }

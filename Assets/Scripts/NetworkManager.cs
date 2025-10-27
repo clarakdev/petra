@@ -6,10 +6,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     [Header("Config")]
     public int maxPlayers = 20;
-    public static NetworkManager instance;   //singleton
+    public static NetworkManager instance;   // Singleton instance
 
     private void Awake()
     {
+        // Ensure only one instance of NetworkManager exists
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -19,33 +20,38 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         instance = this;
         DontDestroyOnLoad(gameObject);
 
+        // Sync scene loading across clients
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     private void Start()
     {
-        //connecting to the master server at the beginning of the game
+        // Connect to Photon master server at game start
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public override void OnConnectedToMaster()
     {
+        // Join the default lobby after connecting
         PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()
     {
+        // Use the current scene name as the room name
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        string roomName = sceneName;   // "BattleRoom" or "SocialRoom"
+        string roomName = sceneName; // Example: "BattleRoom" or "SocialRoom"
 
+        // Define room settings
         var options = new RoomOptions
         {
             MaxPlayers = (byte)maxPlayers,
             IsOpen = true,
             IsVisible = true,
-            PublishUserId = true // ensure Player.UserId is available in-room
+            PublishUserId = true // Ensure Player.UserId is available in the room
         };
 
+        // Try to join or create a room with this name
         PhotonNetwork.JoinOrCreateRoom(roomName, options, TypedLobby.Default);
     }
 
@@ -53,17 +59,20 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-        // Only spawn player and pet follower in non-battlefield scenes
+        // Only spawn player and pet follower in non-battle scenes
         if (sceneName != "Battlefield")
         {
-            // Desired spawn position
+            // Define the spawn position
             Vector3 spawnPosition = new Vector3(0f, -4.02f, 0f);
 
-            // Instantiate player at spawnPosition
+            // Instantiate the player object
             GameObject playerObj = PhotonNetwork.Instantiate("Player", spawnPosition, Quaternion.identity);
             playerObj.name = "Player";
 
-            // Instantiate PetSpawner for this player
+            // ? Set player scale for all clients
+            playerObj.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
+
+            // Instantiate PetSpawner and attach it to the player
             GameObject petSpawnerPrefab = Resources.Load<GameObject>("PetSpawner");
             if (petSpawnerPrefab != null && playerObj != null)
             {
@@ -72,6 +81,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
     }
+
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
