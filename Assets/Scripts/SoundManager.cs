@@ -6,14 +6,20 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
 
     [Header("UI (Optional in this scene)")]
-    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private Slider volumeSlider; // music slider (can be None in most scenes)
 
     [Header("Music Player")]
-    [SerializeField] private AudioSource musicSource;   // <-- you'll assign this in Inspector
+    [SerializeField] private AudioSource musicSource;   // looping BGM source
+
+    [Header("SFX")]
+    [SerializeField] private AudioSource sfxSource;     // one-shot SFX source
+
+    private float musicVolume = 1f;
+    private float sfxVolume = 1f;
 
     private void Awake()
     {
-        // make this persist (optional but recommended if you want music across scenes)
+        // Singleton setup
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -22,48 +28,85 @@ public class SoundManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // Load saved volume values (or defaults)
+        musicVolume = PlayerPrefs.GetFloat("musicVolume", 1f);
+        sfxVolume   = PlayerPrefs.GetFloat("sfxVolume",   1f);
     }
 
     private void Start()
     {
-        // init saved volume
-        if (!PlayerPrefs.HasKey("musicVolume"))
+        // Apply volumes to the actual AudioSources
+        if (musicSource != null)
         {
-            PlayerPrefs.SetFloat("musicVolume", 1f);
+            musicSource.volume = musicVolume;
         }
 
-        float savedVol = PlayerPrefs.GetFloat("musicVolume");
-        AudioListener.volume = savedVol;
+        if (sfxSource != null)
+        {
+            sfxSource.volume = sfxVolume;
+        }
 
+        // Hook up the music volume slider (only if this scene has one)
         if (volumeSlider != null)
         {
-            volumeSlider.value = savedVol;
-            volumeSlider.onValueChanged.AddListener(v => ChangeVolume(v));
+            volumeSlider.value = musicVolume;
+            volumeSlider.onValueChanged.AddListener(SetMusicVolume);
         }
 
-        // start music if not already playing
+        // Start looping background music if it isn't already playing
         if (musicSource != null && !musicSource.isPlaying)
         {
-            musicSource.loop = true;       // safety in case you forget in Inspector
+            musicSource.loop = true;
             musicSource.Play();
         }
     }
 
-    // this gets called by the slider listener
-    public void ChangeVolume(float newVol)
+    // ========== MUSIC CONTROL ==========
+    private void SetMusicVolume(float v)
     {
-        AudioListener.volume = newVol;
-        PlayerPrefs.SetFloat("musicVolume", newVol);
+        musicVolume = v;
+
+        if (musicSource != null)
+        {
+            musicSource.volume = musicVolume;
+        }
+
+        PlayerPrefs.SetFloat("musicVolume", musicVolume);
     }
 
-    // if you open an options menu scene later and need to hook a new slider:
+    // This lets you register a music slider later (like from Settings scene)
     public void RegisterSlider(Slider newSlider)
     {
         volumeSlider = newSlider;
+        volumeSlider.value = musicVolume;
+        volumeSlider.onValueChanged.AddListener(SetMusicVolume);
+    }
 
-        float currentVol = PlayerPrefs.GetFloat("musicVolume");
-        volumeSlider.value = currentVol;
+    // ========== SFX CONTROL ==========
 
-        volumeSlider.onValueChanged.AddListener(v => ChangeVolume(v));
+    public float GetSFXVolume()
+    {
+        return sfxVolume;
+    }
+
+    public void SetSFXVolume(float v)
+    {
+        sfxVolume = v;
+
+        if (sfxSource != null)
+        {
+            sfxSource.volume = sfxVolume;
+        }
+
+        PlayerPrefs.SetFloat("sfxVolume", sfxVolume);
+    }
+
+    // <-- THIS is what BattleManager and CleanUIManager call
+    public void PlaySFX(AudioClip clip)
+    {
+        if (clip == null || sfxSource == null) return;
+
+        sfxSource.PlayOneShot(clip, sfxVolume);
     }
 }
