@@ -1485,6 +1485,7 @@ MonoBehaviour:
   bubbleSprite: {fileID: 0}
   ensure50Popup: 1
   clean50Message: Time to clean your pet!
+  cleanClip: {fileID: 8300000, guid: 5d7506a65774bd64b98d43c47757dc18, type: 3}
 --- !u!1 &1513651880
 GameObject:
   m_ObjectHideFlags: 0

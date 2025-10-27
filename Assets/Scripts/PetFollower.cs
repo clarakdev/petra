@@ -4,30 +4,35 @@ using UnityEngine;
 public class PetFollower : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] public float moveSpeed = 5f;
-    public float followDistance = 1.5f; // Minimum distance to maintain from the player
-    Rigidbody2D rb;
-    Transform target;
-    Vector2 moveDirection;
-    SpriteRenderer spriteRenderer;
+    public float followDistance = 1.5f;
+
+    private Rigidbody2D rb;
+    private Transform target;
+    private Vector2 moveDirection;
+    private SpriteRenderer spriteRenderer;
+    private PetAccessoryManager accessoryManager;
 
     [Header("Directional Sprites")]
-    [SerializeField] private Sprite frontSprite;
-    [SerializeField] private Sprite backSprite;
-    [SerializeField] private Sprite leftSprite;
-    [SerializeField] private Sprite rightSprite;
+    public Sprite frontSprite;
+    public Sprite backSprite;
+    public Sprite leftSprite;
+    public Sprite rightSprite;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        accessoryManager = GetComponent<PetAccessoryManager>();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        target = GameObject.Find("Player").transform;
-    }
+        target = GameObject.Find("Player")?.transform;
 
-    // Update is called once per frame
+        // Initialize pet facing direction
+        if (accessoryManager != null)
+            accessoryManager.SetFacing("Front");
+    }
 
     void Update()
     {
@@ -62,24 +67,39 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         }
     }
 
-    // Change sprite based on movement direction
     private void UpdateSpriteDirection(Vector2 direction)
     {
-        // Check if horizontal movement is greater than vertical movement
+        string facing = "Front";
+
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
             if (direction.x < 0)
+            {
                 spriteRenderer.sprite = leftSprite;
-            else if (direction.x > 0)
+                facing = "Left";
+            }
+            else
+            {
                 spriteRenderer.sprite = rightSprite;
+                facing = "Right";
+            }
         }
         else
         {
             if (direction.y > 0)
+            {
                 spriteRenderer.sprite = backSprite;
+                facing = "Back";
+            }
             else if (direction.y < 0)
+            {
                 spriteRenderer.sprite = frontSprite;
+                facing = "Front";
+            }
         }
+
+        // Tell accessory manager to sync sprite state
+        accessoryManager?.SetFacing(facing);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -88,31 +108,11 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(rb.position);
             stream.SendNext(rb.linearVelocity);
-            stream.SendNext(spriteRenderer.sprite.name); // Send sprite direction by name
         }
         else
         {
             rb.position = (Vector2)stream.ReceiveNext();
             rb.linearVelocity = (Vector2)stream.ReceiveNext();
-            string spriteName = (string)stream.ReceiveNext();
-
-            // Set sprite based on name
-            if (spriteName == leftSprite.name)
-            {
-                spriteRenderer.sprite = leftSprite;
-            }
-            else if (spriteName == rightSprite.name)
-            {
-                spriteRenderer.sprite = rightSprite;
-            }
-            else if (spriteName == backSprite.name)
-            {
-                spriteRenderer.sprite = backSprite;
-            }
-            else
-            {
-                spriteRenderer.sprite = frontSprite;
-            }
         }
     }
 }

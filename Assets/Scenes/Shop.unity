@@ -542,6 +542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Purchaser
   playerCurrency: {fileID: 265202017}
+  purchaseClip: {fileID: 0}
 --- !u!1 &277792245
 GameObject:
   m_ObjectHideFlags: 0
@@ -1762,6 +1763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Purchaser
   playerCurrency: {fileID: 0}
+  purchaseClip: {fileID: 8300000, guid: 8f21c32a5d44bcb40a474f5aa498d8dd, type: 3}
 --- !u!4 &863679065
 Transform:
   m_ObjectHideFlags: 0

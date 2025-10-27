@@ -25,6 +25,9 @@ public class BattleManager : MonoBehaviourPunCallbacks
     private bool isProcessingAttack = false;
     private bool battleEnded = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip punchClip;
+
     private void Awake()
     {
         if (resultManager == null)
@@ -171,6 +174,11 @@ public class BattleManager : MonoBehaviourPunCallbacks
 
         var pet = targetView.GetComponent<PetBattle>();
         if (pet == null) return;
+
+        if (SoundManager.Instance != null && punchClip != null)
+        {
+            SoundManager.Instance.PlaySFX(punchClip);
+        }
 
         bool isDead = pet.ApplyDamage(amount);
 
