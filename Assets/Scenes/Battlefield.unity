@@ -4000,6 +4000,7 @@ MonoBehaviour:
   turnIndicatorText: {fileID: 1810698793}
   resultManager: {fileID: 207339015}
   iAmPlayerSide: 1
+  punchClip: {fileID: 8300000, guid: 8e5024baf371db74a912228ddfd16f56, type: 3}
 --- !u!114 &1158980728
 MonoBehaviour:
   m_ObjectHideFlags: 0

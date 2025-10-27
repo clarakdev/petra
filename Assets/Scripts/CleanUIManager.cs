@@ -21,6 +21,8 @@ public class CleanUIManager : MonoBehaviour
 
     bool _subscribed50;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip cleanClip;
     void Awake()
     {
         if (!canvas) canvas = GetComponentInParent<Canvas>();
@@ -150,6 +152,10 @@ public class CleanUIManager : MonoBehaviour
         }
 
         if (petFX) petFX.PlayHappy();
+        if (SoundManager.Instance != null && cleanClip != null)
+        {
+            SoundManager.Instance.PlaySFX(cleanClip);
+        }
     }
 
     IEnumerator FoamBurst(Vector3 center, Vector2 size)
