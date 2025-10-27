@@ -15,7 +15,7 @@ public class PlayerCurrency : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // Only set starting coins if not already set
+        // Initialize coins early (before GameState tries to read it)
         if (currency <= 0)
         {
             currency = 1000; // starting coins
@@ -37,6 +37,7 @@ public class PlayerCurrency : MonoBehaviour
             currency -= amount;
             return true;
         }
+
         return false;
     }
 }

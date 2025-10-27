@@ -31,6 +31,11 @@ public class WalkUIManager : MonoBehaviour
     public Vector2 confettiSize = new Vector2(40, 40);
     public int     confettiCount = 6;
 
+    // 🪙 Reward system
+    [Header("Rewards")]
+    public int coinsForFullWalk = 75;   // coins awarded when walk hits 100%
+    private bool _paidForThisFull = false;
+
     bool _happyPlaying;
     UnityAction _onWalk50;
     bool _listening;
@@ -51,9 +56,25 @@ public class WalkUIManager : MonoBehaviour
             mgr.InitializeWalkIfUnset(walkBar.value);
     }
 
-    void OnEnable()  { TrySubscribeWalk50(); }
-    void OnDisable() { UnsubscribeWalk50();  }
-    void OnDestroy() { UnsubscribeWalk50();  }
+    void OnEnable()
+    {
+        TrySubscribeWalk50();
+
+        var needs = PetNeedsManager.Instance;
+        if (needs != null)
+            needs.OnWalkChanged.AddListener(OnWalkValueChanged);
+    }
+
+    void OnDisable()
+    {
+        UnsubscribeWalk50();
+
+        var needs = PetNeedsManager.Instance;
+        if (needs != null)
+            needs.OnWalkChanged.RemoveListener(OnWalkValueChanged);
+    }
+
+    void OnDestroy() { UnsubscribeWalk50(); }
 
     // Subscribe to the EXACT-50 event from PetNeedsManager.
     void TrySubscribeWalk50()
@@ -73,8 +94,7 @@ public class WalkUIManager : MonoBehaviour
             _onWalk50 = () =>
             {
                 var gn = GlobalNotifier.Instance;
-                if (gn != null) gn.ShowToast(walk50Message, gn.toastHoldSeconds); // use editable message
-                if (gn != null) gn.ShowToast("Time to walk your pet!", gn.toastHoldSeconds);
+                if (gn != null) gn.ShowToast(walk50Message, gn.toastHoldSeconds);
                 TriggerPetHappy();
                 if (playConfettiAt50) StartCoroutine(ConfettiBurst());
             };
@@ -199,13 +219,14 @@ public class WalkUIManager : MonoBehaviour
     IEnumerator ConfettiRiseFade(RectTransform rt, CanvasGroup cg)
     {
         float t = 0f, dur = 0.45f;
-        Vector3 a = rt.position, b = a + new Vector3(Random.Range(-20f, 20f), 70f, 0);
+        Vector3 a = rt.position;
+        Vector3 b = a + new Vector3(Random.Range(-20f, 20f), 60f, 0);
         while (t < dur)
         {
             t += Time.unscaledDeltaTime;
             float k = t / dur;
             rt.position   = Vector3.Lerp(a, b, k);
-            rt.localScale = Vector3.one * (1f + 0.2f * k);
+            rt.localScale = Vector3.one * (1f + 0.3f * k);
             if (cg) cg.alpha = 1f - k;
             yield return null;
         }
@@ -214,11 +235,31 @@ public class WalkUIManager : MonoBehaviour
 
     static Sprite DefaultWhiteSprite()
     {
-        var tex = Texture2D.whiteTexture; // 1x1 white
-        return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
+        var tex = Texture2D.whiteTexture;
+        return Sprite.Create(tex, new Rect(0,0,tex.width,tex.height), new Vector2(0.5f,0.5f), 100f);
     }
 
-    // Handy right-click tests
-    [ContextMenu("Test: +10% Walk XP")] void _TestAdd10() => AddXPPercent(10f);
-    [ContextMenu("Test: Happy")]        void _TestHappy()  => TriggerPetHappy();
+    //Reward logic
+    private void OnWalkValueChanged(float walkPercent)
+    {
+        // Re-arm the reward if bar drops below full
+        if (walkPercent < 100f - 0.01f)
+        {
+            _paidForThisFull = false;
+            return;
+        }
+
+        // Award coins once when reaching 100%
+        if (!_paidForThisFull && walkPercent >= 100f - 0.01f)
+        {
+            var wallet = FindFirstObjectByType<PlayerCurrency>();
+            if (wallet != null)
+            {
+                wallet.EarnCurrency(coinsForFullWalk);
+                Debug.Log($"[WalkUIManager] Walk reached 100%. Awarded {coinsForFullWalk} coins. Total: {wallet.currency}");
+            }
+
+            _paidForThisFull = true;
+        }
+    }
 }

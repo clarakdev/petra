@@ -3,6 +3,7 @@ using UnityEngine.Events;
 
 /// Minimal fetch UI driver (PanelProgressBar only).
 /// Keeps a PanelProgressBar in sync and exposes helpers to set/add progress.
+/// Now also awards coins when reaching 100%.
 [DisallowMultipleComponent]
 public class FetchUIManager : MonoBehaviour
 {
@@ -12,12 +13,17 @@ public class FetchUIManager : MonoBehaviour
     [Header("Events")]
     public UnityEvent<float> OnProgress; // emits 0..100 when changed via helpers
 
+    [Header("Rewards")]
+    public int coinsForFullFetch = 100; // coins awarded once at 100%
+    private bool _paidForThisFull = false;
+
     void Awake() => PushToUI(ReadPercent());
 
     void Update()
     {
-        // PanelProgressBar is the single source of truth.
-        PushToUI(ReadPercent());
+        float pct = ReadPercent();
+        PushToUI(pct);
+        CheckReward(pct);
     }
 
     // ===== Public helpers you can call from gameplay =====
@@ -29,10 +35,39 @@ public class FetchUIManager : MonoBehaviour
         float next = Mathf.Clamp(ReadPercent() + percent, 0f, 100f);
         WritePercent(next);
         OnProgress?.Invoke(next);
+        CheckReward(next);
     }
 
     /// Use this if some other system sets an absolute % (0..100).
-    public void SetFromPanel(float percent) => WritePercent(Mathf.Clamp(percent, 0f, 100f));
+    public void SetFromPanel(float percent)
+    {
+        float next = Mathf.Clamp(percent, 0f, 100f);
+        WritePercent(next);
+        CheckReward(next);
+    }
+
+    // ===== Reward system =====
+    private void CheckReward(float percent)
+    {
+        // Re-arm reward if progress dropped below 100%
+        if (percent < 100f - 0.01f)
+        {
+            _paidForThisFull = false;
+            return;
+        }
+
+        // Pay once when bar reaches full
+        if (!_paidForThisFull && percent >= 100f - 0.01f)
+        {
+            var wallet = FindFirstObjectByType<PlayerCurrency>();
+            if (wallet != null)
+            {
+                wallet.EarnCurrency(coinsForFullFetch);
+                Debug.Log($"[FetchUIManager] Fetch reached 100%. Awarded {coinsForFullFetch} coins. Total: {wallet.currency}");
+            }
+            _paidForThisFull = true;
+        }
+    }
 
     // ===== Internals =====
 

@@ -48,9 +48,7 @@ public class BattleResultManager : MonoBehaviourPun
         resultShown = true;
 
         if (resultPanel != null)
-        {
             resultPanel.SetActive(true);
-        }
 
         if (resultText != null)
         {
@@ -65,16 +63,50 @@ public class BattleResultManager : MonoBehaviourPun
                 : "Your pet has fainted!";
         }
 
+        // 🔊 Play win/lose sound
         if (audioSource != null)
         {
             AudioClip clipToPlay = didIWin ? victorySound : defeatSound;
             if (clipToPlay != null)
-            {
                 audioSource.PlayOneShot(clipToPlay);
-            }
         }
 
+        // 💰 Give rewards
+        GiveBattleReward(didIWin);
+
         StartCoroutine(AutoReturnAfterDelay());
+    }
+
+    private void GiveBattleReward(bool playerWon)
+    {
+        var wallet = FindFirstObjectByType<PlayerCurrency>();
+        if (wallet == null)
+        {
+            Debug.LogWarning("[BattleResultManager] No PlayerCurrency found — reward skipped.");
+            return;
+        }
+
+        int reward = playerWon ? 200 : 100;
+        wallet.EarnCurrency(reward);
+
+        Debug.Log($"[BattleResultManager] Battle complete. Player {(playerWon ? "WON" : "LOST")} → +{reward} coins (Total: {wallet.currency}).");
+
+        // Optional: show toast or notifier if you have one
+        var notifier = GlobalNotifier.Instance;
+        if (notifier != null)
+        {
+            string msg = playerWon
+                ? $"+{reward} PetraCoins for winning the battle!"
+                : $"+{reward} PetraCoins for participating!";
+            notifier.ShowToast(msg, 2.5f);
+        }
+
+        // Auto-save progress (optional)
+        var gameState = FindFirstObjectByType<GameState>();
+        if (gameState != null)
+        {
+            gameState.SaveNow();
+        }
     }
 
     private IEnumerator AutoReturnAfterDelay()
@@ -99,8 +131,6 @@ public class BattleResultManager : MonoBehaviourPun
     private void OnDestroy()
     {
         if (returnButton != null)
-        {
             returnButton.onClick.RemoveListener(OnReturnButtonClicked);
-        }
     }
 }
