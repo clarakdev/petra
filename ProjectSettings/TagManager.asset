@@ -4,6 +4,7 @@
 TagManager:
   serializedVersion: 3
   tags:
+  - Bullet
   - Pet
   layers:
   - Default
@@ -12,7 +13,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Environment
   - 
   - 
   - 
@@ -41,6 +42,24 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Water
+    uniqueID: 2908351781
+    locked: 0
+  - name: Ground
+    uniqueID: 1902619657
+    locked: 0
+  - name: Collision
+    uniqueID: 583795049
+    locked: 0
+  - name: Signs
+    uniqueID: 2647884239
+    locked: 0
+  - name: Player
+    uniqueID: 3137861
+    locked: 0
+  - name: Environment
+    uniqueID: 2131398787
     locked: 0
   m_RenderingLayers:
   - Default

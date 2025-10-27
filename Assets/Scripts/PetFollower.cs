@@ -106,13 +106,27 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
+            // Send data to others
             stream.SendNext(rb.position);
             stream.SendNext(rb.linearVelocity);
+            stream.SendNext(spriteRenderer.sprite.name); // Sync sprite direction
         }
         else
         {
+            // Receive data from owner
             rb.position = (Vector2)stream.ReceiveNext();
             rb.linearVelocity = (Vector2)stream.ReceiveNext();
+            string spriteName = (string)stream.ReceiveNext();
+
+            // Update sprite based on received name
+            if (spriteName == leftSprite.name)
+                spriteRenderer.sprite = leftSprite;
+            else if (spriteName == rightSprite.name)
+                spriteRenderer.sprite = rightSprite;
+            else if (spriteName == backSprite.name)
+                spriteRenderer.sprite = backSprite;
+            else
+                spriteRenderer.sprite = frontSprite;
         }
     }
 }
