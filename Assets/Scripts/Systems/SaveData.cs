@@ -1,15 +1,24 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class SaveData
 {
     public int version = 1;
 
-    //Main data to save 
-    public string currentScene;   
-    public int currency;          
-    public string selectedPetId;  //Selected pet
+    // Main data
+    public string currentScene;
+    public int currency;
+    public string selectedPetId;
+    public string lastSavedUtc;
 
-    //misc. data to save later (inventory etc.)
-    public string lastSavedUtc;   //For debug / timestamp
+    // ✅ New: Inventory data
+    public List<InventoryItemSave> inventory;
+}
+
+[Serializable]
+public class InventoryItemSave
+{
+    public string itemId;
+    public int quantity;
 }

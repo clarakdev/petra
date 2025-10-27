@@ -29,7 +29,6 @@ public class InventoryManager : MonoBehaviour
     public event Action OnInventoryChanged;
 
     // === NEW: catalog so TradeManager can convert between item IDs and objects ===
-    // Drag ALL your ShopItem assets here in the inspector (same list you already keep in InventoryManagerData)
     [Header("Catalog / Trading")]
     [Tooltip("All ShopItem assets available in the game. Used for trade ID lookup.")]
     [SerializeField] private List<ShopItem> catalog = new();
@@ -38,11 +37,9 @@ public class InventoryManager : MonoBehaviour
     private Dictionary<string, ShopItem> id2item;
 
     // sessionId -> (playerId -> list of ItemStack offered by that player)
-    // this is the escrow; items are removed from live inventory while 'offered'
     private readonly Dictionary<string, Dictionary<string, List<ItemStack>>> escrow
         = new();
 
-    // === NEW: struct we pass around in trade/offers/UI ===
     [Serializable]
     public class ItemStack
     {
@@ -65,7 +62,7 @@ public class InventoryManager : MonoBehaviour
     }
 
     // ----------------------------------------------------
-    // EXISTING INVENTORY API (unchanged logic)
+    // INVENTORY CORE
     // ----------------------------------------------------
 
     public int AddItem(ShopItem item, int qty = 1)
@@ -118,7 +115,7 @@ public class InventoryManager : MonoBehaviour
     private void Notify() => OnInventoryChanged?.Invoke();
 
     // ----------------------------------------------------
-    // NEW: catalog helpers (for TradeManager <-> network)
+    // CATALOG / TRADE HELPERS
     // ----------------------------------------------------
 
     private void BuildCatalogIndexOnce()
@@ -128,24 +125,17 @@ public class InventoryManager : MonoBehaviour
         foreach (var si in catalog)
         {
             if (si == null) continue;
-
-            // We assume ShopItem has some stable unique string ID field.
-            // If your ShopItem script calls it "Id" or "ID" etc, update here.
-            // We'll try some common patterns via reflection fallback.
-
             string itemId = TryGetShopItemId(si);
             if (!string.IsNullOrEmpty(itemId) && !id2item.ContainsKey(itemId))
                 id2item[itemId] = si;
         }
     }
 
-    // Try to read si.Id, si.ID, etc.
     private string TryGetShopItemId(ShopItem si)
     {
         if (si == null) return null;
         var t = si.GetType();
 
-        // public string Id;
         var f = t.GetField("Id");
         if (f != null && f.FieldType == typeof(string))
         {
@@ -153,7 +143,6 @@ public class InventoryManager : MonoBehaviour
             if (!string.IsNullOrEmpty(v)) return v;
         }
 
-        // public string ID;
         f = t.GetField("ID");
         if (f != null && f.FieldType == typeof(string))
         {
@@ -161,7 +150,6 @@ public class InventoryManager : MonoBehaviour
             if (!string.IsNullOrEmpty(v)) return v;
         }
 
-        // public string id;
         f = t.GetField("id");
         if (f != null && f.FieldType == typeof(string))
         {
@@ -169,7 +157,6 @@ public class InventoryManager : MonoBehaviour
             if (!string.IsNullOrEmpty(v)) return v;
         }
 
-        // public string Id {get;}
         var p = t.GetProperty("Id");
         if (p != null && p.PropertyType == typeof(string))
         {
@@ -181,23 +168,16 @@ public class InventoryManager : MonoBehaviour
         return si.name;
     }
 
-    // Called by TradeManager when it needs to send item IDs over the wire.
     public string GetItemId(ShopItem item)
     {
         if (item == null) return null;
-        // re-run BuildCatalogIndexOnce to be safe
         BuildCatalogIndexOnce();
-
-        // First try reflection to get "Id"
         string reflected = TryGetShopItemId(item);
         if (!string.IsNullOrEmpty(reflected))
             return reflected;
-
-        // fallback: asset name
         return item.name;
     }
 
-    // Called by TradeManager / TradeUI on the receiving side to map an ID back to a ShopItem.
     public ShopItem ResolveItem(string id)
     {
         if (string.IsNullOrEmpty(id)) return null;
@@ -206,7 +186,6 @@ public class InventoryManager : MonoBehaviour
         if (id2item.TryGetValue(id, out var it))
             return it;
 
-        // fallback: try match by asset name
         foreach (var si in catalog)
             if (si && si.name == id)
                 return si;
@@ -214,13 +193,11 @@ public class InventoryManager : MonoBehaviour
         return null;
     }
 
-    // Quality-of-life name for UI
     public string GetDisplayName(ShopItem item)
     {
         if (!item) return "<?>";
-        // try some common fields like "Name", "DisplayName"
-        var t = item.GetType();
 
+        var t = item.GetType();
         var f = t.GetField("Name");
         if (f != null && f.FieldType == typeof(string))
         {
@@ -249,32 +226,27 @@ public class InventoryManager : MonoBehaviour
             if (!string.IsNullOrEmpty(v)) return v;
         }
 
-        // fallback to asset name in Project
         return item.name;
     }
 
     // ----------------------------------------------------
-    // NEW: escrow logic (used by TradeManager)
+    // ESCROW / TRADE LOGIC (unchanged)
     // ----------------------------------------------------
 
-    // Move (qty) of each offered item out of the live inventory and into escrow for this session+player
     public bool BeginEscrow(string sessionId, string playerId, IEnumerable<ItemStack> items)
     {
         if (string.IsNullOrEmpty(sessionId) || string.IsNullOrEmpty(playerId))
             return false;
 
-        // 1. confirm player actually has enough of each item
         foreach (var s in items)
         {
             if (s == null || s.item == null || s.qty <= 0) return false;
             if (!map.TryGetValue(s.item, out var e) || e.quantity < s.qty) return false;
         }
 
-        // 2. remove from live inventory
         foreach (var s in items)
             RemoveItem(s.item, s.qty);
 
-        // 3. store in escrow
         if (!escrow.TryGetValue(sessionId, out var byPlayer))
         {
             byPlayer = new Dictionary<string, List<ItemStack>>();
@@ -297,7 +269,6 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    // Return *all* escrowed items for this session back to their original owners (used when trade cancels)
     public bool CancelEscrow(string sessionId)
     {
         if (!escrow.TryGetValue(sessionId, out var byPlayer)) return false;
@@ -312,7 +283,6 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    // Return escrowed items for a single player (used when that player changes their offer mid-trade)
     public bool CancelEscrowForPlayer(string sessionId, string playerId)
     {
         if (!escrow.TryGetValue(sessionId, out var byPlayer)) return false;
@@ -328,7 +298,6 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    // Finalize: after trade completes successfully, we DON'T refund escrow (the other side already got items).
     public bool CommitEscrow(string sessionId)
     {
         if (!escrow.ContainsKey(sessionId)) return false;
@@ -336,7 +305,6 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    // helper mainly for debugging/inspection
     public IReadOnlyList<ItemStack> GetEscrow(string sessionId, string playerId)
     {
         if (escrow.TryGetValue(sessionId, out var byPlayer) &&
@@ -347,9 +315,6 @@ public class InventoryManager : MonoBehaviour
         return Array.Empty<ItemStack>();
     }
 
-    // convenience for TradeManager completion step
-    // In your design, each client owns ONLY their own local inventory
-    // so giving items "to player X" on this machine is just AddItem() here.
     public void AddItemToPlayer(string playerId, ShopItem item, int qty)
     {
         AddItem(item, qty);
@@ -368,5 +333,46 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.LogWarning($"[InventoryManager] AddItemById failed. Couldn't resolve item id '{id}'");
         }
+    }
+
+    // ----------------------------------------------------
+    // SAVE / LOAD SUPPORT
+    // ----------------------------------------------------
+
+    public List<InventoryItemSave> CaptureSave()
+    {
+        var data = new List<InventoryItemSave>();
+        BuildCatalogIndexOnce();
+
+        foreach (var e in ordered)
+        {
+            if (e.item == null) continue;
+            string id = GetItemId(e.item);
+            if (string.IsNullOrEmpty(id)) continue;
+
+            data.Add(new InventoryItemSave
+            {
+                itemId = id,
+                quantity = e.quantity
+            });
+        }
+
+        Debug.Log($"[InventoryManager] Captured {data.Count} items for save.");
+        return data;
+    }
+
+    public void RestoreFromSave(List<InventoryItemSave> saved)
+    {
+        Clear();
+        if (saved == null) return;
+
+        foreach (var entry in saved)
+        {
+            var item = ResolveItem(entry.itemId);
+            if (item != null)
+                AddItem(item, entry.quantity);
+        }
+
+        Debug.Log($"[InventoryManager] Restored {map.Count} items from save.");
     }
 }

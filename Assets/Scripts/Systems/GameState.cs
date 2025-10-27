@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameState : MonoBehaviour
 {
     public static GameState Instance { get; private set; }
 
     private PlayerCurrency playerCurrency;
-    private PetSelectionManager petSelectionManager; // replace with your actual pet selection class name later
+    private PetSelectionManager petSelectionManager;
 
     private void Awake()
     {
@@ -26,8 +27,9 @@ public class GameState : MonoBehaviour
 
     private void Start()
     {
-        //LoadNow(); // Attempt to load save data on game start
-    }   
+        // ✅ Automatically load save when game starts
+        LoadNow();
+    }
 
     private void OnDestroy()
     {
@@ -39,28 +41,28 @@ public class GameState : MonoBehaviour
         CacheReferences();
     }
 
-private void CacheReferences()
-{
-    if (playerCurrency == null)
+    private void CacheReferences()
     {
-        playerCurrency = FindObjectOfType<PlayerCurrency>();
-
-        //Create one automatically if missing
         if (playerCurrency == null)
         {
-            Debug.LogWarning("[GameState] No PlayerCurrency found, creating one...");
-            GameObject obj = new GameObject("PlayerCurrency");
-            playerCurrency = obj.AddComponent<PlayerCurrency>();
+            playerCurrency = FindFirstObjectByType<PlayerCurrency>();
+
+            // Create one automatically if missing
+            if (playerCurrency == null)
+            {
+                Debug.LogWarning("[GameState] No PlayerCurrency found, creating one...");
+                GameObject obj = new GameObject("PlayerCurrency");
+                playerCurrency = obj.AddComponent<PlayerCurrency>();
+            }
         }
+
+        if (petSelectionManager == null)
+            petSelectionManager = FindFirstObjectByType<PetSelectionManager>();
     }
 
-    if (petSelectionManager == null)
-        petSelectionManager = FindObjectOfType<PetSelectionManager>();
-}
-
-
-
-    // ----- SAVE / LOAD -----
+    // --------------------------------------------------
+    // SAVE / LOAD
+    // --------------------------------------------------
 
     public void SaveNow()
     {
@@ -81,12 +83,15 @@ private void CacheReferences()
             selectedPetId = petSelectionManager != null && petSelectionManager.currentPet != null
                 ? petSelectionManager.currentPet.name
                 : null,
-            lastSavedUtc = System.DateTime.Now.ToString("dd MMM yyyy, hh:mm tt")
+            lastSavedUtc = System.DateTime.Now.ToString("dd MMM yyyy, hh:mm tt"),
+
+            // ✅ Include inventory if manager exists
+            inventory = InventoryManager.Instance?.CaptureSave()
         };
 
-    SaveSystem.Save(data);
-}
-
+        SaveSystem.Save(data);
+        Debug.Log($"[GameState] Game saved successfully (scene={data.currentScene}, coins={data.currency}, pet={data.selectedPetId}).");
+    }
 
     public void LoadNow()
     {
@@ -101,30 +106,54 @@ private void CacheReferences()
         if (playerCurrency != null)
             playerCurrency.currency = data.currency;
 
-        if (petSelectionManager != null && !string.IsNullOrEmpty(data.selectedPetId))
+        // ✅ Restore inventory
+        if (InventoryManager.Instance != null && data.inventory != null)
         {
-            foreach (var pet in petSelectionManager.pets)
-            {
-                if (pet.name == data.selectedPetId)
-                {
-                    petSelectionManager.SetPet(pet);
-                    break;
-                }
-            }
+            InventoryManager.Instance.RestoreFromSave(data.inventory);
         }
 
+        // ✅ Restore pet safely with delay
+        if (!string.IsNullOrEmpty(data.selectedPetId))
+            StartCoroutine(DelayedPetRestore(data.selectedPetId));
 
-        /*// Optional: automatically load the saved scene
+        // ✅ Auto-load saved scene if different
         string current = SceneManager.GetActiveScene().name;
         if (!string.IsNullOrEmpty(data.currentScene) && data.currentScene != current)
         {
+            Debug.Log($"[GameState] Auto-loading saved scene: {data.currentScene}");
             SceneManager.LoadScene(data.currentScene);
         }
-        */
+
+        Debug.Log("[GameState] Game loaded successfully (including inventory & pet).");
+    }
+
+    private IEnumerator DelayedPetRestore(string petId)
+    {
+        // Wait one frame to ensure PetSelectionManager is ready
+        yield return null;
+
+        var petMgr = FindFirstObjectByType<PetSelectionManager>();
+        if (petMgr == null)
+        {
+            Debug.LogWarning("[GameState] PetSelectionManager not found after scene load.");
+            yield break;
+        }
+
+        foreach (var pet in petMgr.pets)
+        {
+            if (pet != null && pet.name == petId)
+            {
+                petMgr.SetPet(pet);
+                Debug.Log($"[GameState] Pet restored: {pet.name}");
+                yield break;
+            }
+        }
+
+        Debug.LogWarning($"[GameState] Pet '{petId}' not found in list.");
     }
 
     private void OnApplicationQuit()
     {
-        SaveNow(); // autosave when quitting
+        SaveNow(); // ✅ Auto-save when quitting
     }
 }
