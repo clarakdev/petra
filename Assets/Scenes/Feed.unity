@@ -175,6 +175,7 @@ MonoBehaviour:
   petFX: {fileID: 0}
   ensure50Popup: 1
   feed50Message: Time to feed your pet!
+  feedClip: {fileID: 8300000, guid: f7ff12a14b4618f40b640a45fa6e0f7b, type: 3}
 --- !u!1001 &359795663
 PrefabInstance:
   m_ObjectHideFlags: 0

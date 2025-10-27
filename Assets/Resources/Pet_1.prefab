@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 91464096724232252}
   - component: {fileID: 4863467730511914638}
   - component: {fileID: 2248407611919878094}
+  - component: {fileID: -7041907421779706128}
   m_Layer: 0
   m_Name: Pet_1
   m_TagString: Untagged
@@ -161,3 +162,21 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-7041907421779706128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23185813275973405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3303503c3927485bb52e67125765f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetAccessoryManager
+  petName: Snake
+  petRenderer: {fileID: 3458138025724293291}
+  frontSprite: {fileID: 0}
+  backSprite: {fileID: 0}
+  leftSprite: {fileID: 0}
+  rightSprite: {fileID: 0}

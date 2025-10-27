@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 335101884}
   - component: {fileID: 335101883}
   - component: {fileID: 335101886}
+  - component: {fileID: 335101887}
   m_Layer: 0
   m_Name: pet
   m_TagString: Untagged
@@ -411,6 +412,23 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 7.635
+--- !u!114 &335101887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335101881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dafbe0a795073421792030c79dc60799, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetAccessoryLinker
+  petName: 
+  petImage: {fileID: 0}
+  petRenderer: {fileID: 5125850917123755484}
+  currentFacing: Front
+  equippedType: 0
 --- !u!1 &376191370
 GameObject:
   m_ObjectHideFlags: 0
@@ -3965,6 +3983,11 @@ PrefabInstance:
     - target: {fileID: 8866004378570691053, guid: 5253edf47cebbd34ca1bfbe00a9ff9f3, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8866004378570691053, guid: 5253edf47cebbd34ca1bfbe00a9ff9f3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8866004378570691053, guid: 5253edf47cebbd34ca1bfbe00a9ff9f3, type: 3}
       propertyPath: m_LocalScale.z
@@ -4021,6 +4044,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1044696066}
   m_SourcePrefab: {fileID: 100100000, guid: 5253edf47cebbd34ca1bfbe00a9ff9f3, type: 3}
+--- !u!212 &5125850917123755484 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6330436170161662324, guid: 5253edf47cebbd34ca1bfbe00a9ff9f3, type: 3}
+  m_PrefabInstance: {fileID: 5125850917123755483}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

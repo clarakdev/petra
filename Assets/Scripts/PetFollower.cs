@@ -6,6 +6,7 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
     [Header("Movement Settings")]
     [SerializeField] public float moveSpeed = 5f;
     public float followDistance = 1.5f; // Minimum distance to maintain from the player
+    public float followDistance = 1.5f;
 
     private Rigidbody2D rb;
     private Transform target;
@@ -17,11 +18,19 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
     [SerializeField] private Sprite backSprite;
     [SerializeField] private Sprite leftSprite;
     [SerializeField] private Sprite rightSprite;
+    private PetAccessoryManager accessoryManager;
+
+    [Header("Directional Sprites")]
+    public Sprite frontSprite;
+    public Sprite backSprite;
+    public Sprite leftSprite;
+    public Sprite rightSprite;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        accessoryManager = GetComponent<PetAccessoryManager>();
     }
 
     private void Start()
@@ -31,6 +40,16 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
     }
 
     private void Update()
+    void Start()
+    {
+        target = GameObject.Find("Player")?.transform;
+
+        // Initialize pet facing direction
+        if (accessoryManager != null)
+            accessoryManager.SetFacing("Front");
+    }
+
+    void Update()
     {
         // Only update movement logic for the local player's pet
         if (!PhotonNetwork.IsConnected || photonView.IsMine)
@@ -64,29 +83,47 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
             }
         }
     }
-
     /// <summary>
     /// Updates the pet's sprite based on its movement direction.
     /// </summary>
     private void UpdateSpriteDirection(Vector2 direction)
     {
         // Check if horizontal movement is greater than vertical
+    private void UpdateSpriteDirection(Vector2 direction)
+    {
+        string facing = "Front";
+
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
             // Horizontal direction
             if (direction.x < 0)
+            {
                 spriteRenderer.sprite = leftSprite;
-            else if (direction.x > 0)
+                facing = "Left";
+            }
+            else
+            {
                 spriteRenderer.sprite = rightSprite;
+                facing = "Right";
+            }
         }
         else
         {
             // Vertical direction
             if (direction.y > 0)
+            {
                 spriteRenderer.sprite = backSprite;
+                facing = "Back";
+            }
             else if (direction.y < 0)
+            {
                 spriteRenderer.sprite = frontSprite;
+                facing = "Front";
+            }
         }
+
+        // Tell accessory manager to sync sprite state
+        accessoryManager?.SetFacing(facing);
     }
 
     /// <summary>
