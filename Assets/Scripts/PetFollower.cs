@@ -3,21 +3,13 @@ using UnityEngine;
 
 public class PetFollower : MonoBehaviourPun, IPunObservable
 {
-    [Header("Movement Settings")]
     [SerializeField] public float moveSpeed = 5f;
-    public float followDistance = 1.5f; // Minimum distance to maintain from the player
     public float followDistance = 1.5f;
 
     private Rigidbody2D rb;
     private Transform target;
     private Vector2 moveDirection;
     private SpriteRenderer spriteRenderer;
-
-    [Header("Directional Sprites")]
-    [SerializeField] private Sprite frontSprite;
-    [SerializeField] private Sprite backSprite;
-    [SerializeField] private Sprite leftSprite;
-    [SerializeField] private Sprite rightSprite;
     private PetAccessoryManager accessoryManager;
 
     [Header("Directional Sprites")]
@@ -33,13 +25,6 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         accessoryManager = GetComponent<PetAccessoryManager>();
     }
 
-    private void Start()
-    {
-        // Find the player object this pet should follow
-        target = GameObject.Find("Player")?.transform;
-    }
-
-    private void Update()
     void Start()
     {
         target = GameObject.Find("Player")?.transform;
@@ -51,7 +36,6 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
 
     void Update()
     {
-        // Only update movement logic for the local player's pet
         if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             if (target)
@@ -72,9 +56,8 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        // Apply movement only for the local instance
         if (!PhotonNetwork.IsConnected || photonView.IsMine)
         {
             if (target)
@@ -83,19 +66,13 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
             }
         }
     }
-    /// <summary>
-    /// Updates the pet's sprite based on its movement direction.
-    /// </summary>
-    private void UpdateSpriteDirection(Vector2 direction)
-    {
-        // Check if horizontal movement is greater than vertical
+
     private void UpdateSpriteDirection(Vector2 direction)
     {
         string facing = "Front";
 
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
-            // Horizontal direction
             if (direction.x < 0)
             {
                 spriteRenderer.sprite = leftSprite;
@@ -109,7 +86,6 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            // Vertical direction
             if (direction.y > 0)
             {
                 spriteRenderer.sprite = backSprite;
@@ -126,9 +102,6 @@ public class PetFollower : MonoBehaviourPun, IPunObservable
         accessoryManager?.SetFacing(facing);
     }
 
-    /// <summary>
-    /// Synchronizes position, velocity, and sprite direction over the network.
-    /// </summary>
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
