@@ -1292,7 +1292,8 @@ GameObject:
   m_Component:
   - component: {fileID: 600174588}
   - component: {fileID: 600174589}
-  - component: {fileID: 600174590}
+  - component: {fileID: 600174591}
+  - component: {fileID: 600174592}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -1372,20 +1373,8 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 600174590}
-        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
-        m_MethodName: ChangeVolume
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &600174590
+      m_Calls: []
+--- !u!114 &600174591
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1394,10 +1383,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 600174587}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc25f153fb3334443a2c50491348c96f, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f419b163e2f1d949a2c4f2d3bd3d881, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoundManager
-  volumeSlider: {fileID: 600174589}
+  m_EditorClassIdentifier: Assembly-CSharp::VolumeSliderBinder
+--- !u!114 &600174592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600174587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf0ff902aa8ac324dbf2359c06aa19dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SliderDebugLog
 --- !u!1 &623469554
 GameObject:
   m_ObjectHideFlags: 0
