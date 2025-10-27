@@ -15,6 +15,10 @@ public class FetchNeedManager : MonoBehaviour
     [Header("Pause at 100% (minutes)")]
     public float fetchFullPauseMinutes = 20f;
 
+    [Header("Rewards")]
+    public int coinsForFullFetch = 200;
+    private bool rewardGiven = false;
+
     [Serializable] public class FloatEvent : UnityEvent<float> {}
     public FloatEvent OnFetchChanged = new FloatEvent();
     public UnityEvent  OnFetchHit50  = new UnityEvent();
@@ -27,7 +31,7 @@ public class FetchNeedManager : MonoBehaviour
     DateTime _pauseUntilUtc = DateTime.MinValue;
 
     bool _hasPersist;
-    bool _notified50; // true once notified at/below 50; re-arms when rising >50
+    bool _notified50;
 
     void Awake()
     {
@@ -47,7 +51,14 @@ public class FetchNeedManager : MonoBehaviour
         Tick(false); // catch-up once
     }
 
-    void Update() => Tick(true);
+    void Update()
+    {
+        Tick(true);
+
+        //reward check every frame
+        CheckFetchReward();
+    }
+
     void OnApplicationPause(bool p){ if (p) Persist(); else { _lastTickUtc = DateTime.UtcNow; Tick(false);} }
     void OnApplicationQuit() => Persist();
 
@@ -63,7 +74,6 @@ public class FetchNeedManager : MonoBehaviour
         return true;
     }
 
-    /// External award (e.g., from PlaySatisfaction when slider hits full)
     public void AddFetchPercent(float percent)
     {
         if (Mathf.Approximately(percent, 0f)) return;
@@ -72,7 +82,10 @@ public class FetchNeedManager : MonoBehaviour
         float after  = Mathf.Clamp(before + percent, 0f, 100f);
 
         if (before < 100f && after >= 100f)
+        {
             _pauseUntilUtc = DateTime.UtcNow.AddMinutes(fetchFullPauseMinutes);
+            rewardGiven = false; //llow next reward when refilling
+        }
 
         fetch = after;
         OnFetchChanged.Invoke(fetch);
@@ -102,7 +115,6 @@ public class FetchNeedManager : MonoBehaviour
         float delta  = (fetchDrainPerMinute / 60f) * dt;
         float after  = Mathf.Max(0f, before - delta);
 
-        // snap-over logic so >50 → <50 still fires exactly at 50
         if (!_notified50 && before > 50f && after < 50f)
         {
             fetch = 50f;
@@ -126,6 +138,36 @@ public class FetchNeedManager : MonoBehaviour
             if (_notified50 && fetch > 50f)
                 _notified50 = false;
         }
+
+        //Reset reward if decayed below full
+        if (fetch < 100f - 0.1f)
+            rewardGiven = false;
+    }
+
+    //Reward system
+    private void CheckFetchReward()
+    {
+        if (rewardGiven) return;
+
+        if (fetch >= 100f - 0.01f)
+        {
+            var wallet = FindFirstObjectByType<PlayerCurrency>();
+            if (wallet != null)
+            {
+                wallet.EarnCurrency(coinsForFullFetch);
+                Debug.Log($"[FetchNeedManager] Fetch reached 100%. Player rewarded {coinsForFullFetch} coins! Total now: {wallet.currency}");
+
+                // Auto-save after reward
+                if (GameState.Instance != null)
+                    GameState.Instance.SaveNow();
+            }
+            else
+            {
+                Debug.LogWarning("[FetchNeedManager] Could not find PlayerCurrency to award coins!");
+            }
+
+            rewardGiven = true;
+        }
     }
 
     void PersistLight()
@@ -133,5 +175,6 @@ public class FetchNeedManager : MonoBehaviour
         PlayerPrefs.SetFloat(KEY_FETCH, fetch);
         PlayerPrefs.SetString(KEY_LAST, DateTime.UtcNow.ToString("o"));
     }
+
     void Persist() => PersistLight();
 }
