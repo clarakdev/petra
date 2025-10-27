@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4779035202939211278}
   - component: {fileID: 1376067660540162605}
   - component: {fileID: 5420963582603829759}
+  - component: {fileID: 750791523067482987}
   m_Layer: 0
   m_Name: Pet_4
   m_TagString: Untagged
@@ -133,6 +134,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   moveSpeed: 5
   followDistance: 1.5
+  frontSprite: {fileID: 7537031767871138231, guid: 3df5bb37c7812194d827e1eb598272c0, type: 3}
+  backSprite: {fileID: 1045308545965934726, guid: c724833b89d3775469499287d425e95b, type: 3}
+  leftSprite: {fileID: -7160078062001055719, guid: a601378ac46e93e49a9e8333284788d8, type: 3}
+  rightSprite: {fileID: 5772362423813347802, guid: e00ecc22ca9c251439663cac64bfb342, type: 3}
+--- !u!114 &750791523067482987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267907977136730660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3303503c3927485bb52e67125765f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PetAccessoryManager
+  petName: Fox
+  petRenderer: {fileID: 4779035202939211278}
   frontSprite: {fileID: 7537031767871138231, guid: 3df5bb37c7812194d827e1eb598272c0, type: 3}
   backSprite: {fileID: 1045308545965934726, guid: c724833b89d3775469499287d425e95b, type: 3}
   leftSprite: {fileID: -7160078062001055719, guid: a601378ac46e93e49a9e8333284788d8, type: 3}
