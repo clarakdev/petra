@@ -1,0 +1,10 @@
+{
+  "name": "MainAssembly",
+  "references": [
+    "PhotonUnityNetworking",
+    "PhotonRealtime",
+    "Unity.TextMeshPro",
+    "UnityEngine.UI",
+    "Unity.InputSystem"
+  ]
+}
