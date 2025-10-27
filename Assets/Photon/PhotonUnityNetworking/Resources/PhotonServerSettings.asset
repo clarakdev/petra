@@ -52,6 +52,14 @@ MonoBehaviour:
   - RPC_RequestToggleTurn
   - RPC_ApplyHealing
   - RPC_IncreaseMaxHealth
+  - RPC_AddOfferIds
+  - RPC_ApplyTradeLocal
+  - RPC_Cancel
+  - RPC_CancelLocal
+  - RPC_CreateOrGetSessionByActors
+  - RPC_ReceiveSnapshot
+  - RPC_SetConfirmed
+  - RPC_SetLocked
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
