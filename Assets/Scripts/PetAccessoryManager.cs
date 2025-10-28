@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 
 public class PetAccessoryManager : MonoBehaviour
@@ -27,7 +28,15 @@ public class PetAccessoryManager : MonoBehaviour
 
     private void Start()
     {
-        LoadAccessory();
+        // Unequip accessories when spawning through network
+        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        {
+            Unequip();
+        }
+        else
+        {
+            LoadAccessory(); // Load saved accessories only in single-player/offline mode
+        }
     }
 
     public void Equip(EquipType type)

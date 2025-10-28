@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PetAccessoryManager
   petName: Snake
   petRenderer: {fileID: 3458138025724293291}
-  frontSprite: {fileID: 0}
-  backSprite: {fileID: 0}
-  leftSprite: {fileID: 0}
-  rightSprite: {fileID: 0}
+  frontSprite: {fileID: 4522574261692088017, guid: 6abcd82c24267094f950ad8dfce1ed8a, type: 3}
+  backSprite: {fileID: 4870407538266123449, guid: 4e9472feb861e134eababfd797df387d, type: 3}
+  leftSprite: {fileID: -2428369777378428205, guid: 8179713e55eb6b6458410ee7f603de81, type: 3}
+  rightSprite: {fileID: 2972800738403531671, guid: e2cc329e091470541a5b0349906b8afc, type: 3}
