@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 4779035202939211278}
   - component: {fileID: 1376067660540162605}
   - component: {fileID: 5420963582603829759}
-  - component: {fileID: 1496736217422557244}
-  - component: {fileID: 356331847731949689}
+  - component: {fileID: 750791523067482987}
   m_Layer: 0
   m_Name: Pet_4
   m_TagString: Untagged
@@ -80,15 +79,15 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 3137861
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 7537031767871138231, guid: 3df5bb37c7812194d827e1eb598272c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 15.36, y: 10.24}
+  m_Size: {x: 0.48, y: 0.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -139,30 +138,7 @@ MonoBehaviour:
   backSprite: {fileID: 1045308545965934726, guid: c724833b89d3775469499287d425e95b, type: 3}
   leftSprite: {fileID: -7160078062001055719, guid: a601378ac46e93e49a9e8333284788d8, type: 3}
   rightSprite: {fileID: 5772362423813347802, guid: e00ecc22ca9c251439663cac64bfb342, type: 3}
---- !u!114 &1496736217422557244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1267907977136730660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents:
-  - {fileID: 5420963582603829759}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &356331847731949689
+--- !u!114 &750791523067482987
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,11 +156,3 @@ MonoBehaviour:
   backSprite: {fileID: 1045308545965934726, guid: c724833b89d3775469499287d425e95b, type: 3}
   leftSprite: {fileID: -7160078062001055719, guid: a601378ac46e93e49a9e8333284788d8, type: 3}
   rightSprite: {fileID: 5772362423813347802, guid: e00ecc22ca9c251439663cac64bfb342, type: 3}
-  greenHatFront: {fileID: 3359282752566444846, guid: e600729cef32647baaac389d19aa1cc3, type: 3}
-  greenHatBack: {fileID: -92158791334060222, guid: cdf03d20773544c00bd66c1edcb206d7, type: 3}
-  greenHatLeft: {fileID: -2860478756791991596, guid: a0d71639de95e4e5bab34ee2f8b45ad6, type: 3}
-  greenHatRight: {fileID: -1876887614174288920, guid: 5ddaf27b0bf604d1387c9d034fd4bf19, type: 3}
-  sunglassesFront: {fileID: 3441240159298296083, guid: 7a0b82a0be94b4300b734c5c10f4073b, type: 3}
-  sunglassesBack: {fileID: -7594760825415944591, guid: 4afb3597c52fa4cc79a8eda2ee686c2b, type: 3}
-  sunglassesLeft: {fileID: 350868462351197875, guid: 97fb220df31e84ba1acf38255927ff09, type: 3}
-  sunglassesRight: {fileID: 8632720090172226927, guid: 68be5d979a3b742a49373302dd4080d3, type: 3}
