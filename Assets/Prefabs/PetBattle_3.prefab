@@ -46,11 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c434dd8f1f2e7924594def20d0a68677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PetBattle
-  battleSpritePlayerSide: {fileID: -5208860181799393257, guid: 72d7b0b68bf3a524bac96bcf7bb90f48, type: 3}
+  battleSpritePlayerSide: {fileID: 7611091847253422933, guid: cc1ff6818b51b4e23836453ab4f2b3f4, type: 3}
   battleSpriteEnemySide: {fileID: -8590932226871881646, guid: 6524e19c499254c4e90618de010ed1c4, type: 3}
   maxHealth: 0
   currentHealth: 0
   healthBar: {fileID: 0}
+  healthText: {fileID: 0}
 --- !u!114 &4078019788300540595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +70,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1471585093948616115}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -120,12 +122,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -5208860181799393257, guid: 72d7b0b68bf3a524bac96bcf7bb90f48, type: 3}
+  m_Sprite: {fileID: 7611091847253422933, guid: cc1ff6818b51b4e23836453ab4f2b3f4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.17, y: 10.19}
+  m_Size: {x: 0.46, y: 0.86}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
