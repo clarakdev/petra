@@ -125,6 +125,12 @@ public class PetFetchManager : MonoBehaviour
         state = State.Idle;
 
         if (playSatisfaction) playSatisfaction.AddFromFetch();
+
+        if (PlayerCurrency.Instance != null)
+        {
+            PlayerCurrency.Instance.EarnCurrency(50);
+            Debug.Log("[PetFetchManager] Fetch completed! Awarded 10 coins.");
+        }
     }
 
     System.Collections.IEnumerator SnapToHandIfClose()

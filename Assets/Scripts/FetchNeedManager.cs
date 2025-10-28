@@ -19,6 +19,9 @@ public class FetchNeedManager : MonoBehaviour
     public FloatEvent OnFetchChanged = new FloatEvent();
     public UnityEvent  OnFetchHit50  = new UnityEvent();
 
+    // ✅ NEW: fires once when fetch hits 100%
+    public UnityEvent OnFetchHit100 = new UnityEvent();
+
     const string KEY_FETCH  = "fetch_need_value";
     const string KEY_LAST   = "fetch_need_lastTickUtc";
     const float  EPS        = 0.0001f;
@@ -27,7 +30,8 @@ public class FetchNeedManager : MonoBehaviour
     DateTime _pauseUntilUtc = DateTime.MinValue;
 
     bool _hasPersist;
-    bool _notified50; // true once notified at/below 50; re-arms when rising >50
+    bool _notified50; 
+    bool _notified100;   // ✅ NEW
 
     void Awake()
     {
@@ -44,7 +48,8 @@ public class FetchNeedManager : MonoBehaviour
             _lastTickUtc = DateTime.UtcNow;
 
         _notified50 = (fetch <= 50f);
-        Tick(false); // catch-up once
+        _notified100 = (fetch >= 100f - EPS); // ✅ initialize flag
+        Tick(false);
     }
 
     void Update() => Tick(true);
@@ -63,7 +68,6 @@ public class FetchNeedManager : MonoBehaviour
         return true;
     }
 
-    /// External award (e.g., from PlaySatisfaction when slider hits full)
     public void AddFetchPercent(float percent)
     {
         if (Mathf.Approximately(percent, 0f)) return;
@@ -72,7 +76,17 @@ public class FetchNeedManager : MonoBehaviour
         float after  = Mathf.Clamp(before + percent, 0f, 100f);
 
         if (before < 100f && after >= 100f)
+        {
             _pauseUntilUtc = DateTime.UtcNow.AddMinutes(fetchFullPauseMinutes);
+            if (!_notified100)
+            {
+                _notified100 = true;
+                OnFetchHit100.Invoke(); // ✅ fire once
+            }
+        }
+
+        if (after < 100f - EPS)
+            _notified100 = false;
 
         fetch = after;
         OnFetchChanged.Invoke(fetch);
@@ -102,7 +116,6 @@ public class FetchNeedManager : MonoBehaviour
         float delta  = (fetchDrainPerMinute / 60f) * dt;
         float after  = Mathf.Max(0f, before - delta);
 
-        // snap-over logic so >50 → <50 still fires exactly at 50
         if (!_notified50 && before > 50f && after < 50f)
         {
             fetch = 50f;
@@ -125,6 +138,9 @@ public class FetchNeedManager : MonoBehaviour
 
             if (_notified50 && fetch > 50f)
                 _notified50 = false;
+
+            if (fetch < 100f - EPS)
+                _notified100 = false;
         }
     }
 

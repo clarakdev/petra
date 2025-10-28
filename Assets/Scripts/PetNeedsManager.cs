@@ -7,74 +7,85 @@ public class PetNeedsManager : MonoBehaviour
     public static PetNeedsManager Instance { get; private set; }
 
     [Header("Starting values (0..100)")]
-    [Range(0,100)] public float walk  = 100f;
-    [Range(0,100)] public float clean = 100f;
-    [Range(0,100)] public float feed  = 100f;
+    [Range(0, 100)] public float walk = 100f;
+    [Range(0, 100)] public float clean = 100f;
+    [Range(0, 100)] public float feed = 100f;
+    [Range(0, 100)] public float fetch = 100f;
 
     [Header("Decay per minute")]
-    public float walkDrainPerMinute  = 0.6f;
+    public float walkDrainPerMinute = 10f;
     public float cleanDrainPerMinute = 0.8f;
-    public float feedDrainPerMinute  = 1.5f;
+    public float feedDrainPerMinute = 10f;
+    public float fetchDrainPerMinute = 10f;
 
     [Header("Pause at 100% (minutes)")]
-    public float walkFullPauseMinutes  = 20f;
-    public float cleanFullPauseMinutes = 20f;
-    public float feedFullPauseMinutes  = 20f;
+    public float walkFullPauseMinutes = 0.02f;
+    public float cleanFullPauseMinutes = 0.02f;
+    public float feedFullPauseMinutes = 0.02f;
+    public float fetchFullPauseMinutes = 0.02f;
 
-    // ---- Events (per-need) ----
-    [Serializable] public class FloatEvent : UnityEvent<float> {}
-    public FloatEvent OnWalkChanged  = new FloatEvent();
+    [Header("Rewards")]
+    public int rewardCoinsPerFull = 50;
+
+    [Serializable] public class FloatEvent : UnityEvent<float> { }
+    public FloatEvent OnWalkChanged = new FloatEvent();
     public FloatEvent OnCleanChanged = new FloatEvent();
-    public FloatEvent OnFeedChanged  = new FloatEvent();
+    public FloatEvent OnFeedChanged = new FloatEvent();
+    public FloatEvent OnFetchChanged = new FloatEvent();
 
-    public UnityEvent OnWalkHit50  = new UnityEvent();
+    public UnityEvent OnWalkHit50 = new UnityEvent();
     public UnityEvent OnCleanHit50 = new UnityEvent();
-    public UnityEvent OnFeedHit50  = new UnityEvent();
+    public UnityEvent OnFeedHit50 = new UnityEvent();
+    public UnityEvent OnFetchHit50 = new UnityEvent();
 
-    // ---- persistence & timers ----
     DateTime _lastTickUtc;
-    DateTime _walkPauseUntilUtc  = DateTime.MinValue;
+    DateTime _walkPauseUntilUtc = DateTime.MinValue;
     DateTime _cleanPauseUntilUtc = DateTime.MinValue;
-    DateTime _feedPauseUntilUtc  = DateTime.MinValue;
+    DateTime _feedPauseUntilUtc = DateTime.MinValue;
+    DateTime _fetchPauseUntilUtc = DateTime.MinValue;
 
-    // exact-50 edge flags (true = we've already fired at/below 50; re-arm when rising above 50)
-    bool _walkNotified50, _cleanNotified50, _feedNotified50;
+    bool _walkNotified50, _cleanNotified50, _feedNotified50, _fetchNotified50;
+    bool _hasWalkPersist, _hasCleanPersist, _hasFeedPersist, _hasFetchPersist;
 
-    // did we load persisted values?
-    bool _hasWalkPersist, _hasCleanPersist, _hasFeedPersist;
-
-    const string KEY_LAST  = "petneeds_lastTickUtc";
-    const string KEY_WALK  = "petneeds_walk";
+    const string KEY_LAST = "petneeds_lastTickUtc";
+    const string KEY_WALK = "petneeds_walk";
     const string KEY_CLEAN = "petneeds_clean";
-    const string KEY_FEED  = "petneeds_feed";
-    const float  EPS       = 0.0001f;
+    const string KEY_FEED = "petneeds_feed";
+    const string KEY_FETCH = "petneeds_fetch";
+    const float EPS = 0.0001f;
 
     void Awake()
     {
-        if (Instance && Instance != this) { Destroy(gameObject); return; }
+        if (Instance && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Load persisted values (if present)
-        _hasWalkPersist  = PlayerPrefs.HasKey(KEY_WALK);
+        _hasWalkPersist = PlayerPrefs.HasKey(KEY_WALK);
         _hasCleanPersist = PlayerPrefs.HasKey(KEY_CLEAN);
-        _hasFeedPersist  = PlayerPrefs.HasKey(KEY_FEED);
+        _hasFeedPersist = PlayerPrefs.HasKey(KEY_FEED);
+        _hasFetchPersist = PlayerPrefs.HasKey(KEY_FETCH);
 
-        if (_hasWalkPersist)  walk  = PlayerPrefs.GetFloat(KEY_WALK,  walk);
+        if (_hasWalkPersist) walk = PlayerPrefs.GetFloat(KEY_WALK, walk);
         if (_hasCleanPersist) clean = PlayerPrefs.GetFloat(KEY_CLEAN, clean);
-        if (_hasFeedPersist)  feed  = PlayerPrefs.GetFloat(KEY_FEED,  feed);
+        if (_hasFeedPersist) feed = PlayerPrefs.GetFloat(KEY_FEED, feed);
+        if (_hasFetchPersist) fetch = PlayerPrefs.GetFloat(KEY_FETCH, fetch);
 
         if (PlayerPrefs.HasKey(KEY_LAST) && DateTime.TryParse(PlayerPrefs.GetString(KEY_LAST), out var saved))
             _lastTickUtc = saved;
         else
             _lastTickUtc = DateTime.UtcNow;
 
-        // Arm so we only fire again after rising above 50
-        _walkNotified50  = (walk  <= 50f);
+        _walkNotified50 = (walk <= 50f);
         _cleanNotified50 = (clean <= 50f);
-        _feedNotified50  = (feed  <= 50f);
+        _feedNotified50 = (feed <= 50f);
+        _fetchNotified50 = (fetch <= 50f);
 
-        Tick(false); // catch-up once
+        Tick(false);
     }
 
     void OnApplicationPause(bool paused)
@@ -86,21 +97,131 @@ public class PetNeedsManager : MonoBehaviour
     void OnApplicationQuit() => Persist();
     void Update() => Tick(true);
 
-    // ---- Public helpers ----
-    public bool IsWalkFull()  => walk  >= 99.999f;
-    public bool IsCleanFull() => clean >= 99.999f;
-    public bool IsFeedFull()  => feed  >= 99.999f;
+    // === Initialization Helpers ===
+    public bool InitializeWalkIfUnset(float v)
+    {
+        if (_hasWalkPersist) return false;
+        walk = Clamp100(v);
+        OnWalkChanged.Invoke(walk);
+        PlayerPrefs.SetFloat(KEY_WALK, walk);
+        PlayerPrefs.Save();
+        _hasWalkPersist = true;
+        return true;
+    }
 
-    // Seed once from scene bars (only if we *didn't* load persisted value)
-    public bool InitializeWalkIfUnset (float v) { if (_hasWalkPersist)  return false; walk  = Clamp100(v); OnWalkChanged.Invoke(walk);  PersistLight(); _hasWalkPersist  = true; return true; }
-    public bool InitializeCleanIfUnset(float v) { if (_hasCleanPersist) return false; clean = Clamp100(v); OnCleanChanged.Invoke(clean); PersistLight(); _hasCleanPersist = true;  return true; }
-    public bool InitializeFeedIfUnset (float v) { if (_hasFeedPersist)  return false; feed  = Clamp100(v); OnFeedChanged.Invoke(feed);  PersistLight(); _hasFeedPersist  = true; return true; }
+    public bool InitializeCleanIfUnset(float v)
+    {
+        if (_hasCleanPersist) return false;
+        clean = Clamp100(v);
+        OnCleanChanged.Invoke(clean);
+        PlayerPrefs.SetFloat(KEY_CLEAN, clean);
+        PlayerPrefs.Save();
+        _hasCleanPersist = true;
+        return true;
+    }
 
-    public void AddWalkPercent (float percent) { AddPercent(ref walk,  percent, walkFullPauseMinutes,  OnWalkChanged,  ref _walkPauseUntilUtc,  ref _walkNotified50,  OnWalkHit50 ); }
-    public void AddCleanPercent(float percent) { AddPercent(ref clean, percent, cleanFullPauseMinutes, OnCleanChanged, ref _cleanPauseUntilUtc, ref _cleanNotified50, OnCleanHit50); }
-    public void AddFeedPercent (float percent) { AddPercent(ref feed,  percent, feedFullPauseMinutes,  OnFeedChanged,  ref _feedPauseUntilUtc,  ref _feedNotified50,  OnFeedHit50 ); }
+    public bool InitializeFeedIfUnset(float v)
+    {
+        if (_hasFeedPersist) return false;
+        feed = Clamp100(v);
+        OnFeedChanged.Invoke(feed);
+        PlayerPrefs.SetFloat(KEY_FEED, feed);
+        PlayerPrefs.Save();
+        _hasFeedPersist = true;
+        return true;
+    }
 
-    // ---- Core ticking/decay ----
+    public bool InitializeFetchIfUnset(float v)
+    {
+        if (_hasFetchPersist) return false;
+        fetch = Clamp100(v);
+        OnFetchChanged.Invoke(fetch);
+        PlayerPrefs.SetFloat(KEY_FETCH, fetch);
+        PlayerPrefs.Save();
+        _hasFetchPersist = true;
+        return true;
+    }
+
+    // === Add % and Reward ===
+    public void AddWalkPercent(float percent)
+    {
+        float before = walk;
+        walk = Mathf.Clamp(walk + percent, 0f, 100f);
+        OnWalkChanged.Invoke(walk);
+        PlayerPrefs.SetFloat(KEY_WALK, walk);
+
+        if (before < 100f && walk >= 100f)
+        {
+            _walkPauseUntilUtc = DateTime.UtcNow.AddMinutes(walkFullPauseMinutes);
+            GiveReward("walk");
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public void AddCleanPercent(float percent)
+    {
+        float before = clean;
+        clean = Mathf.Clamp(clean + percent, 0f, 100f);
+        OnCleanChanged.Invoke(clean);
+        PlayerPrefs.SetFloat(KEY_CLEAN, clean);
+
+        if (before < 100f && clean >= 100f)
+        {
+            _cleanPauseUntilUtc = DateTime.UtcNow.AddMinutes(cleanFullPauseMinutes);
+            GiveReward("clean");
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public void AddFeedPercent(float percent)
+    {
+        float before = feed;
+        feed = Mathf.Clamp(feed + percent, 0f, 100f);
+        OnFeedChanged.Invoke(feed);
+        PlayerPrefs.SetFloat(KEY_FEED, feed);
+
+        if (before < 100f && feed >= 100f)
+        {
+            _feedPauseUntilUtc = DateTime.UtcNow.AddMinutes(feedFullPauseMinutes);
+            GiveReward("feed");
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public void AddFetchPercent(float percent)
+    {
+        float before = fetch;
+        fetch = Mathf.Clamp(fetch + percent, 0f, 100f);
+        OnFetchChanged.Invoke(fetch);
+        PlayerPrefs.SetFloat(KEY_FETCH, fetch);
+
+        if (before < 100f && fetch >= 100f)
+        {
+            _fetchPauseUntilUtc = DateTime.UtcNow.AddMinutes(fetchFullPauseMinutes);
+            GiveReward("fetch");
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    // === Reward Logic ===
+    void GiveReward(string type)
+    {
+        if (PlayerCurrency.Instance != null)
+        {
+            PlayerCurrency.Instance.EarnCurrency(rewardCoinsPerFull);
+            Debug.Log($"[PetNeedsManager] {type} bar full! Rewarded {rewardCoinsPerFull} coins.");
+        }
+        else
+        {
+            Debug.LogWarning($"[PetNeedsManager] PlayerCurrency.Instance is NULL — {type} reward could not be given!");
+        }
+    }
+
+    // === Decay ===
     void Tick(bool continuous)
     {
         var now = DateTime.UtcNow;
@@ -108,30 +229,28 @@ public class PetNeedsManager : MonoBehaviour
         if (dt <= 0f) { _lastTickUtc = now; return; }
         _lastTickUtc = now;
 
-        // Respect "full pause" windows at 100
-        if (!(walk  >= 100f - EPS && now < _walkPauseUntilUtc ))
-            Decay(ref walk,  walkDrainPerMinute,  dt, OnWalkChanged,  ref _walkNotified50,  OnWalkHit50);
+        if (!(walk >= 100f - EPS && now < _walkPauseUntilUtc))
+            Decay(ref walk, walkDrainPerMinute, dt, OnWalkChanged, ref _walkNotified50, OnWalkHit50);
         if (!(clean >= 100f - EPS && now < _cleanPauseUntilUtc))
             Decay(ref clean, cleanDrainPerMinute, dt, OnCleanChanged, ref _cleanNotified50, OnCleanHit50);
-        if (!(feed  >= 100f - EPS && now < _feedPauseUntilUtc ))
-            Decay(ref feed,  feedDrainPerMinute,  dt, OnFeedChanged,  ref _feedNotified50,  OnFeedHit50);
+        if (!(feed >= 100f - EPS && now < _feedPauseUntilUtc))
+            Decay(ref feed, feedDrainPerMinute, dt, OnFeedChanged, ref _feedNotified50, OnFeedHit50);
+        if (!(fetch >= 100f - EPS && now < _fetchPauseUntilUtc))
+            Decay(ref fetch, fetchDrainPerMinute, dt, OnFetchChanged, ref _fetchNotified50, OnFetchHit50);
 
         if (continuous) PersistLight();
     }
 
-    // Decay with "snap-to-50" so an update that jumps 51 -> 49 still fires the exact 50 event.
     void Decay(ref float value, float perMinute, float dt,
                FloatEvent changedEvt, ref bool notified50, UnityEvent hit50Evt)
     {
         if (perMinute <= 0f || value <= 0f) return;
-
         float before = value;
-        float delta  = (perMinute / 60f) * dt;
+        float delta = (perMinute / 60f) * dt;
         if (delta <= 0f) return;
 
         float after = Mathf.Max(0f, before - delta);
 
-        // If we skipped over 50 in one tick, snap to 50 exactly and fire once.
         if (!notified50 && before > 50f && after < 50f)
         {
             value = 50f;
@@ -141,17 +260,13 @@ public class PetNeedsManager : MonoBehaviour
             return;
         }
 
-        // Normal path
         value = after;
         if (Mathf.Abs(value - before) >= EPS)
         {
             changedEvt.Invoke(value);
-
-            // Re-arm if we went above 50
             if (notified50 && value > 50f)
                 notified50 = false;
 
-            // If we land exactly on 50 (rare without snap), fire once.
             if (!notified50 && before > 50f && Mathf.Abs(value - 50f) < EPS)
             {
                 notified50 = true;
@@ -160,42 +275,27 @@ public class PetNeedsManager : MonoBehaviour
         }
     }
 
-    // Add percent (healing). Re-arms when we rise above 50. (Adds won’t create a 50-from-above case.)
-    void AddPercent(ref float value, float percent, float pauseMinutes,
-                    FloatEvent changedEvt, ref DateTime pauseUntil, ref bool notified50, UnityEvent hit50Evt)
-    {
-        if (Mathf.Approximately(percent, 0f)) return;
-
-        float before = value;
-        float after  = Mathf.Clamp(before + percent, 0f, 100f);
-
-        // start lockout when we *reach* full
-        if (before < 100f && after >= 100f)
-            pauseUntil = DateTime.UtcNow.AddMinutes(pauseMinutes);
-
-        value = after;
-        if (Mathf.Abs(value - before) >= EPS)
-        {
-            changedEvt.Invoke(value);
-
-            // Re-arm only when rising above 50
-            if (value > 50f)
-                notified50 = false;
-
-            // (No firing here—decay is what crosses from >50 down to ==50)
-            PersistLight();
-        }
-    }
-
-    static float Clamp100(float v) => Mathf.Clamp(v, 0f, 100f);
-
-    // ---- persistence ----
+    // === Persistence ===
     void PersistLight()
     {
-        PlayerPrefs.SetFloat(KEY_WALK,  walk);
+        PlayerPrefs.SetFloat(KEY_WALK, walk);
         PlayerPrefs.SetFloat(KEY_CLEAN, clean);
-        PlayerPrefs.SetFloat(KEY_FEED,  feed);
-        PlayerPrefs.SetString(KEY_LAST, DateTime.UtcNow.ToString("o"));
+        PlayerPrefs.SetFloat(KEY_FEED, feed);
+        PlayerPrefs.SetFloat(KEY_FETCH, fetch);
+        PlayerPrefs.Save();
     }
-    void Persist() => PersistLight();
+
+    void Persist()
+    {
+        PersistLight();
+        PlayerPrefs.SetString(KEY_LAST, DateTime.UtcNow.ToString());
+        PlayerPrefs.Save();
+    }
+
+    // === Utility ===
+    float Clamp100(float v) => Mathf.Clamp(v, 0f, 100f);
+    public bool IsWalkFull() => walk >= 99.999f;
+    public bool IsCleanFull() => clean >= 99.999f;
+    public bool IsFeedFull() => feed >= 99.999f;
+    public bool IsFetchFull() => fetch >= 99.999f;
 }
