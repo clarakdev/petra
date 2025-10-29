@@ -24,12 +24,18 @@ public class PlayerCurrency : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Always start at 1000 each session
-        currency = STARTING_COINS;
-        PlayerPrefs.SetInt(KEY_CURRENCY, currency);
-        PlayerPrefs.Save();
+        // MODIFIED: Only reset to 1000 if there's no save file
+        // If there is a save file, the SaveSystem will load the correct amount
+        if (SaveSystem.Instance == null || !SaveSystem.Instance.HasSaveFile())
+        {
+            currency = STARTING_COINS;
+            Debug.Log($"[PlayerCurrency] No save file - initialized with {currency} coins.");
+        }
+        else
+        {
+            Debug.Log($"[PlayerCurrency] Save file exists - waiting for SaveSystem to load currency.");
+        }
 
-        Debug.Log($"[PlayerCurrency] Initialized with {currency} coins.");
         OnCurrencyChanged?.Invoke(currency);
     }
 
