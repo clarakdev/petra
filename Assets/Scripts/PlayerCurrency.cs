@@ -1,42 +1,74 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerCurrency : MonoBehaviour
 {
-    public int currency;
+    public static PlayerCurrency Instance { get; private set; }
+
+    [Header("Currency Settings")]
+    public int currency = 1000;
+    public UnityEvent<int> OnCurrencyChanged;
+
+    private const int STARTING_COINS = 1000;
+    private const string KEY_CURRENCY = "player_currency";
 
     private void Awake()
     {
-        // Singleton pattern: ensure only one PlayerCurrency exists
-        if (FindObjectsOfType<PlayerCurrency>().Length > 1)
+        // Singleton setup
+        if (Instance && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
+        Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Only set starting coins if not already set
-        if (currency <= 0)
-        {
-            currency = 1000; // starting coins
-        }
+        // Always start at 1000 each session
+        currency = STARTING_COINS;
+        PlayerPrefs.SetInt(KEY_CURRENCY, currency);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[PlayerCurrency] Initialized with {currency} coins.");
+        OnCurrencyChanged?.Invoke(currency);
     }
 
     public void EarnCurrency(int amount)
     {
-        if (amount > 0)
-        {
-            currency += amount;
-        }
+        if (amount <= 0) return;
+
+        currency += amount;
+        PlayerPrefs.SetInt(KEY_CURRENCY, currency);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[PlayerCurrency] Earned {amount} coins! New total: {currency}");
+        OnCurrencyChanged?.Invoke(currency);
     }
 
     public bool SpendCurrency(int amount)
     {
-        if (amount <= currency)
+        if (currency < amount)
         {
-            currency -= amount;
-            return true;
+            Debug.LogWarning("[PlayerCurrency] Not enough coins to spend!");
+            return false;
         }
-        return false;
+
+        currency -= amount;
+        PlayerPrefs.SetInt(KEY_CURRENCY, currency);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[PlayerCurrency] Spent {amount} coins. Remaining: {currency}");
+        OnCurrencyChanged?.Invoke(currency);
+        return true;
+    }
+
+    public void ResetCurrency()
+    {
+        currency = STARTING_COINS;
+        PlayerPrefs.SetInt(KEY_CURRENCY, currency);
+        PlayerPrefs.Save();
+        OnCurrencyChanged?.Invoke(currency);
+
+        Debug.Log($"[PlayerCurrency] Reset to {STARTING_COINS} coins.");
     }
 }

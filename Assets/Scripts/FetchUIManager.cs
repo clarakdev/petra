@@ -1,50 +1,42 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-/// Minimal fetch UI driver (PanelProgressBar only).
-/// Keeps a PanelProgressBar in sync and exposes helpers to set/add progress.
 [DisallowMultipleComponent]
 public class FetchUIManager : MonoBehaviour
 {
     [Header("UI")]
-    public PanelProgressBar panelBar;   // 0..100 bar (custom)
+    public PanelProgressBar panelBar;
 
     [Header("Events")]
-    public UnityEvent<float> OnProgress; // emits 0..100 when changed via helpers
+    public UnityEvent<float> OnProgress;
 
-    void Awake() => PushToUI(ReadPercent());
+    private FetchNeedManager fetchNeeds;
 
-    void Update()
+    [Header("Reward Settings")]
+    public int rewardCoins = 10; // ✅ change as you like
+
+    void Start()
     {
-        // PanelProgressBar is the single source of truth.
-        PushToUI(ReadPercent());
+        fetchNeeds = FetchNeedManager.Instance;
+        if (fetchNeeds == null)
+        {
+            Debug.LogWarning("[FetchUIManager] FetchNeedManager not found!");
+            return;
+        }
+
+        fetchNeeds.OnFetchChanged.AddListener(PushToUI);
+
+        // ✅ reward trigger
+        fetchNeeds.OnFetchHit100.AddListener(OnFetchFull);
     }
 
-    // ===== Public helpers you can call from gameplay =====
-
-    /// Add percent points to the bar (e.g., bump UI when something happens).
-    public void AddProgressPercent(float percent)
+    void OnFetchFull()
     {
-        if (Mathf.Approximately(percent, 0f) || panelBar == null) return;
-        float next = Mathf.Clamp(ReadPercent() + percent, 0f, 100f);
-        WritePercent(next);
-        OnProgress?.Invoke(next);
-    }
-
-    /// Use this if some other system sets an absolute % (0..100).
-    public void SetFromPanel(float percent) => WritePercent(Mathf.Clamp(percent, 0f, 100f));
-
-    // ===== Internals =====
-
-    float ReadPercent()
-    {
-        if (panelBar == null) return 0f;
-        return Mathf.Clamp(panelBar.value, 0f, 100f);
-    }
-
-    void WritePercent(float pct)
-    {
-        if (panelBar != null) panelBar.SetValue(pct);
+        if (PlayerCurrency.Instance != null)
+        {
+            PlayerCurrency.Instance.EarnCurrency(rewardCoins);
+            Debug.Log($"[FetchUIManager] Fetch full! Awarded {rewardCoins} coins.");
+        }
     }
 
     void PushToUI(float pct)
